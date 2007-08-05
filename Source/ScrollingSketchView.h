@@ -1,0 +1,29 @@
+//
+//  ScrollingSketchView.h
+//  Drip
+//
+//  Created by Nur Monson on 8/2/07.
+//  Copyright 2007 theidiotproject. All rights reserved.
+//
+
+#import <Cocoa/Cocoa.h>
+#import "Canvas.h"
+
+@interface ScrollingSketchView : NSView {
+	NSScroller *_verticalScroller;
+	NSScroller *_horizontalScroller;
+	NSView *_cornerView;
+	
+	Canvas *_canvas;
+	NSPoint _canvasOrigin;
+}
+
+- (void)setCanvas:(Canvas *)newCanvas;
+- (Canvas *)canvas;
+
+- (void)updateVerticalScroller;
+- (void)updateHorizontalScroller;
+- (void)redoScrollers;
+- (float)visibleWidth;
+- (float)visibleHeight;
+@end

@@ -1,0 +1,67 @@
+{
+    IBClasses = (
+        {CLASS = BrushView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {
+            CLASS = DripDocumentWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {"_sketchView" = ScrollingSketchView; "_toolWindow" = NSWindow; }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = MyDocument; LANGUAGE = ObjC; SUPERCLASS = NSDocument; }, 
+        {
+            CLASS = MyDocumentWindowController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = MyScrollView; LANGUAGE = ObjC; SUPERCLASS = NSScrollView; }, 
+        {CLASS = ScrollingSketchView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {
+            ACTIONS = {colorChanged = id; selectBrush = id; }; 
+            CLASS = SketchController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                "_brushController" = TIPBrushController; 
+                "_colorWell" = NSColorWell; 
+                "_scrollView" = NSScrollView; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            CLASS = SketchView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {delegate = id; }; 
+            SUPERCLASS = NSView; 
+        }, 
+        {
+            ACTIONS = {
+                changeBrushShape = id; 
+                changeFlow = id; 
+                changeMainSize = id; 
+                changeOpacity = id; 
+                changePressureOpacity = id; 
+                changePressureSize = id; 
+                changeTipSize = id; 
+            }; 
+            CLASS = TIPBrushController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                "_brushView" = BrushView; 
+                brushFlowSlider = NSSlider; 
+                brushFlowText = NSTextField; 
+                brushImage = NSImageView; 
+                brushMainSizeSlider = NSSlider; 
+                brushMainSizeText = NSTextField; 
+                brushOpacitySlider = NSSlider; 
+                brushOpacityText = NSTextField; 
+                brushPressureOpacityCheckbox = NSButton; 
+                brushPressureSizeCheckbox = NSButton; 
+                brushShape = NSPopUpButton; 
+                brushTipSizeSlider = NSSlider; 
+                brushTipSizeText = NSTextField; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}

@@ -1,0 +1,17 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {cancelNewFile = id; newFile = id; okNewFile = id; }; 
+            CLASS = DripDelegate; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                "_heightField" = NSTextField; 
+                "_newFileWindow" = NSWindow; 
+                "_widthField" = NSTextField; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+    ); 
+    IBVersion = 1; 
+}
