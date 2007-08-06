@@ -168,4 +168,16 @@ static void render_dab(float x, float y, TIPLayer *l, float size, float *dabLook
 	return NSMakeRect(loc.point.x-brushSizeHalf-2, loc.point.y-brushSizeHalf-2, brushSize+4, brushSize+4);
 }
 
+- (NSRect)renderPointAt:(NSPoint)aPoint withPressure:(float)aPressure onLayer:(PaintLayer *)aLayer
+{
+	TIPPressurePoint pressurePoint = TIPMakePressurePoint(aPoint.x,aPoint.y,aPressure);
+	TIPLayer layer;
+	layer.cxt = [aLayer cxt];
+	layer.data = [aLayer data];
+	layer.width = [aLayer width];
+	layer.height = [aLayer height];
+	layer.pitch = [aLayer pitch];
+	float rgba[4] = {1.0f, 0.0f, 0.0f, 1.0f};
+	return [self renderPointAt:pressurePoint OnLayer:&layer WithColor:rgba];
+}
 @end

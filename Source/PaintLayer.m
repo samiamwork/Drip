@@ -112,6 +112,14 @@
 {
 	return _data;
 }
+- (unsigned int)pitch
+{
+	return _pitch;
+}
+- (CGContextRef)cxt
+{
+	return _cxt;
+}
 
 - (void)drawRect:(NSRect)aRect inContext:(CGContextRef)aContext
 {

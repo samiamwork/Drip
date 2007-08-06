@@ -21,6 +21,8 @@
 - (unsigned int)width;
 - (unsigned int)height;
 - (unsigned char *)data;
+- (unsigned int)pitch;
+- (CGContextRef)cxt;
 
 - (void)drawRect:(NSRect)aRect inContext:(CGContextRef)aContext;
 @end

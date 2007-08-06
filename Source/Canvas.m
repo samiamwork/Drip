@@ -72,6 +72,11 @@
 	[self setCurrentLayer:newLayer];
 }
 
+- (NSArray *)layers
+{
+	return [NSArray arrayWithArray:_layers];
+}
+
 - (void)setCurrentLayer:(PaintLayer *)aLayer
 {
 	if( aLayer == _currentLayer )
@@ -91,6 +96,11 @@
 		_bottomLayer = [[PaintLayer alloc] initWithContentsOfLayers:_layers inRange:NSMakeRange(0,targetIndex-1)];
 	if( targetIndex < [_layers count]-1 )
 		_topLayer = [[PaintLayer alloc] initWithContentsOfLayers:_layers inRange:NSMakeRange(targetIndex+1,[_layers count]-1)];
+}
+
+- (PaintLayer *)currentLayer
+{
+	return _currentLayer;
 }
 
 - (void)drawRect:(NSRect)aRect

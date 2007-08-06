@@ -22,7 +22,9 @@
 
 - (id)initWithWidth:(unsigned int)width height:(unsigned int)height;
 - (void)addLayer;
+- (NSArray *)layers;
 - (void)setCurrentLayer:(PaintLayer *)aLayer;
+- (PaintLayer *)currentLayer;
 - (NSSize)size;
 
 - (void)drawRect:(NSRect)aRect;

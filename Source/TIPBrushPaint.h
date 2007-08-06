@@ -8,9 +8,11 @@
 
 #import <Cocoa/Cocoa.h>
 #import "TIPBrush.h"
+#import "PaintLayer.h"
 
 @interface TIPBrushPaint : TIPBrush {
 
 }
 
+- (NSRect)renderPointAt:(NSPoint)aPoint withPressure:(float)aPressure onLayer:(PaintLayer *)aLayer;
 @end

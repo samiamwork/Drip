@@ -37,6 +37,7 @@
 															   [NSScroller scrollerWidth],[NSScroller scrollerWidth])];
 		[_cornerView setAutoresizingMask:NSViewMinXMargin|NSViewMaxYMargin];
 		
+		_currentBrush = [[TIPBrushPaint alloc] init];
 		_canvas = nil;
 		_canvasOrigin = NSZeroPoint;
     }
@@ -50,6 +51,7 @@
 	[_cornerView release];
 	
 	[_canvas release];
+	[_currentBrush release];
 
 	[super dealloc];
 }
@@ -93,7 +95,10 @@
 	_lastMousePoint.x -= _canvasOrigin.x;
 	_lastMousePoint.y -= _canvasOrigin.y + (IS_HORIZONTAL_SCROLLER?[NSScroller scrollerWidth]:0.0f);
 	
-	printf("%.03f, %.03f\n", _lastMousePoint.x, _lastMousePoint.y);
+	NSRect drawnRect = [_currentBrush renderPointAt:_lastMousePoint withPressure:_lastMousePressure onLayer:[_canvas currentLayer]];
+	drawnRect.origin.x += _canvasOrigin.x;
+	drawnRect.origin.y += _canvasOrigin.y + (IS_HORIZONTAL_SCROLLER?[NSScroller scrollerWidth]:0.0f);
+	[self setNeedsDisplayInRect:drawnRect];
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent
@@ -103,7 +108,6 @@
 	newPoint.y -= _canvasOrigin.y + (IS_HORIZONTAL_SCROLLER?[NSScroller scrollerWidth]:0.0f);
 	float newPressure = [theEvent pressure];
 	
-	printf("%.03f, %.03f\n", newPoint.x, newPoint.y);
 	_lastMousePoint = newPoint;
 	_lastMousePressure = newPressure;
 }
