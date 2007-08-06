@@ -11,6 +11,8 @@
 
 @implementation ScrollingSketchView
 
+#define IS_HORIZONTAL_SCROLLER ( [_canvas size].width > [self bounds].size.width - (([_canvas size].height > [self bounds].size.height)?[NSScroller scrollerWidth]:0.0f) )
+
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
@@ -73,10 +75,37 @@
 	CGContextRef cxt = [[NSGraphicsContext currentContext] graphicsPort];
 	CGContextSaveGState(cxt);
 	CGContextTranslateCTM(cxt,_canvasOrigin.x,_canvasOrigin.y);
-	if( [_canvas size].width > [self bounds].size.width - (([_canvas size].height > [self bounds].size.height)?[NSScroller scrollerWidth]:0.0f) )
+	if( IS_HORIZONTAL_SCROLLER )
 		CGContextTranslateCTM(cxt,0.0f,[NSScroller scrollerWidth]);
 	[_canvas drawRect:canvasDrawRect];
 	CGContextRestoreGState(cxt);
+}
+
+- (BOOL)acceptsFirstMouse:(NSEvent *)theEvent
+{
+	return YES;
+}
+
+- (void)mouseDown:(NSEvent *)theEvent
+{
+	_lastMousePoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+	_lastMousePressure = [theEvent pressure];
+	_lastMousePoint.x -= _canvasOrigin.x;
+	_lastMousePoint.y -= _canvasOrigin.y + (IS_HORIZONTAL_SCROLLER?[NSScroller scrollerWidth]:0.0f);
+	
+	printf("%.03f, %.03f\n", _lastMousePoint.x, _lastMousePoint.y);
+}
+
+- (void)mouseDragged:(NSEvent *)theEvent
+{
+	NSPoint newPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+	newPoint.x -= _canvasOrigin.x;
+	newPoint.y -= _canvasOrigin.y + (IS_HORIZONTAL_SCROLLER?[NSScroller scrollerWidth]:0.0f);
+	float newPressure = [theEvent pressure];
+	
+	printf("%.03f, %.03f\n", newPoint.x, newPoint.y);
+	_lastMousePoint = newPoint;
+	_lastMousePressure = newPressure;
 }
 
 - (void)setCanvas:(Canvas *)newCanvas
