@@ -15,7 +15,6 @@
 		3E0A59BE0C601C990094610C /* TIPPressurePoint.c in Sources */ = {isa = PBXBuildFile; fileRef = 3E0A59B70C601C990094610C /* TIPPressurePoint.c */; };
 		3E0A59CE0C601CF20094610C /* CenteredClipView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E0A59C70C601CF20094610C /* CenteredClipView.m */; };
 		3E0A59D00C601CF20094610C /* MyScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E0A59CB0C601CF20094610C /* MyScrollView.m */; };
-		3E0A59D10C601CF20094610C /* ZoomController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E0A59CD0C601CF20094610C /* ZoomController.m */; };
 		3E1670660C61740F0014705B /* DripDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E1670650C61740F0014705B /* DripDelegate.m */; };
 		3E1671530C61AD830014705B /* SketchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E1671520C61AD830014705B /* SketchController.m */; };
 		3E5488AB0B4C9572005ED4DA /* DripDocumentWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E5488AA0B4C9572005ED4DA /* DripDocumentWindowController.m */; };
@@ -59,8 +58,6 @@
 		3E0A59C70C601CF20094610C /* CenteredClipView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CenteredClipView.m; sourceTree = "<group>"; };
 		3E0A59CA0C601CF20094610C /* MyScrollView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MyScrollView.h; sourceTree = "<group>"; };
 		3E0A59CB0C601CF20094610C /* MyScrollView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = MyScrollView.m; sourceTree = "<group>"; };
-		3E0A59CC0C601CF20094610C /* ZoomController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ZoomController.h; sourceTree = "<group>"; };
-		3E0A59CD0C601CF20094610C /* ZoomController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ZoomController.m; sourceTree = "<group>"; };
 		3E1670640C61740F0014705B /* DripDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripDelegate.h; sourceTree = "<group>"; };
 		3E1670650C61740F0014705B /* DripDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DripDelegate.m; sourceTree = "<group>"; };
 		3E1671510C61AD830014705B /* SketchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SketchController.h; sourceTree = "<group>"; };
@@ -200,8 +197,6 @@
 				3E0A59D30C601D2B0094610C /* Centered View */,
 				3E0A59D20C601D1A0094610C /* Brushes */,
 				3E0A59E80C601EA20094610C /* Document */,
-				3E0A59CC0C601CF20094610C /* ZoomController.h */,
-				3E0A59CD0C601CF20094610C /* ZoomController.m */,
 				3E0A59AC0C601C980094610C /* SketchView.h */,
 				3E0A59AD0C601C980094610C /* SketchView.m */,
 				3E0A59B60C601C990094610C /* TIPLayer.h */,
@@ -356,7 +351,6 @@
 				3E0A59BE0C601C990094610C /* TIPPressurePoint.c in Sources */,
 				3E0A59CE0C601CF20094610C /* CenteredClipView.m in Sources */,
 				3E0A59D00C601CF20094610C /* MyScrollView.m in Sources */,
-				3E0A59D10C601CF20094610C /* ZoomController.m in Sources */,
 				3E1670660C61740F0014705B /* DripDelegate.m in Sources */,
 				3E1671530C61AD830014705B /* SketchController.m in Sources */,
 				3EE0888D0C62C60000CAE28C /* LayerController.m in Sources */,
