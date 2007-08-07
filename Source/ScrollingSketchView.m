@@ -133,7 +133,7 @@
 	if( _canvas != nil ) {
 		NSSize frameSize = [self frame].size;
 		_canvasOrigin.x = floorf( (frameSize.width - [_canvas size].width)/2.0f);
-		_canvasOrigin.y = floorf( (frameSize.height - [_canvas size].height)/2.0f);
+		_canvasOrigin.y = floorf( (frameSize.height - [_canvas size].height)/2.0f) + (IS_HORIZONTAL_SCROLLER?[NSScroller scrollerWidth]:0.0f);
 	}
 	
 	[self redoScrollers];
