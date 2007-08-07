@@ -18,8 +18,9 @@
 	
 	Canvas *_canvas;
 	NSPoint _canvasOrigin;
-	NSPoint _lastMousePoint;
-	float _lastMousePressure;
+	PressurePoint _lastMousePoint;
+	
+	NSAffineTransform *_pointToCanvasTransform;
 }
 
 - (void)setCanvas:(Canvas *)newCanvas;

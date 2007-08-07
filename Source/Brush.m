@@ -27,7 +27,6 @@
 
 - (void)dealloc
 {
-	//nothing yet
 
 	[super dealloc];
 }
@@ -91,6 +90,7 @@
 	}
 	
 }
+
 
 static void render_dab(float x, float y, PaintLayer *theLayer, float size, float *dabLookup, unsigned char red, unsigned char green, unsigned char blue, float alpha)
 {
@@ -172,6 +172,7 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 		alpha *= aPoint.pressure;
 	*/
 	brushSizeHalf = brushSize/2.0f;
+	
 	
 	render_dab(aPoint.x, aPoint.y, aLayer, brushSize,
 			   _brushLookup, red, green, blue, alpha);
