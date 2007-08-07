@@ -25,6 +25,8 @@
 
 - (void)setCanvas:(Canvas *)newCanvas;
 - (Canvas *)canvas;
+- (void)setBrush:(Brush *)newBrush;
+- (Brush *)brush;
 
 - (void)updateVerticalScroller;
 - (void)updateHorizontalScroller;

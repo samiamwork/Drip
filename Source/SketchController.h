@@ -7,19 +7,15 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "TIPBrushPaint.h"
-#import "TIPBrushEraser.h"
-#import "TIPBrushController.h"
-#import "SketchView.h"
+#import "BrushController.h"
+#import "ScrollingSketchView.h"
 
 @interface SketchController : NSObject {
-	IBOutlet TIPBrushController *_brushController;
-	IBOutlet NSScrollView *_scrollView;
-	IBOutlet NSColorWell *_colorWell;
-	TIPBrush *_paintBrush;
-	TIPBrush *_eraser;
+	IBOutlet ScrollingSketchView *_sketchView;
+	IBOutlet BrushController *_brushController;
+	
+	Brush *_paintBrush;
 }
 
-- (IBAction)colorChanged:(id)sender;
 - (IBAction)selectBrush:(id)sender;
 @end

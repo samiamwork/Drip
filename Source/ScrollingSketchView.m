@@ -122,6 +122,19 @@
 	[self setNeedsDisplayInRect:drawnRect];
 }
 
+- (void)setBrush:(Brush *)newBrush
+{
+	if( newBrush == _currentBrush )
+		return;
+	
+	[_currentBrush release];
+	_currentBrush = [newBrush retain];
+}
+- (Brush *)brush
+{
+	return _currentBrush;
+}
+
 - (void)setCanvas:(Canvas *)newCanvas
 {
 	if( newCanvas == _canvas )

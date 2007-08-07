@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		3E0A59B90C601C990094610C /* SketchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E0A59AD0C601C980094610C /* SketchView.m */; };
 		3E0A59BA0C601C990094610C /* TIPBrush.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E0A59AF0C601C980094610C /* TIPBrush.m */; };
-		3E0A59BB0C601C990094610C /* TIPBrushController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E0A59B10C601C980094610C /* TIPBrushController.m */; };
 		3E0A59BC0C601C990094610C /* TIPBrushEraser.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E0A59B30C601C980094610C /* TIPBrushEraser.m */; };
 		3E0A59BD0C601C990094610C /* TIPBrushPaint.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E0A59B50C601C990094610C /* TIPBrushPaint.m */; };
 		3E0A59BE0C601C990094610C /* TIPPressurePoint.c in Sources */ = {isa = PBXBuildFile; fileRef = 3E0A59B70C601C990094610C /* TIPPressurePoint.c */; };
@@ -18,6 +17,7 @@
 		3E1670660C61740F0014705B /* DripDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E1670650C61740F0014705B /* DripDelegate.m */; };
 		3E1671530C61AD830014705B /* SketchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E1671520C61AD830014705B /* SketchController.m */; };
 		3E39D9380C67B1A300F0D3FD /* Brush.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E39D9370C67B1A300F0D3FD /* Brush.m */; };
+		3E39DA910C6822CA00F0D3FD /* BrushController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E39DA900C6822CA00F0D3FD /* BrushController.m */; };
 		3E5488AB0B4C9572005ED4DA /* DripDocumentWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E5488AA0B4C9572005ED4DA /* DripDocumentWindowController.m */; };
 		3E89C85F0B499F4200134E08 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E89C85C0B499F4200134E08 /* main.m */; };
 		3E89C8600B499F4200134E08 /* DripDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E89C85E0B499F4200134E08 /* DripDocument.m */; };
@@ -46,8 +46,6 @@
 		3E0A59AD0C601C980094610C /* SketchView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SketchView.m; sourceTree = "<group>"; };
 		3E0A59AE0C601C980094610C /* TIPBrush.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = TIPBrush.h; sourceTree = "<group>"; };
 		3E0A59AF0C601C980094610C /* TIPBrush.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = TIPBrush.m; sourceTree = "<group>"; };
-		3E0A59B00C601C980094610C /* TIPBrushController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = TIPBrushController.h; sourceTree = "<group>"; };
-		3E0A59B10C601C980094610C /* TIPBrushController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = TIPBrushController.m; sourceTree = "<group>"; };
 		3E0A59B20C601C980094610C /* TIPBrushEraser.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = TIPBrushEraser.h; sourceTree = "<group>"; };
 		3E0A59B30C601C980094610C /* TIPBrushEraser.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = TIPBrushEraser.m; sourceTree = "<group>"; };
 		3E0A59B40C601C990094610C /* TIPBrushPaint.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = TIPBrushPaint.h; sourceTree = "<group>"; };
@@ -65,6 +63,8 @@
 		3E1671520C61AD830014705B /* SketchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SketchController.m; sourceTree = "<group>"; };
 		3E39D9360C67B1A300F0D3FD /* Brush.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Brush.h; sourceTree = "<group>"; };
 		3E39D9370C67B1A300F0D3FD /* Brush.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Brush.m; sourceTree = "<group>"; };
+		3E39DA8F0C6822CA00F0D3FD /* BrushController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrushController.h; sourceTree = "<group>"; };
+		3E39DA900C6822CA00F0D3FD /* BrushController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BrushController.m; sourceTree = "<group>"; };
 		3E5488A90B4C9572005ED4DA /* DripDocumentWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripDocumentWindowController.h; sourceTree = "<group>"; };
 		3E5488AA0B4C9572005ED4DA /* DripDocumentWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DripDocumentWindowController.m; sourceTree = "<group>"; };
 		3E89C85B0B499F4200134E08 /* Drip_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Drip_Prefix.pch; sourceTree = "<group>"; };
@@ -188,10 +188,10 @@
 				3E89C85E0B499F4200134E08 /* DripDocument.m */,
 				3E5488A90B4C9572005ED4DA /* DripDocumentWindowController.h */,
 				3E5488AA0B4C9572005ED4DA /* DripDocumentWindowController.m */,
-				3E0A59B00C601C980094610C /* TIPBrushController.h */,
-				3E0A59B10C601C980094610C /* TIPBrushController.m */,
 				3E1671510C61AD830014705B /* SketchController.h */,
 				3E1671520C61AD830014705B /* SketchController.m */,
+				3E39DA8F0C6822CA00F0D3FD /* BrushController.h */,
+				3E39DA900C6822CA00F0D3FD /* BrushController.m */,
 			);
 			name = Document;
 			sourceTree = "<group>";
@@ -350,7 +350,6 @@
 				3E5488AB0B4C9572005ED4DA /* DripDocumentWindowController.m in Sources */,
 				3E0A59B90C601C990094610C /* SketchView.m in Sources */,
 				3E0A59BA0C601C990094610C /* TIPBrush.m in Sources */,
-				3E0A59BB0C601C990094610C /* TIPBrushController.m in Sources */,
 				3E0A59BC0C601C990094610C /* TIPBrushEraser.m in Sources */,
 				3E0A59BD0C601C990094610C /* TIPBrushPaint.m in Sources */,
 				3E0A59BE0C601C990094610C /* TIPPressurePoint.c in Sources */,
@@ -364,6 +363,7 @@
 				3EE089100C63044000CAE28C /* ScrollingSketchView.m in Sources */,
 				3EE089170C6304FB00CAE28C /* Canvas.m in Sources */,
 				3E39D9380C67B1A300F0D3FD /* Brush.m in Sources */,
+				3E39DA910C6822CA00F0D3FD /* BrushController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

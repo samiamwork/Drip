@@ -7,12 +7,12 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "TIPBrush.h"
+#import "Brush.h"
 
 @interface BrushView : NSView {
-	TIPBrush *_currentBrush;
+	Brush *_currentBrush;
 }
 
-- (TIPBrush *)currentBrush;
-- (void)setCurrentBrush:(TIPBrush *)newBrush;
+- (Brush *)brush;
+- (void)setBrush:(Brush *)newBrush;
 @end

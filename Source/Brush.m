@@ -19,6 +19,8 @@
 		_RGBAColor[2] = 0.0f;
 		_RGBAColor[3] = 1.0f;
 		
+		_brushSize = 50.0f;
+		
 		[self createBezierCurveWithCrossover:0.4f];
 	}
 
@@ -31,6 +33,17 @@
 	[super dealloc];
 }
 
+- (void)setSize:(float)newSize
+{
+	if( newSize == _brushSize )
+		return;
+	
+	_brushSize = newSize;
+}
+- (float)size
+{
+	return _brushSize;
+}
 - (void)setColor:(NSColor*)aColor
 {
 	NSColor *rgb = [aColor colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
@@ -158,7 +171,7 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 
 - (NSRect)renderPointAt:(PressurePoint)aPoint onLayer:(PaintLayer *)aLayer
 {
-	float brushSize = 50.0f;//(50.0f*aPoint.pressure);
+	float brushSize = _brushSize*aPoint.pressure;
 	int brushSizeHalf;
 	
 	unsigned char red = _RGBAColor[0]*255.0f;
@@ -187,7 +200,7 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 {
 	float x,y;
 	float brushSize;
-	float baseBrushSize = 50.0f;//mainSize;
+	float baseBrushSize = _brushSize;
 	float pressure;
 	float stepSize;
 	float length = sqrtf((endPoint->x-startPoint.x)*(endPoint->x-startPoint.x) + (endPoint->y-startPoint.y)*(endPoint->y-startPoint.y));

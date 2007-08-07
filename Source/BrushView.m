@@ -29,28 +29,20 @@
 	
 	[[NSColor blackColor] setStroke];
 	NSPoint center = NSMakePoint(bounds.origin.x+bounds.size.width/2.0f,bounds.origin.y+bounds.size.height/2.0f);
-	NSRect outerRect = NSMakeRect(center.x-([_currentBrush mainSize]/2.0f),
-								  center.y-([_currentBrush mainSize]/2.0f),
-								  [_currentBrush mainSize],
-								  [_currentBrush mainSize]);
+	NSRect outerRect = NSMakeRect(center.x-([_currentBrush size]/2.0f),
+								  center.y-([_currentBrush size]/2.0f),
+								  [_currentBrush size],
+								  [_currentBrush size]);
 	NSBezierPath *outerCircle = [NSBezierPath bezierPathWithOvalInRect:outerRect];
 	[outerCircle setLineWidth:1.0f];
 	[outerCircle stroke];
-	
-	NSRect innerRect = NSMakeRect(center.x-outerRect.size.width*[_currentBrush tipSize]/2.0f,
-								  center.y-outerRect.size.height*[_currentBrush tipSize]/2.0f,
-								  [_currentBrush tipSize]*outerRect.size.width,
-								  [_currentBrush tipSize]*outerRect.size.height);
-	NSBezierPath *innerCircle = [NSBezierPath bezierPathWithOvalInRect:innerRect];
-	[innerCircle setLineWidth:1.0f];
-	[innerCircle stroke];
 }
 
-- (TIPBrush *)currentBrush
+- (Brush *)brush
 {
 	return _currentBrush;
 }
-- (void)setCurrentBrush:(TIPBrush *)newBrush
+- (void)setBrush:(Brush *)newBrush
 {
 	if( newBrush == _currentBrush )
 		return;

@@ -1,5 +1,17 @@
 {
     IBClasses = (
+        {
+            ACTIONS = {changeSize = id; colorChanged = id; }; 
+            CLASS = BrushController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                "_brushSizeSlider" = NSSlider; 
+                "_brushSizeText" = NSTextField; 
+                "_brushView" = BrushView; 
+                "_colorWell" = NSColorWell; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }, 
         {CLASS = BrushView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {
             CLASS = DripDocumentWindowController; 
@@ -17,14 +29,10 @@
         {CLASS = MyScrollView; LANGUAGE = ObjC; SUPERCLASS = NSScrollView; }, 
         {CLASS = ScrollingSketchView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {
-            ACTIONS = {colorChanged = id; selectBrush = id; }; 
+            ACTIONS = {selectBrush = id; }; 
             CLASS = SketchController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {
-                "_brushController" = TIPBrushController; 
-                "_colorWell" = NSColorWell; 
-                "_scrollView" = NSScrollView; 
-            }; 
+            OUTLETS = {"_brushController" = BrushController; "_sketchView" = ScrollingSketchView; }; 
             SUPERCLASS = NSObject; 
         }, 
         {
