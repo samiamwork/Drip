@@ -38,7 +38,8 @@
 	if( (self = [super init]) ) {
 		_width = width;
 		_height = height;
-		_data = calloc(_width*_height, 4);
+		//HACK: +1 to fix problem with creating image from sub-region of bitmapcontext
+		_data = calloc(_width*(_height+1), 4);
 		if( _data == NULL ) {
 			[self release];
 			return nil;
@@ -127,8 +128,14 @@
 	CGImageRef cachedImage;
 	CGContextRef cachedCxt;
 	
+	aRect.origin.x = (int)aRect.origin.x;
+	aRect.origin.y = (int)aRect.origin.y;
+	aRect.size.width = (int)aRect.size.width;
+	aRect.size.height = (int)aRect.size.height;
+	
 	colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
 	cachedCxt = CGBitmapContextCreate(_data + (_height-(int)aRect.origin.y-1)*_pitch + (int)aRect.origin.x*4 - ((int)aRect.size.height-1)*_pitch,
+									  //_height*_pitch - (((int)aRect.origin.y+(int)aRect.size.height)*_pitch + (_pitch - (int)aRect.origin.x*4)),
 									  (int)aRect.size.width,
 									  (int)aRect.size.height,
 									  8,
@@ -141,11 +148,7 @@
 		printf("Could not create bitmap context!\n");
 		// PROBLEM!
 	}
-	aRect.origin.x = (int)aRect.origin.x;
-	aRect.origin.y = (int)aRect.origin.y;
-	aRect.size.width = (int)aRect.size.width;
-	aRect.size.height = (int)aRect.size.height;
-	
+		
 	if((int)aRect.size.width == 0 || (int)aRect.size.height == 0)
 		return;
 	

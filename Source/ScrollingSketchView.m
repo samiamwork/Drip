@@ -98,6 +98,7 @@
 	_lastMousePoint.x -= _canvasOrigin.x;
 	_lastMousePoint.y -= _canvasOrigin.y;// + (IS_HORIZONTAL_SCROLLER?[NSScroller scrollerWidth]:0.0f);
 	
+		printf("point down = (%.03f, %.03f)\n", _lastMousePoint.x, _lastMousePoint.y);
 	NSRect drawnRect = [_currentBrush renderPointAt:_lastMousePoint onLayer:[_canvas currentLayer]];
 	drawnRect.origin.x += _canvasOrigin.x;
 	drawnRect.origin.y += _canvasOrigin.y;// + (IS_HORIZONTAL_SCROLLER?[NSScroller scrollerWidth]:0.0f);
