@@ -37,7 +37,7 @@
 															   [NSScroller scrollerWidth],[NSScroller scrollerWidth])];
 		[_cornerView setAutoresizingMask:NSViewMinXMargin|NSViewMaxYMargin];
 		
-		_currentBrush = [[TIPBrushPaint alloc] init];
+		_currentBrush = [[Brush alloc] init];
 		_canvas = nil;
 		_canvasOrigin = NSZeroPoint;
     }
@@ -95,7 +95,7 @@
 	_lastMousePoint.x -= _canvasOrigin.x;
 	_lastMousePoint.y -= _canvasOrigin.y + (IS_HORIZONTAL_SCROLLER?[NSScroller scrollerWidth]:0.0f);
 	
-	NSRect drawnRect = [_currentBrush renderPointAt:_lastMousePoint withPressure:_lastMousePressure onLayer:[_canvas currentLayer]];
+	NSRect drawnRect = [_currentBrush renderPointAt:(PressurePoint){_lastMousePoint.x,_lastMousePoint.y,_lastMousePressure} onLayer:[_canvas currentLayer]];
 	drawnRect.origin.x += _canvasOrigin.x;
 	drawnRect.origin.y += _canvasOrigin.y + (IS_HORIZONTAL_SCROLLER?[NSScroller scrollerWidth]:0.0f);
 	[self setNeedsDisplayInRect:drawnRect];

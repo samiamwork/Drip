@@ -8,13 +8,13 @@
 
 #import <Cocoa/Cocoa.h>
 #import "Canvas.h"
-#import "TIPBrushPaint.h"
+#import "Brush.h"
 
 @interface ScrollingSketchView : NSView {
 	NSScroller *_verticalScroller;
 	NSScroller *_horizontalScroller;
 	NSView *_cornerView;
-	TIPBrushPaint *_currentBrush;
+	Brush *_currentBrush;
 	
 	Canvas *_canvas;
 	NSPoint _canvasOrigin;
