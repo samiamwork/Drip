@@ -111,10 +111,8 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	int sizei = (int)size+2;
 	int xi = (int)x - sizei/2;
 	int yi = (int)y - sizei/2;
-	int xoffset = 0;
-	int xend = sizei;
-	int yoffset = 0;
-	int yend = sizei;
+	int xend = xi+sizei;
+	int yend = yi+sizei;
 	unsigned char *p;
 	float distanceFromDabCenter;
 	float radius = (size*0.5f);
@@ -126,27 +124,21 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	unsigned char *layerData = [theLayer data];
 	unsigned int layerPitch = [theLayer pitch];
 	
-	if(xi<0) {
-		xoffset = -xi;
+	if(xi<0)
 		xi = 0;
-	}
-	if(xi + sizei > layerWidth) {
-		xend = layerWidth - xi;
-	}
+	if(xend > layerWidth)
+		xend = layerWidth;
 	
-	if(yi<0) {
-		yend += yi;
+	if(yi<0)
 		yi = 0;
-	}
-	if(yi + sizei > layerHeight) {
-		yoffset = yi - layerHeight;
-	}
+	if(yend > layerHeight)
+		yend = layerHeight;
 	
-	p = layerData + layerHeight*layerPitch - ((yi+(yend-yoffset))*layerPitch) - (layerPitch - xi*4);
+	p = layerData + (layerHeight-yi-1)*layerPitch + xi*4 - (yend-yi-1)*layerPitch;
 	
-	for(row=yoffset; row<yend; row++) {
-		for(col=xoffset; col<xend; col++) {
-			distanceFromDabCenter = sqrtf(((float)(xi+col) - x)*((float)(xi+col) - x)+((float)(-row+yi+sizei) - y)*((float)(-row+yi+sizei) - y));
+	for(row=yend-1; row>=yi; row--) {
+		for(col=xi; col<xend; col++) {
+			distanceFromDabCenter = sqrtf(((float)(col) - x)*((float)(col) - x)+((float)(row) - y)*((float)(row) - y));
 			
 			if(distanceFromDabCenter > radius) {
 				// we're outside the dab so do nothing
@@ -165,7 +157,7 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 				color = (float)((*p)*(255-srcAlphai) + blue*srcAlphai)/255.0f; *p = (unsigned char)color; p++;
 			}
 		}
-		p += layerPitch - (((xend-xoffset))*4);
+		p += layerPitch - (((xend-xi))*4);
 	}
 }
 
