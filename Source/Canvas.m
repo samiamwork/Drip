@@ -47,10 +47,6 @@
 		[_currentLayer release];
 		_topLayer = nil;
 		_bottomLayer = nil;
-		
-		// fill the initial layer with white so we have a background.
-		CGContextSetRGBFillColor([_currentLayer cxt],1.0f,1.0f,1.0f,1.0f);
-		CGContextFillRect([_currentLayer cxt],CGRectMake(0.0f,0.0f,(float)[_currentLayer width],(float)[_currentLayer height]));
 	}
 	
 	return self;
@@ -111,6 +107,8 @@
 {
 	CGContextRef cxt = [[NSGraphicsContext currentContext] graphicsPort];
 	
+	[[NSColor whiteColor] set];
+	NSRectFill(aRect);
 	if( _bottomLayer )
 		[_bottomLayer drawRect:aRect inContext:cxt];
 	[_currentLayer drawRect:aRect inContext:cxt];
