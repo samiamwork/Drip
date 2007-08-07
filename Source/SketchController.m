@@ -15,6 +15,7 @@
 {
 	if( (self = [super init]) ) {
 		_paintBrush = [[Brush alloc] init];
+		_eraserBrush = [[BrushEraser alloc] init];
 	}
 
 	return self;
@@ -23,6 +24,7 @@
 - (void)dealloc
 {
 	[_paintBrush release];
+	[_eraserBrush release];
 
 	[super dealloc];
 }
@@ -43,7 +45,7 @@
 			_selectedBrush = _paintBrush;
 			break;
 		case 2:
-			//_selectedBrush = _eraser;
+			_selectedBrush = _eraserBrush;
 			break;
 		default:
 			_selectedBrush = _paintBrush;

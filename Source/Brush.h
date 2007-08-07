@@ -17,7 +17,7 @@ typedef struct PressurePoint {
 
 @interface Brush : NSObject {
 	float _RGBAColor[4];
-	float _brushLookup[1000+1];
+	float *_brushLookup;
 	
 	float _brushSize;
 }

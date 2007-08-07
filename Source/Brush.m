@@ -21,6 +21,7 @@
 		
 		_brushSize = 50.0f;
 		
+		_brushLookup = (float *)malloc(1001*sizeof(float));
 		[self createBezierCurveWithCrossover:0.4f];
 	}
 
@@ -29,7 +30,7 @@
 
 - (void)dealloc
 {
-
+	free(_brushLookup);
 	[super dealloc];
 }
 
@@ -103,7 +104,6 @@
 	}
 	
 }
-
 
 static void render_dab(float x, float y, PaintLayer *theLayer, float size, float *dabLookup, unsigned char red, unsigned char green, unsigned char blue, float alpha)
 {

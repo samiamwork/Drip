@@ -9,12 +9,14 @@
 #import <Cocoa/Cocoa.h>
 #import "BrushController.h"
 #import "ScrollingSketchView.h"
+#import "BrushEraser.h"
 
 @interface SketchController : NSObject {
 	IBOutlet ScrollingSketchView *_sketchView;
 	IBOutlet BrushController *_brushController;
 	
 	Brush *_paintBrush;
+	BrushEraser *_eraserBrush;
 }
 
 - (IBAction)selectBrush:(id)sender;
