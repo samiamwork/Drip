@@ -71,7 +71,7 @@
 	NSRect canvasRect = NSMakeRect(0.0f,0.0f,[_canvas size].width,[_canvas size].height);
 	NSRect drawRect = rect;
 	drawRect.origin.x -= _canvasOrigin.x;
-	drawRect.origin.y -= _canvasOrigin.y;// + (IS_HORIZONTAL_SCROLLER?[NSScroller scrollerWidth]:0.0f);
+	drawRect.origin.y -= _canvasOrigin.y;
 	
 	NSRect canvasDrawRect = NSIntersectionRect(canvasRect,drawRect);
 	if( NSIsEmptyRect(canvasDrawRect) )
@@ -80,8 +80,6 @@
 	CGContextRef cxt = [[NSGraphicsContext currentContext] graphicsPort];
 	CGContextSaveGState(cxt);
 	CGContextTranslateCTM(cxt,_canvasOrigin.x,_canvasOrigin.y);
-	//if( IS_HORIZONTAL_SCROLLER )
-	//	CGContextTranslateCTM(cxt,0.0f,[NSScroller scrollerWidth]);
 	[_canvas drawRect:canvasDrawRect];
 	CGContextRestoreGState(cxt);
 }
@@ -96,12 +94,11 @@
 	NSPoint clickPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 	_lastMousePoint = (PressurePoint){clickPoint.x, clickPoint.y, [theEvent pressure]};
 	_lastMousePoint.x -= _canvasOrigin.x;
-	_lastMousePoint.y -= _canvasOrigin.y;// + (IS_HORIZONTAL_SCROLLER?[NSScroller scrollerWidth]:0.0f);
+	_lastMousePoint.y -= _canvasOrigin.y;
 	
-		printf("point down = (%.03f, %.03f)\n", _lastMousePoint.x, _lastMousePoint.y);
 	NSRect drawnRect = [_currentBrush renderPointAt:_lastMousePoint onLayer:[_canvas currentLayer]];
 	drawnRect.origin.x += _canvasOrigin.x;
-	drawnRect.origin.y += _canvasOrigin.y;// + (IS_HORIZONTAL_SCROLLER?[NSScroller scrollerWidth]:0.0f);
+	drawnRect.origin.y += _canvasOrigin.y;
 	[self setNeedsDisplayInRect:drawnRect];
 }
 
@@ -109,7 +106,7 @@
 {
 	NSPoint newPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 	newPoint.x -= _canvasOrigin.x;
-	newPoint.y -= _canvasOrigin.y;// + (IS_HORIZONTAL_SCROLLER?[NSScroller scrollerWidth]:0.0f);
+	newPoint.y -= _canvasOrigin.y;
 	float newPressure = [theEvent pressure];
 	
 	PressurePoint newPressurePoint = (PressurePoint){ newPoint.x, newPoint.y, newPressure };
@@ -119,7 +116,7 @@
 	_lastMousePoint = newPressurePoint;
 	
 	drawnRect.origin.x += _canvasOrigin.x;
-	drawnRect.origin.y += _canvasOrigin.y;// + (IS_HORIZONTAL_SCROLLER?[NSScroller scrollerWidth]:0.0f);
+	drawnRect.origin.y += _canvasOrigin.y;
 	[self setNeedsDisplayInRect:drawnRect];
 }
 
@@ -231,9 +228,6 @@
 	// back out
 	[self updateVerticalScroller];
 	_canvasOrigin.y = -roundf((1.0f-[_verticalScroller floatValue])*([_canvas size].height-[self visibleHeight]));
-	//adjust origin if we have a horizontal scroller
-	//if( [_canvas size].width > [self bounds].size.width )
-	//	_canvasOrigin.y += [NSScroller scrollerWidth];
 	
 	[self setNeedsDisplay:YES];
 }
