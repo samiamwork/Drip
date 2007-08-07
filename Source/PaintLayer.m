@@ -54,14 +54,6 @@
 			return nil;
 		}
 		CGColorSpaceRelease(colorSpace);
-		
-		//TEMP: fill with white so we can see it
-		CGContextSetRGBFillColor(_cxt,0.0f,1.0f,1.0f,1.0f);
-		CGContextFillRect(_cxt,CGRectMake(0.0f,0.0f,(float)_width/2.0f,(float)_height));
-		CGContextSetRGBFillColor(_cxt,1.0f,0.0f,1.0f,1.0f);
-		CGContextFillRect(_cxt,CGRectMake((float)_width/2.0f,0.0f,(float)_width/2.0f,(float)_height));
-		CGContextSetRGBStrokeColor(_cxt,0.0f,0.0f,0.0f,1.0f);
-		CGContextStrokeRectWithWidth(_cxt,CGRectMake(0.0f,0.0f,(float)_width,(float)_height),2.0f);
 	}
 	
 	return self;
