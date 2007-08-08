@@ -19,10 +19,14 @@
 		_RGBAColor[2] = 0.0f;
 		_RGBAColor[3] = 1.0f;
 		
-		_brushSize = 50.0f;
+		_brushSize = 0.0f;
 		
 		_brushLookup = (float *)malloc(1001*sizeof(float));
 		[self createBezierCurveWithCrossover:0.4f];
+		
+		_dab = NULL;
+		_dabData = NULL;
+		[self setSize:50.0f];
 	}
 
 	return self;
@@ -31,7 +35,48 @@
 - (void)dealloc
 {
 	free(_brushLookup);
+	if( _dab != NULL )
+		CGImageRelease(_dab);
+	
 	[super dealloc];
+}
+
+float valueAtCurve(float t, float crossover) {
+	float cx,bx,ax;
+	float cy,by,ay;
+	float x0,x1,x2,x3;
+	float y0,y1,y2,y3;
+	float xt,yt;
+	
+	x0 = 0.0f;
+	x1 = crossover;
+	x2 = crossover;
+	x3 = 1.0f;
+	
+	y0 = 1.0f;
+	y1 = 1.0f;
+	y2 = 0.0f;
+	//y2 = crossover;
+	y3 = 0.0f;
+	
+	cx = 3.0f*(x1 - x0);
+	bx = 3.0f*(x2 - x1) - cx;
+	ax = x3 - x0 - cx - bx;
+	
+	cy = 3*(y1 - y0);
+	by = 3*(y2 - y1) - cy;
+	ay = y3 - y0 - cy - by;
+	
+	xt = (ax*t*t*t) + (bx*t*t) + cx*t + x0;
+	yt = (ay*t*t*t) + (by*t*t) + cy*t + y0;
+		
+	xt = fabsf(xt);
+	if(yt > 1.0f)
+		yt = 1.0f;
+	else if(yt < 0.0f)
+		yt = 0.0f;
+	
+	return yt;
 }
 
 - (void)setSize:(float)newSize
@@ -40,6 +85,41 @@
 		return;
 	
 	_brushSize = newSize;
+	
+	if( _dab != NULL )
+		CGImageRelease(_dab);
+	
+	unsigned int intSize = (int)ceilf(_brushSize);
+	if( _dabData != NULL )
+		free(_dabData);
+	_dabData = (unsigned char *)calloc(intSize*intSize,4);
+
+	unsigned char *p = _dabData;
+	float center = _brushSize/2.0f;
+	float distanceFromCenter;
+	unsigned int row;
+	unsigned int col;
+	for( row=0; row < intSize; row++ ) {
+		for( col=0; col < intSize; col++ ) {
+			distanceFromCenter = sqrtf(((float)(col) - center)*((float)(col) - center)+((float)(row) - center)*((float)(row) - center))/center;
+			
+			if( distanceFromCenter > 1.0f || distanceFromCenter < 0.0f ) {
+				p[0] = p[1] = p[2] = p[3] = 0;
+				p += 4;
+			} else {
+				p[0] = p[1] = p[2] = p[3] = (unsigned char)(255.0f*valueAtCurve(distanceFromCenter,0.4f));//(unsigned char)(255.0f*_brushLookup[(int)((distanceFromCenter)*1000.0f)]);
+				p += 4;
+			}
+			//p++;
+		}
+	}
+	
+	CGDataProviderRef dataProviderRef = CGDataProviderCreateWithData(NULL, _dabData,intSize*intSize*4, NULL);
+	float decode[2] = {1.0,0.0f};
+	_dab = CGImageMaskCreate(intSize,intSize,8,32,intSize*4,dataProviderRef,decode,YES);
+	if( _dab == NULL )
+		printf("no mask created\n");
+	CGDataProviderRelease(dataProviderRef);
 }
 - (float)size
 {
@@ -165,11 +245,12 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 {
 	float brushSize = _brushSize*aPoint.pressure;
 	int brushSizeHalf;
-	
+	/*
 	unsigned char red = _RGBAColor[0]*255.0f;
 	unsigned char green = _RGBAColor[1]*255.0f;
 	unsigned char blue = _RGBAColor[2]*255.0f;
 	float alpha = _RGBAColor[3];
+	 */
 	/*
 	if(!pressureAffectsSize)
 		brushSize = mainSize;
@@ -179,8 +260,11 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	brushSizeHalf = brushSize/2.0f;
 	
 	
-	render_dab(aPoint.x, aPoint.y, aLayer, brushSize,
-			   _brushLookup, red, green, blue, alpha);
+	//render_dab(aPoint.x, aPoint.y, aLayer, brushSize,
+	//		   _brushLookup, red, green, blue, alpha);
+	//CGContextSetFillColor([aLayer cxt],_RGBAColor);
+	CGContextSetRGBFillColor([aLayer cxt],_RGBAColor[0],_RGBAColor[1],_RGBAColor[2],_RGBAColor[3]);
+	CGContextDrawImage([aLayer cxt],CGRectMake(aPoint.x-brushSize/2.0f,aPoint.y-brushSize/2.0f,brushSize,brushSize),_dab);
 	
 	//I don't really  think this fix is very good but...
 	//it does work and doesn't cost much.

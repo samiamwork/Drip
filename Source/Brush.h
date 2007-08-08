@@ -20,6 +20,8 @@ typedef struct PressurePoint {
 	float *_brushLookup;
 	
 	float _brushSize;
+	unsigned char *_dabData;
+	CGImageRef _dab;
 }
 
 - (void)setSize:(float)newSize;
