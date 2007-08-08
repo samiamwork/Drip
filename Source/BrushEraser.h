@@ -10,7 +10,9 @@
 #import "Brush.h"
 
 @interface BrushEraser : Brush {
-	
+	unsigned char *_eraserScratchData;
+	unsigned int _scratchSize;
+	CGContextRef _eraserScratchCxt;
 }
 
 @end

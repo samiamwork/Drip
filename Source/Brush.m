@@ -269,7 +269,7 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	return NSMakeRect(aPoint.x-brushSizeHalf-2, aPoint.y-brushSizeHalf-2, brushSize+4, brushSize+4);
 }
 
-#define STATICFLOW	0.25f
+#define STATICFLOW	0.22f
 - (NSRect)renderLineFromPoint:(PressurePoint)startPoint toPoint:(PressurePoint *)endPoint onLayer:(PaintLayer *)aLayer
 {
 	float x,y;

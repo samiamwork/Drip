@@ -80,15 +80,24 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	
 }
 
+- (void)setSize:(float)newSize
+{
+	[super setSize:newSize];
+	if( _eraserScratchData != NULL )
+		free(_eraserScratchData);
+	unsigned int intSize = (unsigned int)ceilf( newSize );
+	_scratchSize = intSize*intSize;
+	_eraserScratchData = (unsigned char*)malloc( _scratchSize );
+	
+	if( _eraserScratchCxt != NULL )
+		CGContextRelease(_eraserScratchCxt);
+	_eraserScratchCxt = CGBitmapContextCreate(_eraserScratchData,intSize,intSize,8,intSize,NULL,kCGImageAlphaOnly);
+}
+
 - (NSRect)renderPointAt:(PressurePoint)aPoint onLayer:(PaintLayer *)aLayer
 {
 	float brushSize = _brushSize*aPoint.pressure;
-	int brushSizeHalf;
-	
-	unsigned char red = _RGBAColor[0]*255.0f;
-	unsigned char green = _RGBAColor[1]*255.0f;
-	unsigned char blue = _RGBAColor[2]*255.0f;
-	float alpha = _RGBAColor[3];
+	float brushSizeHalf;
 	/*
 	 if(!pressureAffectsSize)
 	 brushSize = mainSize;
@@ -97,9 +106,90 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	 */
 	brushSizeHalf = brushSize/2.0f;
 	
-	
+	/*
 	render_dab(aPoint.x, aPoint.y, aLayer, brushSize,
 			   _brushLookup, red, green, blue, alpha);
+	 */
+	
+	int xi = (int)ceilf(aPoint.x - brushSizeHalf);
+	int yi = (int)ceilf(aPoint.y - brushSizeHalf);
+	int xend = xi+(int)ceilf(brushSize);
+	int yend = yi+(int)ceilf(brushSize);
+	float srcAlpha;
+	
+	float oA, nA;
+	float oneover_oA;
+	float alphaRatio;
+	
+	unsigned int layerWidth = [aLayer width];
+	unsigned int layerHeight = [aLayer height];
+	unsigned int layerPitch = [aLayer pitch];
+	
+	unsigned int eraserPitch = CGBitmapContextGetBytesPerRow(_eraserScratchCxt);
+	unsigned char *e = _eraserScratchData + (CGBitmapContextGetHeight(_eraserScratchCxt)-1)*eraserPitch;
+	
+	NSPoint offset = NSMakePoint(aPoint.x-xi-brushSizeHalf,aPoint.y-yi-brushSizeHalf);
+	
+	if(xi<0) {
+		if( xend <= 0 )
+			return NSZeroRect;
+		e += -xi;
+		xi = 0;
+	} if(xend > layerWidth) {
+		if( xi >= layerWidth )
+			return NSZeroRect;
+		xend = layerWidth;
+	}
+	
+	if(yi<0) {
+		if( yend <= 0 )
+			return NSZeroRect;
+		yi = 0;
+	} if(yend > layerHeight) {
+		if( yi >= layerHeight )
+			return NSZeroRect;
+		e -= (yend - layerHeight)*eraserPitch;
+		yend = layerHeight;
+	}
+	
+	
+	bzero(_eraserScratchData,_scratchSize);
+	CGContextSetRGBFillColor(_eraserScratchCxt,0.0f,0.0f,0.0f,1.0f);
+	CGContextDrawImage(_eraserScratchCxt,CGRectMake(offset.x,offset.y,brushSize,brushSize),_dab);
+	
+	unsigned char *p = [aLayer data] + (layerHeight-yi-1)*layerPitch + xi*4;// - (yend-yi-1)*layerPitch;
+	
+	int row,col;
+	//the row loop variables are only used for counting
+	//actual data movement it in reverse to match the dab
+	for( row=yi; row<yend; row++) {
+		for(col=xi; col<xend; col++) {
+			srcAlpha = ((float)e[col-xi])/255.0f;
+			oA = (float)(*p) * (1.0f/255.0f);
+			
+			if(oA < srcAlpha) {
+				*p = 0; p++;
+				*p = 0; p++;
+				*p = 0; p++;
+				*p = 0; p++;
+			} else {
+				
+				nA = oA - srcAlpha;
+				*p = (unsigned char)(nA*255.0f);
+				
+				oneover_oA = 1.0f/(oA+(1.0f/255.0f));
+				alphaRatio = oneover_oA * nA;
+				
+				p++;
+				*p = (unsigned char)((float)(*p) * alphaRatio); p++;
+				*p = (unsigned char)((float)(*p) * alphaRatio); p++;
+				*p = (unsigned char)((float)(*p) * alphaRatio); p++;
+			}
+			
+		}
+		p -= layerPitch + (((xend-xi))*4);
+		e -= eraserPitch;
+	}	
 	
 	//I don't really  think this fix is very good but...
 	//it does work and doesn't cost much.
