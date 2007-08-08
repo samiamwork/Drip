@@ -19,6 +19,7 @@
 		3E39D9380C67B1A300F0D3FD /* Brush.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E39D9370C67B1A300F0D3FD /* Brush.m */; };
 		3E39DA910C6822CA00F0D3FD /* BrushController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E39DA900C6822CA00F0D3FD /* BrushController.m */; };
 		3E39DD1A0C69080500F0D3FD /* BrushEraser.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E39DD190C69080500F0D3FD /* BrushEraser.m */; };
+		3E39DF0D0C696EF600F0D3FD /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E39DF0C0C696EF600F0D3FD /* Carbon.framework */; };
 		3E5488AB0B4C9572005ED4DA /* DripDocumentWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E5488AA0B4C9572005ED4DA /* DripDocumentWindowController.m */; };
 		3E89C85F0B499F4200134E08 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E89C85C0B499F4200134E08 /* main.m */; };
 		3E89C8600B499F4200134E08 /* DripDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E89C85E0B499F4200134E08 /* DripDocument.m */; };
@@ -68,6 +69,7 @@
 		3E39DA900C6822CA00F0D3FD /* BrushController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BrushController.m; sourceTree = "<group>"; };
 		3E39DD180C69080500F0D3FD /* BrushEraser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrushEraser.h; sourceTree = "<group>"; };
 		3E39DD190C69080500F0D3FD /* BrushEraser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BrushEraser.m; sourceTree = "<group>"; };
+		3E39DF0C0C696EF600F0D3FD /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		3E5488A90B4C9572005ED4DA /* DripDocumentWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripDocumentWindowController.h; sourceTree = "<group>"; };
 		3E5488AA0B4C9572005ED4DA /* DripDocumentWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DripDocumentWindowController.m; sourceTree = "<group>"; };
 		3E89C85B0B499F4200134E08 /* Drip_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Drip_Prefix.pch; sourceTree = "<group>"; };
@@ -94,6 +96,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D15AC340486D014006FF6A4 /* Cocoa.framework in Frameworks */,
+				3E39DF0D0C696EF600F0D3FD /* Carbon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -103,6 +106,7 @@
 		1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3E39DF0C0C696EF600F0D3FD /* Carbon.framework */,
 				1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */,
 			);
 			name = "Linked Frameworks";

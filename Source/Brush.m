@@ -92,31 +92,29 @@ float valueAtCurve(float t, float crossover) {
 	unsigned int intSize = (int)ceilf(_brushSize);
 	if( _dabData != NULL )
 		free(_dabData);
-	_dabData = (unsigned char *)calloc(intSize*intSize,4);
+	_dabData = (unsigned char *)calloc(intSize*intSize,1);
 
 	unsigned char *p = _dabData;
 	float center = _brushSize/2.0f;
 	float distanceFromCenter;
-	unsigned int row;
-	unsigned int col;
-	for( row=0; row < intSize; row++ ) {
+	int row;
+	int col;
+	for( row=intSize-1; row >= 0; row-- ) {
 		for( col=0; col < intSize; col++ ) {
 			distanceFromCenter = sqrtf(((float)(col) - center)*((float)(col) - center)+((float)(row) - center)*((float)(row) - center))/center;
 			
 			if( distanceFromCenter > 1.0f || distanceFromCenter < 0.0f ) {
-				p[0] = p[1] = p[2] = p[3] = 0;
-				p += 4;
+				*p = 0;
 			} else {
-				p[0] = p[1] = p[2] = p[3] = (unsigned char)(255.0f*valueAtCurve(distanceFromCenter,0.4f));//(unsigned char)(255.0f*_brushLookup[(int)((distanceFromCenter)*1000.0f)]);
-				p += 4;
+				*p = (unsigned char)(255.0f*valueAtCurve(distanceFromCenter,0.4f));
 			}
-			//p++;
+			p++;
 		}
 	}
 	
 	CGDataProviderRef dataProviderRef = CGDataProviderCreateWithData(NULL, _dabData,intSize*intSize*4, NULL);
 	float decode[2] = {1.0,0.0f};
-	_dab = CGImageMaskCreate(intSize,intSize,8,32,intSize*4,dataProviderRef,decode,YES);
+	_dab = CGImageMaskCreate(intSize,intSize,8,8,intSize,dataProviderRef,decode,YES);
 	if( _dab == NULL )
 		printf("no mask created\n");
 	CGDataProviderRelease(dataProviderRef);
@@ -271,7 +269,7 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	return NSMakeRect(aPoint.x-brushSizeHalf-2, aPoint.y-brushSizeHalf-2, brushSize+4, brushSize+4);
 }
 
-#define STATICFLOW	0.15f
+#define STATICFLOW	0.25f
 - (NSRect)renderLineFromPoint:(PressurePoint)startPoint toPoint:(PressurePoint *)endPoint onLayer:(PaintLayer *)aLayer
 {
 	float x,y;
