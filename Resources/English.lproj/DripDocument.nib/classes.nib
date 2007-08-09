@@ -14,9 +14,14 @@
         }, 
         {CLASS = BrushView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {
+            ACTIONS = {addLayer = id; deleteLayer = id; }; 
             CLASS = DripDocumentWindowController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {"_sketchView" = ScrollingSketchView; "_toolWindow" = NSWindow; }; 
+            OUTLETS = {
+                "_layerTable" = NSTableView; 
+                "_sketchView" = ScrollingSketchView; 
+                "_toolWindow" = NSWindow; 
+            }; 
             SUPERCLASS = NSWindowController; 
         }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 

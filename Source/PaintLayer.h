@@ -14,6 +14,8 @@
 	unsigned int _pitch;
 	unsigned char *_data;
 	CGContextRef _cxt;
+	
+	NSString *_name;
 }
 
 - (id)initWithWidth:(unsigned int)width height:(unsigned int)height;
@@ -23,6 +25,9 @@
 - (unsigned char *)data;
 - (unsigned int)pitch;
 - (CGContextRef)cxt;
+
+- (NSString *)name;
+- (void)setName:(NSString *)newName;
 
 - (void)drawRect:(NSRect)aRect inContext:(CGContextRef)aContext;
 @end

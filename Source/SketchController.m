@@ -54,4 +54,5 @@
 	[_brushController setBrush:_selectedBrush];
 	[_sketchView setBrush:_selectedBrush];
 }
+
 @end

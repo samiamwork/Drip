@@ -43,6 +43,7 @@
 		_height = height;
 		
 		_currentLayer = [[PaintLayer alloc] initWithWidth:_width height:_height];
+		[_currentLayer setName:@"Layer 0"];
 		_layers = [[NSMutableArray alloc] initWithObjects:_currentLayer,nil];
 		[_currentLayer release];
 		_topLayer = nil;
@@ -67,9 +68,43 @@
 	}
 
 	PaintLayer *newLayer = [[PaintLayer alloc] initWithWidth:_width height:_height];
+	
+	//rename
+	NSMutableArray *names = [NSMutableArray array];
+	NSEnumerator *layerEnumerator = [_layers objectEnumerator];
+	PaintLayer *aLayer;
+	while( (aLayer = [layerEnumerator nextObject]) )
+		[names addObject:[aLayer name]];
+	unsigned int layerNumber = 0;
+	while( [names containsObject:[NSString stringWithFormat:@"Layer %d",layerNumber]] )
+		layerNumber++;
+	[newLayer setName:[NSString stringWithFormat:@"Layer %d",layerNumber]];
+	
+	
 	[_layers insertObject:newLayer atIndex:currentIndex+1];
 	[newLayer release];
 	[self setCurrentLayer:newLayer];
+}
+
+- (void)deleteLayer:(PaintLayer *)layerToDelete
+{
+	// can't delete if there's only one layer
+	if( [_layers count] == 1 )
+		return;
+	
+	unsigned int deleteIndex = [_layers indexOfObject:layerToDelete];
+	//assume that it exists
+	if( deleteIndex == NSNotFound ) {
+		printf("layerToDelete not found! Serious!\n");
+		return;
+	}
+	
+	[_layers removeObjectAtIndex:deleteIndex];
+	
+	if( deleteIndex != 0 )
+		deleteIndex--;
+	
+	[self setCurrentLayer:[_layers objectAtIndex:deleteIndex]];
 }
 
 - (NSArray *)layers
@@ -95,7 +130,7 @@
 	if( targetIndex > 0 )
 		_bottomLayer = [[PaintLayer alloc] initWithContentsOfLayers:_layers inRange:NSMakeRange(0,targetIndex-1)];
 	if( targetIndex < [_layers count]-1 )
-		_topLayer = [[PaintLayer alloc] initWithContentsOfLayers:_layers inRange:NSMakeRange(targetIndex+1,[_layers count]-1)];
+		_topLayer = [[PaintLayer alloc] initWithContentsOfLayers:_layers inRange:NSMakeRange(targetIndex+1,[_layers count]-2)];
 }
 
 - (PaintLayer *)currentLayer

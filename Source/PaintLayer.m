@@ -19,6 +19,8 @@
 		_pitch = 0;
 		_data = NULL;
 		_cxt = NULL;
+		
+		_name = [[NSString alloc] initWithString:@"Unnamed"];
 	}
 
 	return self;
@@ -29,6 +31,7 @@
 	CGContextRelease(_cxt);
 	if( _data != NULL )
 		free( _data );
+	[_name release];
 
 	[super dealloc];
 }
@@ -54,6 +57,8 @@
 			return nil;
 		}
 		CGColorSpaceRelease(colorSpace);
+		
+		_name = [[NSString alloc] initWithString:@"Unnamed"];
 	}
 	
 	return self;
@@ -65,9 +70,11 @@
 		// we're just grabbing the first one we're passed and copying that
 		//because we assume they're all the same size and we also want this
 		//one to match.
-		_width = [[layers objectAtIndex:range.location] width];
-		_height = [[layers objectAtIndex:range.location] height];
-		_data = calloc(_width*_height, 4);
+		PaintLayer *sampleLayer = [layers objectAtIndex:range.location];
+		_width = [sampleLayer width];
+		_height = [sampleLayer height];
+		
+		_data = calloc(_width*(_height+1), 4);
 		if( _data == NULL ) {
 			[self release];
 			return nil;
@@ -88,9 +95,23 @@
 		for( layerIndex = range.location; layerIndex <= range.location+range.length; layerIndex++ )
 			[[layers objectAtIndex:layerIndex] drawRect:layerRect inContext:_cxt];
 
+		_name = [[NSString alloc] initWithString:@"Composite"];
 	}
 	
 	return self;
+}
+
+- (NSString *)name
+{
+	return _name;
+}
+- (void)setName:(NSString *)newName
+{
+	if( newName == _name )
+		return;
+	
+	[_name release];
+	_name = [newName retain];
 }
 
 - (unsigned int)width
