@@ -41,7 +41,9 @@
 		_canvas = nil;
 		_canvasOrigin = NSZeroPoint;
 		
-		_pointToCanvasTransform = [[NSAffineTransform alloc] init];
+		_currentBrush = nil;
+		_brushCursor = nil;
+		[self setBrush:[[Brush alloc] init]];
     }
     return self;
 }
@@ -55,8 +57,6 @@
 	[_canvas release];
 	[_currentBrush release];
 	
-	[_pointToCanvasTransform release];
-
 	[super dealloc];
 }
 
@@ -127,6 +127,19 @@
 	
 	[_currentBrush release];
 	_currentBrush = [newBrush retain];
+	
+	float brushSize = [_currentBrush size];
+	NSImage *brushImage = [[NSImage alloc] initWithSize:NSMakeSize(brushSize,brushSize)];
+	[brushImage lockFocus];
+	[[NSColor blackColor] setStroke];
+	NSPoint center = NSMakePoint(brushSize/2.0f,brushSize/2.0f);
+	NSRect outerRect = NSMakeRect(0.0f, 0.0f, brushSize, brushSize);
+	NSBezierPath *outerCircle = [NSBezierPath bezierPathWithOvalInRect:outerRect];
+	[outerCircle setLineWidth:1.0f];
+	[outerCircle stroke];
+	[brushImage unlockFocus];
+	[_brushCursor release];
+	_brushCursor = [[NSCursor alloc] initWithImage:brushImage hotSpot:NSMakePoint(brushSize/2.0f,brushSize/2.0f)];
 }
 - (Brush *)brush
 {
@@ -152,6 +165,20 @@
 - (Canvas *)canvas
 {
 	return _canvas;
+}
+
+- (void)resetCursorRects
+{
+	[self discardCursorRects];
+	
+	NSRect visibleRect = [self bounds];
+	if( [_verticalScroller superview] == self )
+		visibleRect.size.width -= [NSScroller scrollerWidth];
+	if( [_horizontalScroller superview] == self ) {
+		visibleRect.size.height -= [NSScroller scrollerWidth];
+		visibleRect.origin.y += [NSScroller scrollerWidth];
+	}
+	[self addCursorRect:visibleRect cursor:_brushCursor];
 }
 
 #define IDENTITY_TRANSFORM ((NSAffineTransformStruct){1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f})

@@ -20,7 +20,7 @@
 	NSPoint _canvasOrigin;
 	PressurePoint _lastMousePoint;
 	
-	NSAffineTransform *_pointToCanvasTransform;
+	NSCursor *_brushCursor;
 }
 
 - (void)setCanvas:(Canvas *)newCanvas;
