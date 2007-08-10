@@ -27,15 +27,9 @@
 	if( _currentBrush == nil )
 		return;
 	
-	[[NSColor blackColor] setStroke];
 	NSPoint center = NSMakePoint(bounds.origin.x+bounds.size.width/2.0f,bounds.origin.y+bounds.size.height/2.0f);
-	NSRect outerRect = NSMakeRect(center.x-([_currentBrush size]/2.0f),
-								  center.y-([_currentBrush size]/2.0f),
-								  [_currentBrush size],
-								  [_currentBrush size]);
-	NSBezierPath *outerCircle = [NSBezierPath bezierPathWithOvalInRect:outerRect];
-	[outerCircle setLineWidth:1.0f];
-	[outerCircle stroke];
+	[[NSColor blackColor] set];
+	[_currentBrush drawDabAtPoint:center];
 }
 
 - (Brush *)brush

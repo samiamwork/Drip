@@ -44,6 +44,8 @@ typedef struct PressurePoint {
 
 - (void)createBezierCurveWithCrossover:(float)crossover;
 
+- (void)drawDabAtPoint:(NSPoint)aPoint;
+
 - (NSRect)renderPointAt:(PressurePoint)aPoint onLayer:(PaintLayer *)aLayer;
 - (NSRect)renderLineFromPoint:(PressurePoint)startPoint toPoint:(PressurePoint *)endPoint onLayer:(PaintLayer *)aLayer;
 @end

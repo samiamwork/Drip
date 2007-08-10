@@ -307,6 +307,11 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	}
 }
 
+- (void)drawDabAtPoint:(NSPoint)aPoint
+{
+	CGContextDrawImage([[NSGraphicsContext currentContext] graphicsPort],CGRectMake(aPoint.x-_brushSize/2.0f,aPoint.y-_brushSize/2.0f,_brushSize,_brushSize),_dab);
+}
+
 - (NSRect)renderPointAt:(PressurePoint)aPoint onLayer:(PaintLayer *)aLayer
 {
 	float brushSize = _brushSize*aPoint.pressure;
