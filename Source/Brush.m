@@ -20,7 +20,7 @@
 		_RGBAColor[3] = 1.0f;
 		
 		_brushSize = 0.0f;
-		
+		_hardness = 0.4f;
 		_brushLookup = (float *)malloc(1001*sizeof(float));
 		[self createBezierCurveWithCrossover:0.4f];
 		
@@ -79,13 +79,17 @@ float valueAtCurve(float t, float crossover) {
 	return yt;
 }
 
-- (void)setSize:(float)newSize
+float valueWithCosCurve(float t, float crossover)
 {
-	if( newSize == _brushSize )
-		return;
+	if( t <= crossover )
+		return 1.0f;
 	
-	_brushSize = newSize;
-	
+	float y = 0.5f*cosf(M_PI*(t-crossover)/(1.0f-crossover))+0.5f;
+	return y;
+}
+
+- (void)rebuildBrush
+{
 	if( _dab != NULL )
 		CGImageRelease(_dab);
 	
@@ -93,7 +97,7 @@ float valueAtCurve(float t, float crossover) {
 	if( _dabData != NULL )
 		free(_dabData);
 	_dabData = (unsigned char *)calloc(intSize*intSize,1);
-
+	
 	unsigned char *p = _dabData;
 	float center = _brushSize/2.0f;
 	float distanceFromCenter;
@@ -106,7 +110,7 @@ float valueAtCurve(float t, float crossover) {
 			if( distanceFromCenter > 1.0f || distanceFromCenter < 0.0f ) {
 				*p = 0;
 			} else {
-				*p = (unsigned char)(255.0f*valueAtCurve(distanceFromCenter,0.4f));
+				*p = (unsigned char)(255.0f*valueWithCosCurve(distanceFromCenter,_hardness));
 			}
 			p++;
 		}
@@ -119,9 +123,36 @@ float valueAtCurve(float t, float crossover) {
 		printf("no mask created\n");
 	CGDataProviderRelease(dataProviderRef);
 }
+
+- (void)setSize:(float)newSize
+{
+	if( newSize == _brushSize )
+		return;
+	
+	_brushSize = newSize;
+	
+	[self rebuildBrush];
+}
 - (float)size
 {
 	return _brushSize;
+}
+- (void)setHardness:(float)newHardness
+{
+	if( newHardness < 0.0f )
+		newHardness = 0.0f;
+	else if( newHardness > 1.0f )
+		newHardness = 1.0f;
+	
+	if( newHardness == _hardness )
+		return;
+	
+	_hardness = newHardness;
+	[self rebuildBrush];
+}
+- (float)hardness
+{
+	return _hardness;
 }
 - (void)setColor:(NSColor*)aColor
 {
