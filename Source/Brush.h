@@ -21,6 +21,7 @@ typedef struct PressurePoint {
 	
 	float _brushSize;
 	float _hardness;
+	float _spacing;
 	BOOL _pressureAffectsFlow;
 	BOOL _pressureAffectsSize;
 	
@@ -32,6 +33,8 @@ typedef struct PressurePoint {
 - (float)size;
 - (void)setHardness:(float)newHardness;
 - (float)hardness;
+- (void)setSpacing:(float)newSpacing;
+- (float)spacing;
 - (void)setPressureAffectsFlow:(BOOL)willAffectFlow;
 - (BOOL)pressureAffectsFlow;
 - (void)setPressureAffectsSize:(BOOL)willAffectSize;

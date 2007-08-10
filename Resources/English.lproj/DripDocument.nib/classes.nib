@@ -6,6 +6,7 @@
                 changeHardness = id; 
                 changeSize = id; 
                 changeSizeExpression = id; 
+                changeSpacing = id; 
                 colorChanged = id; 
             }; 
             CLASS = BrushController; 
@@ -15,6 +16,8 @@
                 "_brushHardnessText" = NSTextField; 
                 "_brushSizeSlider" = NSSlider; 
                 "_brushSizeText" = NSTextField; 
+                "_brushSpacingSlider" = NSSlider; 
+                "_brushSpacingText" = NSTextField; 
                 "_brushView" = BrushView; 
                 "_colorWell" = NSColorWell; 
                 "_flowExpressionCheckbox" = NSButton; 

@@ -21,6 +21,7 @@
 		
 		_brushSize = 0.0f;
 		_hardness = 0.4f;
+		_spacing = 0.25f;
 		_pressureAffectsFlow = NO;
 		_pressureAffectsSize = YES;
 
@@ -156,6 +157,20 @@ float valueWithCosCurve(float t, float crossover)
 - (float)hardness
 {
 	return _hardness;
+}
+
+- (void)setSpacing:(float)newSpacing
+{
+	if( newSpacing < 0.01f)
+		newSpacing = 0.01f;
+	if( newSpacing > 1.5f )
+		newSpacing = 1.5f;
+	
+	_spacing = newSpacing;
+}
+- (float)spacing
+{
+	return _spacing;
 }
 
 - (void)setPressureAffectsFlow:(BOOL)willAffectFlow
@@ -312,7 +327,6 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	return NSMakeRect(aPoint.x-brushSizeHalf-2, aPoint.y-brushSizeHalf-2, brushSize+4, brushSize+4);
 }
 
-#define STATICFLOW	0.25f
 - (NSRect)renderLineFromPoint:(PressurePoint)startPoint toPoint:(PressurePoint *)endPoint onLayer:(PaintLayer *)aLayer
 {
 	float x,y;
@@ -340,7 +354,7 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	
 	pressure = startPoint.pressure;
 	brushSize = baseBrushSize * pressure;
-	stepSize = brushSize * STATICFLOW;
+	stepSize = brushSize * _spacing;
 
 	position += fabsf(stepSize);
 	pressure = startPoint.pressure + ((position/length) * (endPoint->pressure-startPoint.pressure));
@@ -354,7 +368,7 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 		// get new brush size
 		brushSize = baseBrushSize * pressure;
 		// get new step size
-		stepSize = brushSize * STATICFLOW;
+		stepSize = brushSize * _spacing;
 		// advance x and y
 		x += stepSize * xRatio;
 		y += stepSize * yRatio;
