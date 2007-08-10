@@ -179,6 +179,8 @@
 				3E1671520C61AD830014705B /* SketchController.m */,
 				3E39DA8F0C6822CA00F0D3FD /* BrushController.h */,
 				3E39DA900C6822CA00F0D3FD /* BrushController.m */,
+				3EE0888B0C62C60000CAE28C /* LayerController.h */,
+				3EE0888C0C62C60000CAE28C /* LayerController.m */,
 			);
 			name = Document;
 			sourceTree = "<group>";
@@ -205,8 +207,6 @@
 				3E89C85C0B499F4200134E08 /* main.m */,
 				3E1670640C61740F0014705B /* DripDelegate.h */,
 				3E1670650C61740F0014705B /* DripDelegate.m */,
-				3EE0888B0C62C60000CAE28C /* LayerController.h */,
-				3EE0888C0C62C60000CAE28C /* LayerController.m */,
 				3EE088EC0C62F9C400CAE28C /* PaintLayer.h */,
 				3EE088ED0C62F9C400CAE28C /* PaintLayer.m */,
 				3EE089150C6304FB00CAE28C /* Canvas.h */,

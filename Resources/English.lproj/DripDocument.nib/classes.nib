@@ -15,17 +15,23 @@
         }, 
         {CLASS = BrushView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {
-            ACTIONS = {addLayer = id; deleteLayer = id; }; 
             CLASS = DripDocumentWindowController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
-                "_layerTable" = NSTableView; 
+                "_layerController" = LayerController; 
                 "_sketchView" = ScrollingSketchView; 
                 "_toolWindow" = NSWindow; 
             }; 
             SUPERCLASS = NSWindowController; 
         }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {addLayer = id; deleteLayer = id; }; 
+            CLASS = LayerController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {"_layerTable" = NSTableView; "_sketchView" = ScrollingSketchView; }; 
+            SUPERCLASS = NSObject; 
+        }, 
         {CLASS = MyDocument; LANGUAGE = ObjC; SUPERCLASS = NSDocument; }, 
         {
             CLASS = MyDocumentWindowController; 

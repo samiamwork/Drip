@@ -7,10 +7,17 @@
 //
 
 #import <Cocoa/Cocoa.h>
-
+#import "Canvas.h"
+#import "ScrollingSketchView.h"
 
 @interface LayerController : NSObject {
-
+	IBOutlet NSTableView *_layerTable;
+	IBOutlet ScrollingSketchView *_sketchView;
+	Canvas *_theCanvas;
 }
 
+- (void)setCanvas:(Canvas *)newCanvas;
+
+- (IBAction)addLayer:(id)sender;
+- (IBAction)deleteLayer:(id)sender;
 @end

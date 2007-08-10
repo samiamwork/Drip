@@ -9,15 +9,13 @@
 #import <Cocoa/Cocoa.h>
 #import "ScrollingSketchView.h"
 #import "Canvas.h"
+#import "LayerController.h"
 
 @interface DripDocumentWindowController : NSWindowController
 {
 	IBOutlet ScrollingSketchView *_sketchView;
 	IBOutlet NSWindow *_toolWindow;
-	IBOutlet NSTableView *_layerTable;
-	Canvas *_theCanvas;
+	IBOutlet LayerController *_layerController;
 }
 
-- (IBAction)addLayer:(id)sender;
-- (IBAction)deleteLayer:(id)sender;
 @end

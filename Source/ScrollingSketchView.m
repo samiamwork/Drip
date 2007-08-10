@@ -84,6 +84,11 @@
 	CGContextRestoreGState(cxt);
 }
 
+- (BOOL)acceptsFirstMouse:(NSEvent *)theEvent
+{
+	return YES;
+}
+
 - (void)mouseDown:(NSEvent *)theEvent
 {
 	NSPoint clickPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
