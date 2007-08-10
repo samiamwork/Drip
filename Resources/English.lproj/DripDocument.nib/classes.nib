@@ -1,7 +1,13 @@
 {
     IBClasses = (
         {
-            ACTIONS = {changeHardness = id; changeSize = id; colorChanged = id; }; 
+            ACTIONS = {
+                changeFlowExpression = id; 
+                changeHardness = id; 
+                changeSize = id; 
+                changeSizeExpression = id; 
+                colorChanged = id; 
+            }; 
             CLASS = BrushController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
@@ -11,6 +17,8 @@
                 "_brushSizeText" = NSTextField; 
                 "_brushView" = BrushView; 
                 "_colorWell" = NSColorWell; 
+                "_flowExpressionCheckbox" = NSButton; 
+                "_sizeExpressionCheckbox" = NSButton; 
                 "_sketchView" = ScrollingSketchView; 
             }; 
             SUPERCLASS = NSObject; 

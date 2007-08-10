@@ -27,6 +27,15 @@
 	[super dealloc];
 }
 
+- (IBAction)changeSizeExpression:(id)sender
+{
+	[_currentBrush setPressureAffectsSize:[sender state]==NSOnState?YES:NO];
+}
+- (IBAction)changeFlowExpression:(id)sender
+{
+	[_currentBrush setPressureAffectsFlow:[sender state]==NSOnState?YES:NO];
+}
+
 - (IBAction)changeSize:(id)sender
 {
 	[_currentBrush setSize:[sender floatValue]];
@@ -52,6 +61,8 @@
 	[_brushSizeText setIntValue:(unsigned int)[_currentBrush size]];
 	[_brushHardnessSlider setFloatValue:[_currentBrush hardness]];
 	[_brushHardnessText setFloatValue:[_currentBrush hardness]];
+	[_sizeExpressionCheckbox setState:[_currentBrush pressureAffectsSize]?NSOnState:NSOffState];
+	[_flowExpressionCheckbox setState:[_currentBrush pressureAffectsFlow]?NSOnState:NSOffState];
 	[_brushView setBrush:_currentBrush];
 	[_currentBrush setColor:[_colorWell color]];
 }

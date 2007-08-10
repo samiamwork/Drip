@@ -21,6 +21,9 @@
 		
 		_brushSize = 0.0f;
 		_hardness = 0.4f;
+		_pressureAffectsFlow = NO;
+		_pressureAffectsSize = YES;
+
 		_brushLookup = (float *)malloc(1001*sizeof(float));
 		[self createBezierCurveWithCrossover:0.4f];
 		
@@ -154,6 +157,25 @@ float valueWithCosCurve(float t, float crossover)
 {
 	return _hardness;
 }
+
+- (void)setPressureAffectsFlow:(BOOL)willAffectFlow
+{
+	_pressureAffectsFlow = willAffectFlow;
+}
+- (BOOL)pressureAffectsFlow
+{
+	return _pressureAffectsFlow;
+}
+
+- (void)setPressureAffectsSize:(BOOL)willAffectSize
+{
+	_pressureAffectsSize = willAffectSize;
+}
+- (BOOL)pressureAffectsSize
+{
+	return _pressureAffectsSize;
+}
+
 - (void)setColor:(NSColor*)aColor
 {
 	NSColor *rgb = [aColor colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
@@ -274,25 +296,15 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 {
 	float brushSize = _brushSize*aPoint.pressure;
 	int brushSizeHalf;
-	/*
-	unsigned char red = _RGBAColor[0]*255.0f;
-	unsigned char green = _RGBAColor[1]*255.0f;
-	unsigned char blue = _RGBAColor[2]*255.0f;
-	float alpha = _RGBAColor[3];
-	 */
-	/*
-	if(!pressureAffectsSize)
-		brushSize = mainSize;
-	if(pressureAffectsOpacity)
-		alpha *= aPoint.pressure;
-	*/
+
+	if(!_pressureAffectsSize)
+		brushSize = _brushSize;
+	if(_pressureAffectsFlow)
+		CGContextSetRGBFillColor([aLayer cxt],_RGBAColor[0],_RGBAColor[1],_RGBAColor[2],aPoint.pressure);
+	else
+		CGContextSetRGBFillColor([aLayer cxt],_RGBAColor[0],_RGBAColor[1],_RGBAColor[2],_RGBAColor[3]);
+	
 	brushSizeHalf = brushSize/2.0f;
-	
-	
-	//render_dab(aPoint.x, aPoint.y, aLayer, brushSize,
-	//		   _brushLookup, red, green, blue, alpha);
-	//CGContextSetFillColor([aLayer cxt],_RGBAColor);
-	CGContextSetRGBFillColor([aLayer cxt],_RGBAColor[0],_RGBAColor[1],_RGBAColor[2],_RGBAColor[3]);
 	CGContextDrawImage([aLayer cxt],CGRectMake(aPoint.x-brushSize/2.0f,aPoint.y-brushSize/2.0f,brushSize,brushSize),_dab);
 	
 	//I don't really  think this fix is very good but...
@@ -300,7 +312,7 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	return NSMakeRect(aPoint.x-brushSizeHalf-2, aPoint.y-brushSizeHalf-2, brushSize+4, brushSize+4);
 }
 
-#define STATICFLOW	0.22f
+#define STATICFLOW	0.25f
 - (NSRect)renderLineFromPoint:(PressurePoint)startPoint toPoint:(PressurePoint *)endPoint onLayer:(PaintLayer *)aLayer
 {
 	float x,y;
@@ -313,7 +325,6 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	float yRatio = (endPoint->y - startPoint.y)/length;
 	float position = 0.0f;
 	PressurePoint newEndPoint = startPoint;
-	//TIPPressurePoint newEnd = start;
 	NSRect rect;
 	NSRect pointRect;
 	
@@ -321,12 +332,11 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	y = startPoint.y;
 	rect = NSMakeRect(x,y,0.0f,0.0f);
 	
-	/*
-	if(!pressureAffectsSize) {
+	// FIX: this breaks pressure affecting opacity
+	if(!_pressureAffectsSize) {
 		startPoint.pressure = 1.0f;
 		endPoint->pressure = 1.0f;
 	}
-	*/
 	
 	pressure = startPoint.pressure;
 	brushSize = baseBrushSize * pressure;

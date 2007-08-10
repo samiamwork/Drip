@@ -21,6 +21,9 @@ typedef struct PressurePoint {
 	
 	float _brushSize;
 	float _hardness;
+	BOOL _pressureAffectsFlow;
+	BOOL _pressureAffectsSize;
+	
 	unsigned char *_dabData;
 	CGImageRef _dab;
 }
@@ -29,6 +32,10 @@ typedef struct PressurePoint {
 - (float)size;
 - (void)setHardness:(float)newHardness;
 - (float)hardness;
+- (void)setPressureAffectsFlow:(BOOL)willAffectFlow;
+- (BOOL)pressureAffectsFlow;
+- (void)setPressureAffectsSize:(BOOL)willAffectSize;
+- (BOOL)pressureAffectsSize;
 - (void)setColor:(NSColor*)aColor;
 - (NSColor*)color;
 
