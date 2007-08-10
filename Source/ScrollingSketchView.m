@@ -165,22 +165,25 @@
 	}
 	
 	float brushSize = [_currentBrush size];
-	NSImage *brushImage = [[NSImage alloc] initWithSize:NSMakeSize(brushSize,brushSize)];
+	NSImage *brushImage = [[NSImage alloc] initWithSize:NSMakeSize(brushSize+2.0f,brushSize+2.0f)];
 	[brushImage lockFocus];
 	[[NSColor colorWithCalibratedWhite:0.0f alpha:0.7f] setStroke];
-	NSRect outerRect = NSMakeRect(0.0f, 0.0f, brushSize, brushSize);
-	NSBezierPath *outerCircle = [NSBezierPath bezierPathWithOvalInRect:NSInsetRect(outerRect,2.0f,2.0f)];
-	[outerCircle setLineWidth:2.0f];
-	float pattern[2] = {2.0f, 2.0f};
-	[outerCircle setLineDash:pattern count:2 phase:0.0f];
+	NSRect outerRect = NSMakeRect(1.0f, 1.0f, brushSize, brushSize);
+	NSBezierPath *outerCircle = [NSBezierPath bezierPathWithOvalInRect:outerRect];
+	[outerCircle setLineWidth:1.0f];
+	//float pattern[2] = {2.0f, 2.0f};
+	//[outerCircle setLineDash:pattern count:2 phase:0.0f];
 	[outerCircle stroke];
 	
 	[[NSColor colorWithCalibratedWhite:1.0f alpha:0.7f] setStroke];
-	[outerCircle setLineDash:pattern count:2 phase:2.0f];
-	[outerCircle stroke];
+	//[outerCircle setLineDash:pattern count:2 phase:2.0f];
+	//[outerCircle stroke];
+	NSBezierPath *innerCircle = [NSBezierPath bezierPathWithOvalInRect:NSInsetRect(outerRect,1.0f,1.0f)];
+	[innerCircle setLineWidth:1.0f];
+	[innerCircle stroke];
 	[brushImage unlockFocus];
 	[_brushCursor release];
-	_brushCursor = [[NSCursor alloc] initWithImage:brushImage hotSpot:NSMakePoint(brushSize/2.0f,brushSize/2.0f)];
+	_brushCursor = [[NSCursor alloc] initWithImage:brushImage hotSpot:NSMakePoint(brushSize/2.0f+1.0f,brushSize/2.0f+1.0f)];
 	
 	[self resetCursorRects];
 }
