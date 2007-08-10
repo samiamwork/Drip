@@ -144,11 +144,11 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	if(yi<0) {
 		if( yend <= 0 )
 			return NSZeroRect;
+		e -= (0 - yi)*eraserPitch;
 		yi = 0;
 	} if(yend > layerHeight) {
 		if( yi >= layerHeight )
 			return NSZeroRect;
-		e -= (yend - layerHeight)*eraserPitch;
 		yend = layerHeight;
 	}
 	
