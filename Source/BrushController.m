@@ -34,6 +34,12 @@
 	[_brushView setNeedsDisplay:YES];
 	[_sketchView rebuildBrushCursor];
 }
+- (IBAction)changeHardness:(id)sender
+{
+	[_currentBrush setHardness:[sender floatValue]];
+	[_brushHardnessText setFloatValue:[_currentBrush hardness]];
+	[_brushView setNeedsDisplay:YES];
+}
 - (void)setBrush:(Brush*)brush
 {
 	if( brush == _currentBrush )
@@ -44,6 +50,8 @@
 	
 	[_brushSizeSlider setFloatValue:[_currentBrush size]];
 	[_brushSizeText setIntValue:(unsigned int)[_currentBrush size]];
+	[_brushHardnessSlider setFloatValue:[_currentBrush hardness]];
+	[_brushHardnessText setFloatValue:[_currentBrush hardness]];
 	[_brushView setBrush:_currentBrush];
 	[_currentBrush setColor:[_colorWell color]];
 }

@@ -14,6 +14,8 @@
 @interface BrushController : NSObject {
 	IBOutlet NSSlider *_brushSizeSlider;
 	IBOutlet NSTextField *_brushSizeText;
+	IBOutlet NSSlider *_brushHardnessSlider;
+	IBOutlet NSTextField *_brushHardnessText;
 	IBOutlet BrushView *_brushView;
 	IBOutlet NSColorWell *_colorWell;
 	IBOutlet ScrollingSketchView *_sketchView;
@@ -24,5 +26,6 @@
 - (IBAction)colorChanged:(id)sender;
 
 - (IBAction)changeSize:(id)sender;
+- (IBAction)changeHardness:(id)sender;
 - (void)setBrush:(Brush*)brush;
 @end

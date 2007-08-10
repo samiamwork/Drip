@@ -1,10 +1,12 @@
 {
     IBClasses = (
         {
-            ACTIONS = {changeSize = id; colorChanged = id; }; 
+            ACTIONS = {changeHardness = id; changeSize = id; colorChanged = id; }; 
             CLASS = BrushController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                "_brushHardnessSlider" = NSSlider; 
+                "_brushHardnessText" = NSTextField; 
                 "_brushSizeSlider" = NSSlider; 
                 "_brushSizeText" = NSTextField; 
                 "_brushView" = BrushView; 
