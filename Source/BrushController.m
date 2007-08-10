@@ -32,6 +32,7 @@
 	[_currentBrush setSize:[sender floatValue]];
 	[_brushSizeText setIntValue:[sender intValue]];
 	[_brushView setNeedsDisplay:YES];
+	[_sketchView rebuildBrushCursor];
 }
 - (void)setBrush:(Brush*)brush
 {

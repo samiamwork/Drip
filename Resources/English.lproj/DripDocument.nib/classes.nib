@@ -9,6 +9,7 @@
                 "_brushSizeText" = NSTextField; 
                 "_brushView" = BrushView; 
                 "_colorWell" = NSColorWell; 
+                "_sketchView" = ScrollingSketchView; 
             }; 
             SUPERCLASS = NSObject; 
         }, 

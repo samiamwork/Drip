@@ -28,6 +28,8 @@
 - (void)setBrush:(Brush *)newBrush;
 - (Brush *)brush;
 
+- (void)rebuildBrushCursor;
+
 - (void)updateVerticalScroller;
 - (void)updateHorizontalScroller;
 - (void)redoScrollers;

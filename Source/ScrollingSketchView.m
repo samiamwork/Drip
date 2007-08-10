@@ -127,19 +127,7 @@
 	
 	[_currentBrush release];
 	_currentBrush = [newBrush retain];
-	
-	float brushSize = [_currentBrush size];
-	NSImage *brushImage = [[NSImage alloc] initWithSize:NSMakeSize(brushSize,brushSize)];
-	[brushImage lockFocus];
-	[[NSColor blackColor] setStroke];
-	NSPoint center = NSMakePoint(brushSize/2.0f,brushSize/2.0f);
-	NSRect outerRect = NSMakeRect(0.0f, 0.0f, brushSize, brushSize);
-	NSBezierPath *outerCircle = [NSBezierPath bezierPathWithOvalInRect:outerRect];
-	[outerCircle setLineWidth:1.0f];
-	[outerCircle stroke];
-	[brushImage unlockFocus];
-	[_brushCursor release];
-	_brushCursor = [[NSCursor alloc] initWithImage:brushImage hotSpot:NSMakePoint(brushSize/2.0f,brushSize/2.0f)];
+	[self rebuildBrushCursor];
 }
 - (Brush *)brush
 {
@@ -167,9 +155,44 @@
 	return _canvas;
 }
 
+- (void)rebuildBrushCursor
+{
+	if( _currentBrush == nil ) {
+		[_brushCursor release];
+		_brushCursor = nil;
+		[self resetCursorRects];
+		return;
+	}
+	
+	float brushSize = [_currentBrush size];
+	NSImage *brushImage = [[NSImage alloc] initWithSize:NSMakeSize(brushSize,brushSize)];
+	[brushImage lockFocus];
+	[[NSColor colorWithCalibratedWhite:0.0f alpha:0.7f] setStroke];
+	NSRect outerRect = NSMakeRect(0.0f, 0.0f, brushSize, brushSize);
+	NSBezierPath *outerCircle = [NSBezierPath bezierPathWithOvalInRect:NSInsetRect(outerRect,2.0f,2.0f)];
+	[outerCircle setLineWidth:2.0f];
+	float pattern[2] = {2.0f, 2.0f};
+	[outerCircle setLineDash:pattern count:2 phase:0.0f];
+	[outerCircle stroke];
+	
+	[[NSColor colorWithCalibratedWhite:1.0f alpha:0.7f] setStroke];
+	[outerCircle setLineDash:pattern count:2 phase:2.0f];
+	[outerCircle stroke];
+	[brushImage unlockFocus];
+	[_brushCursor release];
+	_brushCursor = [[NSCursor alloc] initWithImage:brushImage hotSpot:NSMakePoint(brushSize/2.0f,brushSize/2.0f)];
+	
+	[self resetCursorRects];
+}
+
 - (void)resetCursorRects
 {
 	[self discardCursorRects];
+	
+	if( _brushCursor == nil ) {
+		[self addCursorRect:[self bounds] cursor:[NSCursor arrowCursor]];
+		return;
+	}
 	
 	NSRect visibleRect = [self bounds];
 	if( [_verticalScroller superview] == self )

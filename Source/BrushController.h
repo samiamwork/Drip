@@ -9,12 +9,14 @@
 #import <Cocoa/Cocoa.h>
 #import "Brush.h"
 #import "BrushView.h"
+#import "ScrollingSketchView.h"
 
 @interface BrushController : NSObject {
 	IBOutlet NSSlider *_brushSizeSlider;
 	IBOutlet NSTextField *_brushSizeText;
 	IBOutlet BrushView *_brushView;
 	IBOutlet NSColorWell *_colorWell;
+	IBOutlet ScrollingSketchView *_sketchView;
 	
 	Brush *_currentBrush;
 }
