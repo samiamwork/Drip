@@ -13,11 +13,9 @@
 
 - (void)awakeFromNib
 {
-	Canvas *newCanvas = [[Canvas alloc] initWithWidth:[(DripDocument*)[self document] width]  height:[(DripDocument*)[self document] height]];
+	Canvas *newCanvas = [(DripDocument*)[self document] canvas];
 	[_sketchView setCanvas:newCanvas];
 	[_layerController setCanvas:newCanvas];
-	
-	[newCanvas release];
 }
 
 @end

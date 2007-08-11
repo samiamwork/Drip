@@ -36,6 +36,50 @@
 	[super dealloc];
 }
 
+- (void)encodeWithCoder:(NSCoder *)encoder
+{
+	if( ![encoder isKindOfClass:[NSKeyedArchiver class]] )
+		return;
+	
+	NSKeyedArchiver *archiver = (NSKeyedArchiver *)encoder;
+	[archiver encodeInt32:(int)_width forKey:@"width"];
+	[archiver encodeInt32:(int)_height forKey:@"height"];
+	[archiver encodeObject:_name forKey:@"name"];
+	[archiver encodeObject:[NSData dataWithBytes:_data length:_width*(_height+1)*4] forKey:@"data"];
+	
+}
+
+- (id)initWithCoder:(NSCoder *)decoder
+{
+	if( (self = [super init]) ) {
+		if( ![decoder isKindOfClass:[NSKeyedUnarchiver class]] ) {
+			[self release];
+			return nil;
+		}
+		NSKeyedUnarchiver *unarchiver = (NSKeyedUnarchiver *)decoder;
+		
+		_width = (unsigned int)[unarchiver decodeIntForKey:@"width"];
+		_height = (unsigned int)[unarchiver decodeIntForKey:@"height"];
+		[self setName:[unarchiver decodeObjectForKey:@"name"]];
+		
+		_pitch = _width*4;
+		_data = calloc(_width*(_height+1), 4);
+		
+		NSData *newData = [unarchiver decodeObjectForKey:@"data"];
+		[newData getBytes:_data length:_width*(_height+1)*4];
+		
+		CGColorSpaceRef colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+		_cxt = CGBitmapContextCreate(_data, _width, _height, 8, _pitch, colorSpace, kCGImageAlphaPremultipliedFirst);
+		if(!_cxt) {
+			[self release];
+			return nil;
+		}
+		CGColorSpaceRelease(colorSpace);
+	}
+	
+	return self;
+}
+
 - (id)initWithWidth:(unsigned int)width height:(unsigned int)height
 {
 	if( (self = [super init]) ) {

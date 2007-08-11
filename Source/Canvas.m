@@ -22,6 +22,8 @@
 		
 		_width = 0;
 		_height = 0;
+		
+		_document = nil;
 	}
 
 	return self;
@@ -32,8 +34,39 @@
 	[_layers release];
 	[_topLayer release];
 	[_bottomLayer release];
+	
+	[_document release];
 
 	[super dealloc];
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder
+{
+	if( ![encoder isKindOfClass:[NSKeyedArchiver class]] )
+		return;
+	
+	NSKeyedArchiver *archiver = (NSKeyedArchiver *)encoder;
+	[archiver encodeInt32:(int)_width forKey:@"width"];
+	[archiver encodeInt32:(int)_height forKey:@"height"];
+	[archiver encodeObject:_layers forKey:@"layers"];
+}
+
+- (id)initWithCoder:(NSCoder *)decoder
+{	
+	if( (self = [super init]) ) {
+		if( ![decoder isKindOfClass:[NSKeyedUnarchiver class]] ) {
+			[self release];
+			return nil;
+		}
+		NSKeyedUnarchiver *unarchiver = (NSKeyedUnarchiver *)decoder;
+		
+		_width = (unsigned int)[unarchiver decodeIntForKey:@"width"];
+		_height = (unsigned int)[unarchiver decodeIntForKey:@"height"];
+		_layers = [[NSMutableArray alloc] initWithArray:[unarchiver decodeObjectForKey:@"layers"]];
+		[self setCurrentLayer:[_layers objectAtIndex:0]];
+	}
+	
+	return self;
 }
 
 - (id)initWithWidth:(unsigned int)width height:(unsigned int)height
@@ -48,6 +81,8 @@
 		[_currentLayer release];
 		_topLayer = nil;
 		_bottomLayer = nil;
+		
+		_document = nil;
 	}
 	
 	return self;
@@ -150,4 +185,18 @@
 	if( _topLayer )
 		[_topLayer drawRect:aRect inContext:cxt];
 }
+
+- (void)setDocument:(NSDocument *)newDocument
+{
+	if( newDocument == _document )
+		return;
+	
+	[_document release];
+	_document = [newDocument retain];
+}
+- (NSDocument *)document
+{
+	return _document;
+}
+
 @end

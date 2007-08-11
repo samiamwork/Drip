@@ -19,6 +19,7 @@
         // If an error occurs here, send a [self release] message and return nil.
 		_canvasWidth = 300;
 		_canvasHeight = 300;
+		_canvas = nil;
     }
     return self;
 }
@@ -28,10 +29,22 @@
 	if( (self = [super init]) ) {
 		_canvasWidth = width;
 		_canvasHeight = height;
+		
+		_canvas = [[Canvas alloc] initWithWidth:_canvasWidth  height:_canvasHeight];
+		[_canvas setDocument:self];
 	}
 	
 	return self;
 }
+
+- (void)dealloc
+{
+	[_canvas release];
+
+	[super dealloc];
+}
+
+
 
 - (unsigned int)width
 {
@@ -40,6 +53,10 @@
 - (unsigned int)height
 {
 	return _canvasHeight;
+}
+- (Canvas *)canvas
+{
+	return _canvas;
 }
 
 - (NSString *)windowNibName
@@ -60,9 +77,17 @@
     // Add any code here that needs to be executed once the windowController has loaded the document's window.
 }
 
+- (BOOL)writeToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
+{
+	[NSKeyedArchiver archiveRootObject:_canvas toFile:[absoluteURL path]];
+	
+	return YES;
+}
+
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
 {
-    
+	[_canvas release];
+    _canvas = [NSKeyedUnarchiver unarchiveObjectWithFile:[absoluteURL path]];
     return YES;
 }
 

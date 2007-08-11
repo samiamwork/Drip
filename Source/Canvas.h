@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 #import "PaintLayer.h"
 
-@interface Canvas : NSObject {
+@interface Canvas : NSObject <NSCoding> {
 	PaintLayer *_topLayer;
 	PaintLayer *_bottomLayer;
 	PaintLayer *_currentLayer;
@@ -18,6 +18,8 @@
 	
 	unsigned int _width;
 	unsigned int _height;
+	
+	NSDocument *_document;
 }
 
 - (id)initWithWidth:(unsigned int)width height:(unsigned int)height;
@@ -29,4 +31,7 @@
 - (NSSize)size;
 
 - (void)drawRect:(NSRect)aRect;
+
+- (void)setDocument:(NSDocument *)newDocument;
+- (NSDocument *)document;
 @end

@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface PaintLayer : NSObject {
+@interface PaintLayer : NSObject <NSCoding> {
 	unsigned int _width;
 	unsigned int _height;
 	unsigned int _pitch;

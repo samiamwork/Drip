@@ -99,6 +99,9 @@
 	NSRect drawnRect = [_currentBrush renderPointAt:_lastMousePoint onLayer:[_canvas currentLayer]];
 	drawnRect.origin.x += _canvasOrigin.x;
 	drawnRect.origin.y += _canvasOrigin.y;
+	
+	[[_canvas document] updateChangeCount:NSChangeDone];
+	
 	[self setNeedsDisplayInRect:drawnRect];
 }
 
