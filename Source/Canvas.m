@@ -93,6 +93,24 @@
 	return NSMakeSize((float)_width,(float)_height);
 }
 
+- (void)rebuildTopAndBottom
+{
+	unsigned int targetIndex = [_layers indexOfObject:_currentLayer];
+	if( targetIndex == NSNotFound )
+		return;
+	
+	[_bottomLayer release];
+	_bottomLayer = nil;
+	[_topLayer release];
+	_topLayer = nil;
+	_currentLayer = [_layers objectAtIndex:targetIndex];
+	
+	if( targetIndex > 0 )
+		_bottomLayer = [[PaintLayer alloc] initWithContentsOfLayers:_layers inRange:NSMakeRange(0,targetIndex-1)];
+	if( targetIndex < [_layers count]-1 )
+		_topLayer = [[PaintLayer alloc] initWithContentsOfLayers:_layers inRange:NSMakeRange(targetIndex+1,[_layers count]-2)];
+}
+
 - (void)addLayer
 {
 	unsigned int currentIndex = [_layers indexOfObject:_currentLayer];
@@ -142,6 +160,26 @@
 	[self setCurrentLayer:[_layers objectAtIndex:deleteIndex]];
 }
 
+- (void)insertLayer:(PaintLayer *)theLayer AtIndex:(unsigned int)theTargetIndex
+{
+	// first see if this is a layer we already have
+	unsigned int theLayerIndex = [_layers indexOfObject:theLayer];
+	if( theLayerIndex == NSNotFound ) {
+		[_layers insertObject:theLayer atIndex:theTargetIndex];
+		return;
+	}
+	
+	if( theLayerIndex == theTargetIndex )
+		return;
+	
+	[_layers insertObject:theLayer atIndex:theTargetIndex];
+	if( theLayerIndex > theTargetIndex )
+		theLayerIndex++;
+	[_layers removeObjectAtIndex:theLayerIndex];
+	
+	[self rebuildTopAndBottom];
+}
+
 - (NSArray *)layers
 {
 	return [NSArray arrayWithArray:_layers];
@@ -149,23 +187,12 @@
 
 - (void)setCurrentLayer:(PaintLayer *)aLayer
 {
-	if( aLayer == _currentLayer )
+	if( aLayer == _currentLayer || ![_layers containsObject:aLayer] )
 		return;
 	
-	unsigned int targetIndex = [_layers indexOfObject:aLayer];
-	if( targetIndex == NSNotFound )
-		return;
+	_currentLayer = aLayer;
 	
-	[_bottomLayer release];
-	_bottomLayer = nil;
-	[_topLayer release];
-	_topLayer = nil;
-	_currentLayer = [_layers objectAtIndex:targetIndex];
-	
-	if( targetIndex > 0 )
-		_bottomLayer = [[PaintLayer alloc] initWithContentsOfLayers:_layers inRange:NSMakeRange(0,targetIndex-1)];
-	if( targetIndex < [_layers count]-1 )
-		_topLayer = [[PaintLayer alloc] initWithContentsOfLayers:_layers inRange:NSMakeRange(targetIndex+1,[_layers count]-2)];
+	[self rebuildTopAndBottom];
 }
 
 - (PaintLayer *)currentLayer

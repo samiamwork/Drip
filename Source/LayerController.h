@@ -14,6 +14,8 @@
 	IBOutlet NSTableView *_layerTable;
 	IBOutlet ScrollingSketchView *_sketchView;
 	Canvas *_theCanvas;
+	
+	PaintLayer *_draggingLayer;
 }
 
 - (void)setCanvas:(Canvas *)newCanvas;

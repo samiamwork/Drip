@@ -25,6 +25,7 @@
 - (id)initWithWidth:(unsigned int)width height:(unsigned int)height;
 - (void)addLayer;
 - (void)deleteLayer:(PaintLayer *)layerToDelete;
+- (void)insertLayer:(PaintLayer *)theLayer AtIndex:(unsigned int)theTargetIndex;
 - (NSArray *)layers;
 - (void)setCurrentLayer:(PaintLayer *)aLayer;
 - (PaintLayer *)currentLayer;
