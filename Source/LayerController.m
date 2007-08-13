@@ -97,6 +97,7 @@
 		return NO;
 	}
 	
+	int originalRow = row;
 	row = [layers count]-row-1;
 	if( op == NSTableViewDropAbove )
 		row++;
@@ -111,6 +112,7 @@
 	_draggingLayer = nil;
 	[_sketchView setNeedsDisplay:YES];
 	[aTableView reloadData];
+	[_layerTable slideInRowAtIndex:originalRow];
 	return YES;
 }
 

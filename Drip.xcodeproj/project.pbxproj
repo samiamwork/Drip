@@ -16,6 +16,7 @@
 		3E39DD1A0C69080500F0D3FD /* BrushEraser.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E39DD190C69080500F0D3FD /* BrushEraser.m */; };
 		3E39DF0D0C696EF600F0D3FD /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E39DF0C0C696EF600F0D3FD /* Carbon.framework */; };
 		3E5488AB0B4C9572005ED4DA /* DripDocumentWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E5488AA0B4C9572005ED4DA /* DripDocumentWindowController.m */; };
+		3E5849D20C7022850093CD10 /* AnimatingTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E5849D10C7022850093CD10 /* AnimatingTableView.m */; };
 		3E89C85F0B499F4200134E08 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E89C85C0B499F4200134E08 /* main.m */; };
 		3E89C8600B499F4200134E08 /* DripDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E89C85E0B499F4200134E08 /* DripDocument.m */; };
 		3EE0888D0C62C60000CAE28C /* LayerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EE0888C0C62C60000CAE28C /* LayerController.m */; };
@@ -56,6 +57,8 @@
 		3E39DF0C0C696EF600F0D3FD /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		3E5488A90B4C9572005ED4DA /* DripDocumentWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripDocumentWindowController.h; sourceTree = "<group>"; };
 		3E5488AA0B4C9572005ED4DA /* DripDocumentWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DripDocumentWindowController.m; sourceTree = "<group>"; };
+		3E5849D00C7022850093CD10 /* AnimatingTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimatingTableView.h; sourceTree = "<group>"; };
+		3E5849D10C7022850093CD10 /* AnimatingTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnimatingTableView.m; sourceTree = "<group>"; };
 		3E89C85B0B499F4200134E08 /* Drip_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Drip_Prefix.pch; sourceTree = "<group>"; };
 		3E89C85C0B499F4200134E08 /* main.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		3E89C85D0B499F4200134E08 /* DripDocument.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DripDocument.h; sourceTree = "<group>"; };
@@ -211,6 +214,8 @@
 				3EE088ED0C62F9C400CAE28C /* PaintLayer.m */,
 				3EE089150C6304FB00CAE28C /* Canvas.h */,
 				3EE089160C6304FB00CAE28C /* Canvas.m */,
+				3E5849D00C7022850093CD10 /* AnimatingTableView.h */,
+				3E5849D10C7022850093CD10 /* AnimatingTableView.m */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -350,6 +355,7 @@
 				3E39D9380C67B1A300F0D3FD /* Brush.m in Sources */,
 				3E39DA910C6822CA00F0D3FD /* BrushController.m in Sources */,
 				3E39DD1A0C69080500F0D3FD /* BrushEraser.m in Sources */,
+				3E5849D20C7022850093CD10 /* AnimatingTableView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

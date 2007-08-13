@@ -1,5 +1,6 @@
 {
     IBClasses = (
+        {CLASS = AnimatingTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
         {
             ACTIONS = {
                 changeFlowExpression = id; 
@@ -42,7 +43,7 @@
             ACTIONS = {addLayer = id; deleteLayer = id; }; 
             CLASS = LayerController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {"_layerTable" = NSTableView; "_sketchView" = ScrollingSketchView; }; 
+            OUTLETS = {"_layerTable" = AnimatingTableView; "_sketchView" = ScrollingSketchView; }; 
             SUPERCLASS = NSObject; 
         }, 
         {CLASS = MyDocument; LANGUAGE = ObjC; SUPERCLASS = NSDocument; }, 

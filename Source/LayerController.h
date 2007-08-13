@@ -9,9 +9,10 @@
 #import <Cocoa/Cocoa.h>
 #import "Canvas.h"
 #import "ScrollingSketchView.h"
+#import "AnimatingTableView.h"
 
 @interface LayerController : NSObject {
-	IBOutlet NSTableView *_layerTable;
+	IBOutlet AnimatingTableView *_layerTable;
 	IBOutlet ScrollingSketchView *_sketchView;
 	Canvas *_theCanvas;
 	
