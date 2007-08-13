@@ -88,31 +88,38 @@
 }
 
 - (BOOL)tableView:(NSTableView *)aTableView acceptDrop:(id <NSDraggingInfo>)info 
-			  row:(int)row dropOperation:(NSTableViewDropOperation)op
+			  row:(int)toTableRow dropOperation:(NSTableViewDropOperation)op
 {
 	NSArray *layers = [_theCanvas layers];
-	unsigned int draggingRow = [layers indexOfObject:_draggingLayer];
-	if( draggingRow == NSNotFound ) {
-		_draggingLayer = nil;
-		return NO;
-	}
-	
-	int originalRow = row;
-	row = [layers count]-row-1;
-	if( op == NSTableViewDropAbove )
-		row++;
-	
-	// no dropping on, above or below the row we're dragging
-	if( (row == draggingRow && op == NSTableViewDropOn) || (row == draggingRow && op == NSTableViewDropAbove) || (row == draggingRow+1 && op == NSTableViewDropAbove) ) {
+	int fromLayerRow = [layers indexOfObject:_draggingLayer];
+	if( fromLayerRow == NSNotFound ) {
 		_draggingLayer = nil;
 		return NO;
 	}
 
-	[_theCanvas insertLayer:_draggingLayer AtIndex:row];
-	_draggingLayer = nil;
+	toTableRow--;
+	int toLayerRow = [layers count]-toTableRow-1;
+		
+	// no dropping on, above or below the row we're dragging
+	if( toLayerRow == fromLayerRow || (toLayerRow == fromLayerRow+1 && op == NSTableViewDropAbove) ) {
+		_draggingLayer = nil;
+		return NO;
+	}
+
+	[_theCanvas insertLayer:_draggingLayer AtIndex:toLayerRow];
 	[_sketchView setNeedsDisplay:YES];
+	
+	//the layer order has changed so we need a new array
+	NSArray *newLayers = [_theCanvas layers];
+	[_layerTable selectRow:[newLayers count]-[newLayers indexOfObject:[_theCanvas currentLayer]]-1 byExtendingSelection:NO];
+	
 	[aTableView reloadData];
-	[_layerTable slideInRowAtIndex:originalRow];
+	
+	toTableRow = [newLayers count]-[newLayers indexOfObject:_draggingLayer]-1;
+	int fromTableRow = [layers count]-fromLayerRow-1;
+	[_layerTable slideRowFromIndex:fromTableRow toIndex:toTableRow];
+
+	_draggingLayer = nil;
 	return YES;
 }
 
@@ -121,6 +128,7 @@
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification
 {
 	NSArray *layers = [_theCanvas layers];
+
 	[_theCanvas setCurrentLayer:[layers objectAtIndex:[layers count]-[_layerTable selectedRow]-1]];
 }
 

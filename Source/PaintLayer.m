@@ -136,7 +136,7 @@
 		
 		NSRect layerRect = NSMakeRect(0.0f,0.0f,(float)_width,(float)_height);
 		unsigned int layerIndex;
-		for( layerIndex = range.location; layerIndex <= range.location+range.length; layerIndex++ )
+		for( layerIndex = range.location; layerIndex < range.location+range.length; layerIndex++ )
 			[[layers objectAtIndex:layerIndex] drawRect:layerRect inContext:_cxt];
 
 		_name = [[NSString alloc] initWithString:@"Composite"];

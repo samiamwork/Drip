@@ -10,10 +10,11 @@
 
 
 @interface AnimatingTableView : NSTableView {
-	int _movingRowIndex;
+	int _movingRowIndexStart;
+	int _movingRowIndexEnd;
 	NSTimer *_animationTimer;
 	NSAnimation *_slidingAnimation;
 }
 
-- (void)slideInRowAtIndex:(int)rowToMove;
+- (void)slideRowFromIndex:(int)fromIndex toIndex:(int)toIndex;
 @end

@@ -106,9 +106,9 @@
 	_currentLayer = [_layers objectAtIndex:targetIndex];
 	
 	if( targetIndex > 0 )
-		_bottomLayer = [[PaintLayer alloc] initWithContentsOfLayers:_layers inRange:NSMakeRange(0,targetIndex-1)];
+		_bottomLayer = [[PaintLayer alloc] initWithContentsOfLayers:_layers inRange:NSMakeRange(0,targetIndex)];
 	if( targetIndex < [_layers count]-1 )
-		_topLayer = [[PaintLayer alloc] initWithContentsOfLayers:_layers inRange:NSMakeRange(targetIndex+1,[_layers count]-2)];
+		_topLayer = [[PaintLayer alloc] initWithContentsOfLayers:_layers inRange:NSMakeRange(targetIndex+1,[_layers count]-(targetIndex+1))];
 }
 
 - (void)addLayer
