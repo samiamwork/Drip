@@ -233,7 +233,6 @@
 				3E903CF90BC58B55009B6F93 /* Strip Symbols */,
 				3EFF81F20B5586520049AD7D /* Remove Headers */,
 				3EFF821B0B558E330049AD7D /* Set SVN Revision number */,
-				3EFF81EA0B5585980049AD7D /* Make DMG */,
 			);
 			buildRules = (
 			);
@@ -289,22 +288,6 @@
 			shellPath = "/usr/bin/perl -w";
 			shellScript = "#\n# Last updated: 21MAR06, Andy O'Meara and Rob Barris\n#\n# This is an Xcode post-build phase script for devs who sleep better at night knowing\n#    that their deployment binaries are as stripped as possible.  This makes life more difficult\n#    for a hacker/cracker to locate sensitive code to trace, study, and/or extract.\n#\n# This script will execute only if the Xcode \"Deployment Postprocessing\" setting\n#    is set (aka DEPLOYMENT_POSTPROCESSING).\n#\n# The downside to shipping a stripped binary is that your user's crash reports\n#    will be useless unless you have a link map to convert code offsets (from a stack trace)\n#    into proc names.  To address this, this script moves your pre-stripped executable\n#    to the build dir, appending \"_full\" to the filename, allowing you to retain it for\n#    the day you need it in order to decipher a stack trace.  You do this by using 'atos'\n#    with the original generated binary (type 'man atos' for info).\n#\n# Recommended Xcode build settings:\n#    Dead Code Stripping                  YES\n#    Only Link In Essential Symbols       NO\n#    Deployment Postprocessing            YES (this activates this script)\n#    Strip Linked Product                 NO\n#    Use Separate Strip                   NO\n#    Strip Style                          All Symbols\n#    Strip Debug Symbols During Copy      NO\n#    Preserve Private External Symbols    NO\n#    Separate PCH Symbols                 YES\n#    Symbols Hidden By Default            YES (Critical!)\n#    Inline Functions Hidden              YES\n#\n# Note that if you're building a dynamic library, you'll need to explicitly\n#    declare any symbols that you want to be exported.  See the following:\n#    file:///Developer/ADC%20Reference%20Library/documentation/DeveloperTools/Conceptual/CppRuntimeEnv/Articles/SymbolVisibility.html\n#\n\nuse strict;\n\ndie \"$0: Must be run from Xcode\" unless $ENV{\"BUILT_PRODUCTS_DIR\"};\n\n# This script is activated via an Xcode env flag.\nif ( $ENV{DEPLOYMENT_POSTPROCESSING} ne \"YES\" ) {\n   exit 0;\n}\n\nprint \"\\n\\n==================== Commencing external stripping phase...\\n\";\n        \nmy $BINARY       = \"$ENV{BUILT_PRODUCTS_DIR}/$ENV{WRAPPER_NAME}/Contents/MacOS/$ENV{EXECUTABLE_NAME}\";\nmy $BINARY_FULL  = \"$ENV{BUILT_PRODUCTS_DIR}/$ENV{EXECUTABLE_NAME}_full\";\nmy $BINARY_i386  = \"${BINARY}_i386\";\nmy $BINARY_ppc   = \"${BINARY}_ppc\";\n\n       \n# Extract each arch into a \"thin\" binary for stripping\n`lipo \"$BINARY\" -thin  ppc -output \"$BINARY_ppc\" `;\n`lipo \"$BINARY\" -thin i386 -output \"$BINARY_i386\"`;\n\n# Retain the orignal binary for QA and use with the util 'atos'\n`mv -f \"$BINARY\" \"$BINARY_FULL\"`;\n\n# Perform desired stripping on each thin binary.  \n`strip -S -x -o \"${BINARY_ppc}_tmp\"  -r \"$BINARY_ppc\" `;\n`strip -S -x -o \"${BINARY_i386}_tmp\" -r \"$BINARY_i386\"`;\n\n# We're now done with the original thin binaries, so chuck them.\n`rm -f \"$BINARY_ppc\" `;\n`rm -f \"$BINARY_i386\"`;\n\n# Make the new universal binary from our stripped thin pieces.\n`lipo -arch i386 \"${BINARY_i386}_tmp\" -arch ppc \"${BINARY_ppc}_tmp\" -create -output \"$BINARY\"`;\n\n# We're now done with the temp thin binaries, so chuck them.\n`rm -f \"${BINARY_ppc}_tmp\" `;\n`rm -f \"${BINARY_i386}_tmp\"`;\n\n\nprint \"\\n==================== External strip phase complete\\n\";\n\n\n#EOF";
 		};
-		3EFF81EA0B5585980049AD7D /* Make DMG */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(BUILT_PRODUCTS_DIR)/$(PRODUCT_NAME).app",
-			);
-			name = "Make DMG";
-			outputPaths = (
-				"$(SRCROOT)/build/$(PRODUCT_NAME).dmg",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ $BUILD_STYLE != \"Release\" ]; then\n\texit\nfi\n\n#unmount any volumes that look like this one\nhdiutil detach /Volumes/$PRODUCT_NAME\n\n# if a previous copy of the image exists, remove it\nrm -f build/$PRODUCT_NAME.dmg\n\n# create the image.\nhdiutil create build/$PRODUCT_NAME.dmg -srcfolder $BUILT_PRODUCTS_DIR -fs HFS+ -volname \"$PRODUCT_NAME\"";
-		};
 		3EFF81F20B5586520049AD7D /* Remove Headers */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -331,7 +314,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "/usr/bin/perl -w";
-			shellScript = "# Xcode auto-versioning script for Subversion\n# by Axel Andersson, modified by Daniel Jalkut to add\n# \"--revision HEAD\" to the svn info line, which allows\n# the latest revision to always be used.\n\nuse strict;\n\ndie \"$0: Must be run from Xcode\" unless $ENV{\"BUILT_PRODUCTS_DIR\"};\n\n# Get the current subversion revision number and use it to set the CFBundleVersion value\nmy $REV = `/usr/local/bin/svnversion -n ./`;\nmy $INFO = \"$ENV{BUILT_PRODUCTS_DIR}/$ENV{WRAPPER_NAME}/Contents/Info.plist\";\n\nmy $version = $REV;\n\n# (Match the last group of digits and optional letter M/S):\n\n# ugly yet functional (barely) regex by Daniel Jalkut:\n#$version =~ s/([\\d]*:)(\\d+[M|S]*).*/$2/;\n\n# better yet still functional regex via Kevin \"Regex Nerd\" Ballard\n($version =~ m/\\d+[MS]*$/) && ($version = $&);\n\ndie \"$0: No Subversion revision found\" unless $version;\n\nopen(FH, \"$INFO\") or die \"$0: $INFO: $!\";\nmy $info = join(\"\", <FH>);\nclose(FH);\n\n$info =~ s/([\\t ]+<key>CFBundleVersion<\\/key>\\n[\\t ]+<string>).*?(<\\/string>)/$1$version$2/;\n\nopen(FH, \">$INFO\") or die \"$0: $INFO: $!\";\nprint FH $info;\nclose(FH);";
+			shellScript = "# Xcode auto-versioning script for Subversion\n# by Axel Andersson, modified by Daniel Jalkut to add\n# \"--revision HEAD\" to the svn info line, which allows\n# the latest revision to always be used.\n\nuse strict;\n\ndie \"$0: Must be run from Xcode\" unless $ENV{\"BUILT_PRODUCTS_DIR\"};\n\n# Get the current subversion revision number and use it to set the CFBundleVersion value\nmy $REV = `/usr/local/bin/svnversion -n ./`;\nmy $INFO = \"$ENV{BUILT_PRODUCTS_DIR}/$ENV{WRAPPER_NAME}/Contents/Info.plist\";\n\nmy $version = $REV;\n\n# (Match the last group of digits and optional letter M/S):\n\n# ugly yet functional (barely) regex by Daniel Jalkut:\n#$version =~ s/([\\d]*:)(\\d+[M|S]*).*/$2/;\n\n# better yet still functional regex via Kevin \"Regex Nerd\" Ballard\n($version =~ m/\\d+[MS]*$/) && ($version = $&);\n\nmy $gitlog = `~/bin/git log --pretty=format:%h`;\nif( $gitlog !~ /^fatal: Not a git repository/ ) {\n\t#print $gitlog;\n\t$version = `echo \\\"$gitlog\\\" | wc -l`;\n\tchomp $version;\n\t$version =~ s/^\\s+//;\n\t$version -= 1;\n\t`~/bin/git status`;\n\t$version .= 'M' if 0 != $? >> 8;\n}\n\n#die \"$0: No Subversion revision found\" unless $version;\n$version = 'exported' unless $version;\n\nopen(FH, \"$INFO\") or die \"$0: $INFO: $!\";\nmy $info = join(\"\", <FH>);\nclose(FH);\n\n$info =~ s/([\\t ]+<key>CFBundleVersion<\\/key>\\n[\\t ]+<string>).*?(<\\/string>)/$1$version$2/;\n\nopen(FH, \">$INFO\") or die \"$0: $INFO: $!\";\nprint FH $info;\nclose(FH);\n\nprint $version;";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -400,6 +383,7 @@
 		C05733C808A9546B00998B17 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_VERSION = 0.1;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -416,6 +400,7 @@
 		C05733C908A9546B00998B17 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_VERSION = 0.1;
 				ARCHS = (
 					ppc,
 					i386,
