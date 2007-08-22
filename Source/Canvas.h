@@ -8,6 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "PaintLayer.h"
+#import "Brush.h"
 
 @interface Canvas : NSObject <NSCoding> {
 	PaintLayer *_topLayer;
@@ -30,6 +31,11 @@
 - (void)setCurrentLayer:(PaintLayer *)aLayer;
 - (PaintLayer *)currentLayer;
 - (NSSize)size;
+
+- (NSRect)drawAtPoint:(PressurePoint)aPoint withBrush:(Brush *)aBrush onLayer:(int)layerIndex;
+- (NSRect)drawAtPoint:(PressurePoint)aPoint withBrushOnCurrentLayer:(Brush *)aBrush;
+- (NSRect)drawLineFromPoint:(PressurePoint)startPoint toPoint:(PressurePoint *)endPoint withBrush:(Brush *)aBrush onLayer:(int)layerIndex;
+- (NSRect)drawLineFromPoint:(PressurePoint)startPoint toPoint:(PressurePoint *)endPoint withBrushOnCurrentLayer:(Brush *)aBrush;
 
 - (void)drawRect:(NSRect)aRect;
 

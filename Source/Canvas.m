@@ -200,6 +200,25 @@
 	return _currentLayer;
 }
 
+#pragma mark drawing methods
+// we funnel all drawing through these so that we can generate the proper events for recording
+- (NSRect)drawAtPoint:(PressurePoint)aPoint withBrush:(Brush *)aBrush onLayer:(int)layerIndex
+{
+	return [aBrush renderPointAt:aPoint onLayer:[_layers objectAtIndex:layerIndex]];
+}
+- (NSRect)drawAtPoint:(PressurePoint)aPoint withBrushOnCurrentLayer:(Brush *)aBrush
+{
+	return [aBrush renderPointAt:aPoint onLayer:_currentLayer];
+}
+- (NSRect)drawLineFromPoint:(PressurePoint)startPoint toPoint:(PressurePoint *)endPoint withBrush:(Brush *)aBrush onLayer:(int)layerIndex;
+{
+	return [aBrush renderLineFromPoint:startPoint toPoint:endPoint onLayer:[_layers objectAtIndex:layerIndex]];
+}
+- (NSRect)drawLineFromPoint:(PressurePoint)startPoint toPoint:(PressurePoint *)endPoint withBrushOnCurrentLayer:(Brush *)aBrush;
+{
+	return [aBrush renderLineFromPoint:startPoint toPoint:endPoint onLayer:_currentLayer];
+}
+
 - (void)drawRect:(NSRect)aRect
 {
 	CGContextRef cxt = [[NSGraphicsContext currentContext] graphicsPort];
