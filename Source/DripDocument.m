@@ -88,6 +88,7 @@
 {
 	[_canvas release];
     _canvas = [NSKeyedUnarchiver unarchiveObjectWithFile:[absoluteURL path]];
+	[_canvas setDocument:self];
 
     return YES;
 }
