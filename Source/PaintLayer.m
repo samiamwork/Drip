@@ -7,7 +7,7 @@
 //
 
 #import "PaintLayer.h"
-
+#import "NSData+gzip.h"
 
 @implementation PaintLayer
 
@@ -45,8 +45,8 @@
 	[archiver encodeInt32:(int)_width forKey:@"width"];
 	[archiver encodeInt32:(int)_height forKey:@"height"];
 	[archiver encodeObject:_name forKey:@"name"];
-	[archiver encodeObject:[NSData dataWithBytes:_data length:_width*(_height+1)*4] forKey:@"data"];
-	
+	NSData *compressedData = [[NSData dataWithBytes:_data length:_width*(_height+1)*4] gzipDeflate];
+	[archiver encodeObject:compressedData forKey:@"data"];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder
@@ -65,7 +65,7 @@
 		_pitch = _width*4;
 		_data = calloc(_width*(_height+1), 4);
 		
-		NSData *newData = [unarchiver decodeObjectForKey:@"data"];
+		NSData *newData = [[unarchiver decodeObjectForKey:@"data"] gzipInflate];
 		[newData getBytes:_data length:_width*(_height+1)*4];
 		
 		CGColorSpaceRef colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
