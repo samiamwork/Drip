@@ -113,9 +113,6 @@
 	float newPressure = [theEvent pressure];
 	
 	PressurePoint newPressurePoint = (PressurePoint){ newPoint.x, newPoint.y, newPressure };
-	//NSRect drawnRect = [_currentBrush renderLineFromPoint:_lastMousePoint
-	//											  toPoint:&newPressurePoint
-	//											  onLayer:[_canvas currentLayer]];
 	NSRect drawnRect = [_canvas drawLineFromPoint:_lastMousePoint toPoint:&newPressurePoint withBrushOnCurrentLayer:_currentBrush];
 	_lastMousePoint = newPressurePoint;
 	

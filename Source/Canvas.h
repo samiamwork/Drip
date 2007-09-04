@@ -16,6 +16,7 @@
 	PaintLayer *_currentLayer;
 	
 	NSMutableArray *_layers;
+	NSMutableArray *_paintEvents;
 	
 	unsigned int _width;
 	unsigned int _height;

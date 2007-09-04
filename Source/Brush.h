@@ -8,6 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "PaintLayer.h"
+#import "DripEventBrushSettings.h"
 
 typedef struct PressurePoint {
 	float x;
@@ -48,4 +49,7 @@ typedef struct PressurePoint {
 
 - (NSRect)renderPointAt:(PressurePoint)aPoint onLayer:(PaintLayer *)aLayer;
 - (NSRect)renderLineFromPoint:(PressurePoint)startPoint toPoint:(PressurePoint *)endPoint onLayer:(PaintLayer *)aLayer;
+
+- (void)changeSettings:(DripEventBrushSettings *)theSettings;
+- (DripEventBrushSettings *)settings;
 @end

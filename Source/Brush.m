@@ -412,4 +412,23 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	return rect;
 }
 
+#pragma mark Settings
+
+- (void)changeSettings:(DripEventBrushSettings *)theSettings
+{
+	if( [theSettings type] != kBrushTypePaint )
+		return;
+	
+	[self setSize:[theSettings size]];
+	[self setHardness:[theSettings hardness]];
+	[self setSpacing:[theSettings spacing]];
+	[self setPressureAffectsFlow:[theSettings pressureAffectsFlow]];
+	[self setPressureAffectsSize:[theSettings pressureAffectsSize]];
+	[self setColor:[theSettings color]];
+}
+- (DripEventBrushSettings *)settings
+{
+	return [[[DripEventBrushSettings alloc] initWithType:kBrushTypePaint size:_brushSize hardness:_hardness spacing:_spacing pressureAffectsFlow:_pressureAffectsFlow pressureAffectsSize:_pressureAffectsSize color:[NSColor colorWithCalibratedRed:_RGBAColor[0] green:_RGBAColor[1] blue:_RGBAColor[2] alpha:_RGBAColor[3]]] autorelease];
+}
+
 @end
