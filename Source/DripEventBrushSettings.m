@@ -47,17 +47,15 @@
 }
 
 #define EVENT_LENGTH (EVENT_HEADER_LENGTH+1+sizeof(CFSwappedFloat32)*7+1)
-+ (id)eventWithData:(NSData *)theData
++ (id)eventWithBytes:(void *)bytes length:(unsigned int)length
 {
-	unsigned char *bytes = (unsigned char*)[theData bytes];
-	unsigned char length = *bytes;
-	
+	unsigned char eventLength = *(unsigned char *)bytes;
 	bytes++;
-	if( length != EVENT_LENGTH || length < [theData length] || bytes[0] != kDripEventBrushSettings )
+	if( eventLength != EVENT_LENGTH || eventLength < length || *(unsigned char *)bytes != kDripEventBrushSettings )
 		return nil;
 	bytes++;
 	
-	BrushType type = *bytes;
+	BrushType type = *(unsigned char *)bytes;
 	bytes++;
 	float rgba[4];
 	float size;
@@ -83,7 +81,7 @@
 	spacing = CFConvertFloat32SwappedToHost( *(CFSwappedFloat32 *)bytes );
 	bytes += sizeof(CFSwappedFloat32);
 	
-	pressureAffects = *bytes;
+	pressureAffects = *(unsigned char *)bytes;
 	
 	return [[[DripEventBrushSettings alloc] initWithType:type
 													size:size

@@ -19,6 +19,7 @@
 		_currentLayer = nil;
 		
 		_layers = [[NSMutableArray alloc] init];
+		_paintEvents = [[NSMutableArray alloc] init];
 		
 		_width = 0;
 		_height = 0;
@@ -35,9 +36,32 @@
 	[_topLayer release];
 	[_bottomLayer release];
 	
+	[_paintEvents release];
 	[_document release];
 
 	[super dealloc];
+}
+
+- (void)compactEvents
+{
+	NSMutableArray *newEvents = [[NSMutableArray alloc] init];
+	
+	DripEventBrushSettings *lastSetting = nil;
+	NSEnumerator *eventEnumerator = [_paintEvents objectEnumerator];
+	DripEvent *anEvent;
+	while( (anEvent = [eventEnumerator nextObject]) ) {
+		
+		if( ![anEvent isKindOfClass:[DripEventBrushSettings class]] ) {
+			if( lastSetting != nil )
+				[newEvents addObject:lastSetting];
+			lastSetting = nil;
+			[newEvents addObject:anEvent];
+		} else 
+			lastSetting = (DripEventBrushSettings *)anEvent;
+	}	
+	
+	[_paintEvents release];
+	_paintEvents = newEvents;
 }
 
 - (void)encodeWithCoder:(NSCoder *)encoder
@@ -49,6 +73,17 @@
 	[archiver encodeInt32:(int)_width forKey:@"width"];
 	[archiver encodeInt32:(int)_height forKey:@"height"];
 	[archiver encodeObject:_layers forKey:@"layers"];
+	
+	// archive events as data
+	[self compactEvents];
+	NSMutableData *eventData = [[NSMutableData alloc] init];
+	NSEnumerator *eventEnumerator = [_paintEvents objectEnumerator];
+	DripEvent *anEvent;
+	while( (anEvent = [eventEnumerator nextObject]) )
+		[eventData appendData:[anEvent data]];
+	
+	[archiver encodeObject:[eventData gzipDeflate] forKey:@"events"];
+	[eventData release];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder
@@ -64,6 +99,39 @@
 		_height = (unsigned int)[unarchiver decodeIntForKey:@"height"];
 		_layers = [[NSMutableArray alloc] initWithArray:[unarchiver decodeObjectForKey:@"layers"]];
 		[self setCurrentLayer:[_layers objectAtIndex:0]];
+		
+		//get events
+		_paintEvents = [[NSMutableArray alloc] init];
+		NSData *eventData = [[unarchiver decodeObjectForKey:@"events"] gzipInflate];
+		unsigned char *bytes = (unsigned char *)[eventData bytes];
+		//DANGER: could possibly be too small
+		unsigned int position = 0;
+		while( position < [eventData length] ) {
+			// event list is incomplete... we might want to fail more gracefully since
+			// we probably have everything else. Not worth dying for.
+			if( bytes[position] > [eventData length]-position ) {
+				[self release];
+				return nil;
+			}
+			
+			DripEvent *newEvent = nil;
+			switch( bytes[position+1] ) {
+				case kDripEventBrushDown:
+					newEvent = [DripEventBrushDown eventWithBytes:&bytes[position] length:[eventData length]-position];
+					break;
+				case kDripEventBrushDrag:
+					newEvent = [DripEventBrushDrag eventWithBytes:&bytes[position] length:[eventData length]-position];
+					break;
+				case kDripEventBrushSettings:
+					newEvent = [DripEventBrushSettings eventWithBytes:&bytes[position] length:[eventData length]-position];
+					break;
+				default:
+					printf("unknown event! (%d)\n", bytes[position+1]);
+			}
+			
+			[_paintEvents addObject:newEvent];
+		}
+		
 	}
 	
 	return self;
@@ -204,19 +272,29 @@
 // we funnel all drawing through these so that we can generate the proper events for recording
 - (NSRect)drawAtPoint:(PressurePoint)aPoint withBrush:(Brush *)aBrush onLayer:(int)layerIndex
 {
+	[_paintEvents addObject:[aBrush settings]];
+	[_paintEvents addObject:[[[DripEventBrushDown alloc] initWithPosition:NSMakePoint(aPoint.x,aPoint.y) pressure:aPoint.pressure] autorelease]];
 	return [aBrush renderPointAt:aPoint onLayer:[_layers objectAtIndex:layerIndex]];
 }
 - (NSRect)drawAtPoint:(PressurePoint)aPoint withBrushOnCurrentLayer:(Brush *)aBrush
 {
+	[_paintEvents addObject:[aBrush settings]];
+	[_paintEvents addObject:[[[DripEventBrushDown alloc] initWithPosition:NSMakePoint(aPoint.x,aPoint.y) pressure:aPoint.pressure] autorelease]];
 	return [aBrush renderPointAt:aPoint onLayer:_currentLayer];
 }
 - (NSRect)drawLineFromPoint:(PressurePoint)startPoint toPoint:(PressurePoint *)endPoint withBrush:(Brush *)aBrush onLayer:(int)layerIndex;
 {
-	return [aBrush renderLineFromPoint:startPoint toPoint:endPoint onLayer:[_layers objectAtIndex:layerIndex]];
+	[_paintEvents addObject:[aBrush settings]];
+	[_paintEvents addObject:[[[DripEventBrushDrag alloc] initWithPosition:NSMakePoint(endPoint->x,endPoint->y) pressure:endPoint->pressure] autorelease]];
+	NSRect affectedRect = [aBrush renderLineFromPoint:startPoint toPoint:endPoint onLayer:[_layers objectAtIndex:layerIndex]];
+	return affectedRect;
 }
 - (NSRect)drawLineFromPoint:(PressurePoint)startPoint toPoint:(PressurePoint *)endPoint withBrushOnCurrentLayer:(Brush *)aBrush;
 {
-	return [aBrush renderLineFromPoint:startPoint toPoint:endPoint onLayer:_currentLayer];
+	[_paintEvents addObject:[aBrush settings]];
+	[_paintEvents addObject:[[[DripEventBrushDrag alloc] initWithPosition:NSMakePoint(endPoint->x,endPoint->y) pressure:endPoint->pressure] autorelease]];
+	NSRect affectedRect = [aBrush renderLineFromPoint:startPoint toPoint:endPoint onLayer:_currentLayer];
+	return affectedRect;
 }
 
 - (void)drawRect:(NSRect)aRect

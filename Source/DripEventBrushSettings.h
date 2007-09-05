@@ -25,7 +25,6 @@ typedef enum BrushType {
 	BOOL _pressureAffectsSize;
 }
 
-+ (id)eventWithData:(NSData *)theData;
 - (id)initWithType:(BrushType)theType size:(float)theSize hardness:(float)theHardness spacing:(float)theSpacing pressureAffectsFlow:(BOOL)willAffectFlow pressureAffectsSize:(BOOL)willAffectSize color:(NSColor *)theColor;
 
 - (BrushType)type;
@@ -35,6 +34,4 @@ typedef enum BrushType {
 - (BOOL)pressureAffectsFlow;
 - (BOOL)pressureAffectsSize;
 - (NSColor*)color;
-
-- (NSData *)data;
 @end

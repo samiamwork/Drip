@@ -20,6 +20,9 @@ typedef enum DripEventType {
 	NSTimeInterval _timestamp;
 }
 
++ (id)eventWithBytes:(void *)bytes length:(unsigned int)length;
+- (NSData *)data;
+
 - (NSTimeInterval)timestamp;
 - (void)setTimestamp:(NSTimeInterval)newTimestamp;
 @end

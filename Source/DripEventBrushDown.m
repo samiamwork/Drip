@@ -32,13 +32,11 @@
 }
 
 #define EVENT_LENGTH (EVENT_HEADER_LENGTH+sizeof(CFSwappedFloat32)*3)
-+ (id)eventWithData:(NSData *)theData
++ (id)eventWithBytes:(void *)bytes length:(unsigned int)length
 {
-	unsigned char *bytes = (unsigned char*)[theData bytes];
-	unsigned char length = *bytes;
-	
+	unsigned char eventLength = *(unsigned char *)bytes;
 	bytes++;
-	if( length != EVENT_LENGTH || length < [theData length] || bytes[0] != kDripEventBrushDown )
+	if( eventLength != EVENT_LENGTH || eventLength < length || *(unsigned char *)bytes != kDripEventBrushDown )
 		return nil;
 	bytes++;
 	NSPoint position;

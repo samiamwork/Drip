@@ -9,6 +9,10 @@
 #import <Cocoa/Cocoa.h>
 #import "PaintLayer.h"
 #import "Brush.h"
+#import "DripEventBrushDown.h"
+#import "DripEventBrushDrag.h"
+#import "DripEventBrushSettings.h"
+#import "NSData+gzip.h"
 
 @interface Canvas : NSObject <NSCoding> {
 	PaintLayer *_topLayer;
@@ -32,6 +36,8 @@
 - (void)setCurrentLayer:(PaintLayer *)aLayer;
 - (PaintLayer *)currentLayer;
 - (NSSize)size;
+
+- (void)compactEvents;
 
 - (NSRect)drawAtPoint:(PressurePoint)aPoint withBrush:(Brush *)aBrush onLayer:(int)layerIndex;
 - (NSRect)drawAtPoint:(PressurePoint)aPoint withBrushOnCurrentLayer:(Brush *)aBrush;

@@ -14,10 +14,7 @@
 	float _pressure;
 }
 
-+ (id)eventWithData:(NSData *)theData;
 - (id)initWithPosition:(NSPoint)aPosition pressure:(float)thePressure;
 - (NSPoint)position;
 - (float)pressure;
-
-- (NSData *)data;
 @end

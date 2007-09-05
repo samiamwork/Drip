@@ -20,6 +20,15 @@
 	return self;
 }
 
++ (id)eventWithBytes:(void *)bytes length:(unsigned int)length
+{
+	return [[[DripEvent alloc] init] autorelease];
+}
+- (NSData *)data
+{
+	return [NSData data];
+}
+
 - (NSTimeInterval)timestamp
 {
 	return _timestamp;
