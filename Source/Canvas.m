@@ -64,6 +64,75 @@
 	_paintEvents = newEvents;
 }
 
+- (void)beginPlayback
+{
+	_backupLayers = _layers;
+	
+	_currentLayer = [[PaintLayer alloc] initWithWidth:_width height:_height];
+	[_currentLayer setName:@"Layer 0"];
+	_layers = [[NSMutableArray alloc] initWithObjects:_currentLayer,nil];
+	[_currentLayer release];
+	_topLayer = nil;
+	_bottomLayer = nil;
+	
+	_currentPlaybackBrush = _playbackBrush = [[Brush alloc] init];
+	_playbackEraser = [[BrushEraser alloc] init];
+	_eventIndex = 0;
+	_isPlayingBack = YES;
+}
+- (void)endPlayback
+{
+	if( !_isPlayingBack )
+		return;
+	
+	_isPlayingBack = NO;
+	[_layers release];
+	_layers = _backupLayers;
+	[self setCurrentLayer:[_layers objectAtIndex:0]];
+	
+	[_playbackBrush release];
+	_playbackBrush = nil;
+	[_playbackEraser release];
+	_playbackBrush = nil;
+}
+- (BOOL)isPlayingBack
+{
+	return _isPlayingBack;
+}
+- (NSRect)playNextEvent
+{
+	if( _eventIndex >= [_paintEvents count] ) {
+		[self endPlayback];
+		return NSZeroRect;
+	}
+	
+	DripEvent *theEvent = [_paintEvents objectAtIndex:_eventIndex];
+	_eventIndex++;
+	
+	if( [theEvent isKindOfClass:[DripEventBrushDown class]] ) {
+		DripEventBrushDown *brushDown = (DripEventBrushDown *)theEvent;
+		_lastPlaybackPoint = (PressurePoint){[brushDown position].x, [brushDown position].y, [brushDown pressure]};
+		return [_currentPlaybackBrush renderPointAt:_lastPlaybackPoint onLayer:_currentLayer];
+	} else if( [theEvent isKindOfClass:[DripEventBrushDrag class]] ) {
+		DripEventBrushDrag *brushDrag = (DripEventBrushDrag *)theEvent;
+		PressurePoint dragPoint = (PressurePoint){[brushDrag position].x, [brushDrag position].y, [brushDrag pressure]}; 
+		NSRect affectedRect = [_currentPlaybackBrush renderLineFromPoint:_lastPlaybackPoint toPoint:&dragPoint onLayer:_currentLayer];
+		_lastPlaybackPoint = dragPoint;
+		return affectedRect;
+	} else if( [theEvent isKindOfClass:[DripEventBrushSettings class]] ) {
+		DripEventBrushSettings *brushSettings = (DripEventBrushSettings *)theEvent;
+		if( [brushSettings type] == kBrushTypePaint )
+			_currentPlaybackBrush = _playbackBrush;
+		else
+			_currentPlaybackBrush = _playbackEraser;
+		[_currentPlaybackBrush changeSettings:brushSettings];
+		return NSZeroRect;
+	} else {
+		printf("unknown event!\n");
+	}
+	return NSZeroRect;
+}
+
 - (void)encodeWithCoder:(NSCoder *)encoder
 {
 	if( ![encoder isKindOfClass:[NSKeyedArchiver class]] )
@@ -150,6 +219,7 @@
 		_topLayer = nil;
 		_bottomLayer = nil;
 		
+		_paintEvents = [[NSMutableArray alloc] init];
 		_document = nil;
 	}
 	

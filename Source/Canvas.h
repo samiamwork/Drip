@@ -9,6 +9,7 @@
 #import <Cocoa/Cocoa.h>
 #import "PaintLayer.h"
 #import "Brush.h"
+#import "BrushEraser.h"
 #import "DripEventBrushDown.h"
 #import "DripEventBrushDrag.h"
 #import "DripEventBrushSettings.h"
@@ -20,6 +21,14 @@
 	PaintLayer *_currentLayer;
 	
 	NSMutableArray *_layers;
+	
+	NSMutableArray *_backupLayers;
+	BOOL _isPlayingBack;
+	unsigned int _eventIndex;
+	Brush *_playbackBrush;
+	BrushEraser *_playbackEraser;
+	Brush *_currentPlaybackBrush;
+	PressurePoint _lastPlaybackPoint;
 	NSMutableArray *_paintEvents;
 	
 	unsigned int _width;
@@ -38,6 +47,10 @@
 - (NSSize)size;
 
 - (void)compactEvents;
+- (void)beginPlayback;
+- (void)endPlayback;
+- (BOOL)isPlayingBack;
+- (NSRect)playNextEvent;
 
 - (NSRect)drawAtPoint:(PressurePoint)aPoint withBrush:(Brush *)aBrush onLayer:(int)layerIndex;
 - (NSRect)drawAtPoint:(PressurePoint)aPoint withBrushOnCurrentLayer:(Brush *)aBrush;
