@@ -199,6 +199,7 @@
 			}
 			
 			[_paintEvents addObject:newEvent];
+			position += bytes[position];
 		}
 		
 	}

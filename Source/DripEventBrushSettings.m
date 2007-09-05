@@ -51,7 +51,7 @@
 {
 	unsigned char eventLength = *(unsigned char *)bytes;
 	bytes++;
-	if( eventLength != EVENT_LENGTH || eventLength < length || *(unsigned char *)bytes != kDripEventBrushSettings )
+	if( eventLength != EVENT_LENGTH || eventLength > length || *(unsigned char *)bytes != kDripEventBrushSettings )
 		return nil;
 	bytes++;
 	

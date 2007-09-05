@@ -35,7 +35,7 @@
 {
 	unsigned char eventLength = *(unsigned char *)bytes;
 	bytes++;
-	if( eventLength != EVENT_LENGTH || eventLength < length || *(unsigned char *)bytes != kDripEventBrushDrag )
+	if( eventLength != EVENT_LENGTH || eventLength > length || *(unsigned char *)bytes != kDripEventBrushDrag )
 		return nil;
 	bytes++;
 	NSPoint position;
