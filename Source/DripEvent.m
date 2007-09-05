@@ -20,4 +20,13 @@
 	return self;
 }
 
+- (NSTimeInterval)timestamp
+{
+	return _timestamp;
+}
+- (void)setTimestamp:(NSTimeInterval)newTimestamp
+{
+	_timestamp = newTimestamp;
+}
+
 @end

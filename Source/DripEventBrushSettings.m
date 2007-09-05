@@ -46,8 +46,7 @@
 	return self;
 }
 
-// length + event type + data
-#define EVENT_LENGTH (1+1+1+sizeof(CFSwappedFloat32)*7+1)
+#define EVENT_LENGTH (EVENT_HEADER_LENGTH+1+sizeof(CFSwappedFloat32)*7+1)
 + (id)eventWithData:(NSData *)theData
 {
 	unsigned char *bytes = (unsigned char*)[theData bytes];

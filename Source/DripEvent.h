@@ -8,6 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 
+// length + type
+#define EVENT_HEADER_LENGTH (1+1)
 typedef enum DripEventType {
 	kDripEventBrushDown = 1,
 	kDripEventBrushDrag = 2,
@@ -19,4 +21,5 @@ typedef enum DripEventType {
 }
 
 - (NSTimeInterval)timestamp;
+- (void)setTimestamp:(NSTimeInterval)newTimestamp;
 @end

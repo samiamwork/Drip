@@ -30,8 +30,7 @@
 	return self;
 }
 
-// length + type + data
-#define EVENT_LENGTH (1+1+sizeof(CFSwappedFloat32)*3)
+#define EVENT_LENGTH (EVENT_HEADER_LENGTH+sizeof(CFSwappedFloat32)*3)
 + (id)eventWithData:(NSData *)theData
 {
 	unsigned char *bytes = (unsigned char*)[theData bytes];
@@ -49,7 +48,7 @@
 	position.y = CFConvertFloat32SwappedToHost( *(CFSwappedFloat32 *)bytes );
 	bytes += sizeof(CFSwappedFloat32);
 	pressure = CFConvertFloat32SwappedToHost( *(CFSwappedFloat32 *)bytes );
-
+	
 	return [[[DripEventBrushDrag alloc] initWithPosition:position pressure:pressure] autorelease];
 }
 
