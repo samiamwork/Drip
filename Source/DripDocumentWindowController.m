@@ -26,6 +26,7 @@
 	_playbackTimer = [NSTimer scheduledTimerWithTimeInterval:0.0 target:self selector:@selector(playbackTick:) userInfo:nil repeats:YES];
 	Canvas *theCanvas = [(DripDocument*)[self document] canvas];
 	[theCanvas beginPlayback];
+	[_sketchView setNeedsDisplay:YES];
 }
 
 - (IBAction)pausePlayback:(id)sender
@@ -55,6 +56,6 @@
 		invalidCanvasRect = [theCanvas playNextEvent];
 	}
 	//TODO: should be more precise
-	[_sketchView setNeedsDisplay:YES];
+	[_sketchView invalidateCanvasRect:invalidCanvasRect];
 }
 @end

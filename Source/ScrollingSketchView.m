@@ -60,6 +60,13 @@
 	[super dealloc];
 }
 
+- (void)invalidateCanvasRect:(NSRect)invalidCanvasRect
+{
+	invalidCanvasRect.origin.x += _canvasOrigin.x;
+	invalidCanvasRect.origin.y += _canvasOrigin.y;
+	[self setNeedsDisplayInRect:invalidCanvasRect];
+}
+
 - (void)drawRect:(NSRect)rect {
 	NSRect bounds = [self bounds];
 	[[NSColor grayColor] set];

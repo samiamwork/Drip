@@ -35,4 +35,6 @@
 - (void)redoScrollers;
 - (float)visibleWidth;
 - (float)visibleHeight;
+
+- (void)invalidateCanvasRect:(NSRect)invalidCanvasRect;
 @end
