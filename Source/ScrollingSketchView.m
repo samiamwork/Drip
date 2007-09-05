@@ -98,6 +98,9 @@
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
+	if( [_canvas isPlayingBack] )
+		return;
+	
 	NSPoint clickPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 	_lastMousePoint = (PressurePoint){clickPoint.x, clickPoint.y, [theEvent pressure]};
 	_lastMousePoint.x -= _canvasOrigin.x;
@@ -114,6 +117,9 @@
 
 - (void)mouseDragged:(NSEvent *)theEvent
 {
+	if( [_canvas isPlayingBack] )
+		return;
+	
 	NSPoint newPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 	newPoint.x -= _canvasOrigin.x;
 	newPoint.y -= _canvasOrigin.y;

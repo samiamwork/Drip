@@ -343,24 +343,36 @@
 // we funnel all drawing through these so that we can generate the proper events for recording
 - (NSRect)drawAtPoint:(PressurePoint)aPoint withBrush:(Brush *)aBrush onLayer:(int)layerIndex
 {
+	if( _isPlayingBack )
+		return NSZeroRect;
+	
 	[_paintEvents addObject:[aBrush settings]];
 	[_paintEvents addObject:[[[DripEventBrushDown alloc] initWithPosition:NSMakePoint(aPoint.x,aPoint.y) pressure:aPoint.pressure] autorelease]];
 	return [aBrush renderPointAt:aPoint onLayer:[_layers objectAtIndex:layerIndex]];
 }
 - (NSRect)drawAtPoint:(PressurePoint)aPoint withBrushOnCurrentLayer:(Brush *)aBrush
 {
+	if( _isPlayingBack )
+		return NSZeroRect;
+	
 	[_paintEvents addObject:[aBrush settings]];
 	[_paintEvents addObject:[[[DripEventBrushDown alloc] initWithPosition:NSMakePoint(aPoint.x,aPoint.y) pressure:aPoint.pressure] autorelease]];
 	return [aBrush renderPointAt:aPoint onLayer:_currentLayer];
 }
 - (NSRect)drawLineFromPoint:(PressurePoint)startPoint toPoint:(PressurePoint *)endPoint withBrush:(Brush *)aBrush onLayer:(int)layerIndex;
 {
+	if( _isPlayingBack )
+		return NSZeroRect;
+	
 	[_paintEvents addObject:[[[DripEventBrushDrag alloc] initWithPosition:NSMakePoint(endPoint->x,endPoint->y) pressure:endPoint->pressure] autorelease]];
 	NSRect affectedRect = [aBrush renderLineFromPoint:startPoint toPoint:endPoint onLayer:[_layers objectAtIndex:layerIndex]];
 	return affectedRect;
 }
 - (NSRect)drawLineFromPoint:(PressurePoint)startPoint toPoint:(PressurePoint *)endPoint withBrushOnCurrentLayer:(Brush *)aBrush;
 {
+	if( _isPlayingBack )
+		return NSZeroRect;
+	
 	[_paintEvents addObject:[[[DripEventBrushDrag alloc] initWithPosition:NSMakePoint(endPoint->x,endPoint->y) pressure:endPoint->pressure] autorelease]];
 	NSRect affectedRect = [aBrush renderLineFromPoint:startPoint toPoint:endPoint onLayer:_currentLayer];
 	return affectedRect;
