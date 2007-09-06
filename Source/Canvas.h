@@ -13,6 +13,9 @@
 #import "DripEventBrushDown.h"
 #import "DripEventBrushDrag.h"
 #import "DripEventBrushSettings.h"
+#import "DripEventLayerAdd.h"
+#import "DripEventLayerDelete.h"
+#import "DripEventLayerMove.h"
 #import "NSData+gzip.h"
 
 @interface Canvas : NSObject <NSCoding> {

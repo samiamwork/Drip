@@ -20,6 +20,9 @@
 		3E7AB11A0C7BD98A004389F6 /* NSData+gzip.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E7AB1190C7BD98A004389F6 /* NSData+gzip.m */; };
 		3E89C85F0B499F4200134E08 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E89C85C0B499F4200134E08 /* main.m */; };
 		3E89C8600B499F4200134E08 /* DripDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E89C85E0B499F4200134E08 /* DripDocument.m */; };
+		3E8C399E0C8F80820091E8BE /* DripEventLayerAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E8C399D0C8F80820091E8BE /* DripEventLayerAdd.m */; };
+		3E8C39B70C8F82AD0091E8BE /* DripEventLayerDelete.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E8C39B60C8F82AD0091E8BE /* DripEventLayerDelete.m */; };
+		3E8C39BE0C8F83520091E8BE /* DripEventLayerMove.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E8C39BD0C8F83520091E8BE /* DripEventLayerMove.m */; };
 		3ED06C490C89FAF000BF0669 /* DripEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ED06C480C89FAF000BF0669 /* DripEvent.m */; };
 		3ED06C560C89FBCE00BF0669 /* DripEventBrushDown.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ED06C550C89FBCE00BF0669 /* DripEventBrushDown.m */; };
 		3ED06C6A0C89FDAA00BF0669 /* DripEventBrushDrag.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ED06C690C89FDAA00BF0669 /* DripEventBrushDrag.m */; };
@@ -70,6 +73,12 @@
 		3E89C85C0B499F4200134E08 /* main.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		3E89C85D0B499F4200134E08 /* DripDocument.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DripDocument.h; sourceTree = "<group>"; };
 		3E89C85E0B499F4200134E08 /* DripDocument.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DripDocument.m; sourceTree = "<group>"; };
+		3E8C399C0C8F80820091E8BE /* DripEventLayerAdd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripEventLayerAdd.h; sourceTree = "<group>"; };
+		3E8C399D0C8F80820091E8BE /* DripEventLayerAdd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DripEventLayerAdd.m; sourceTree = "<group>"; };
+		3E8C39B50C8F82AD0091E8BE /* DripEventLayerDelete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripEventLayerDelete.h; sourceTree = "<group>"; };
+		3E8C39B60C8F82AD0091E8BE /* DripEventLayerDelete.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DripEventLayerDelete.m; sourceTree = "<group>"; };
+		3E8C39BC0C8F83520091E8BE /* DripEventLayerMove.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripEventLayerMove.h; sourceTree = "<group>"; };
+		3E8C39BD0C8F83520091E8BE /* DripEventLayerMove.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DripEventLayerMove.m; sourceTree = "<group>"; };
 		3ED06C470C89FAF000BF0669 /* DripEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripEvent.h; sourceTree = "<group>"; };
 		3ED06C480C89FAF000BF0669 /* DripEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DripEvent.m; sourceTree = "<group>"; };
 		3ED06C540C89FBCE00BF0669 /* DripEventBrushDown.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripEventBrushDown.h; sourceTree = "<group>"; };
@@ -249,6 +258,12 @@
 				3ED06C550C89FBCE00BF0669 /* DripEventBrushDown.m */,
 				3ED06C730C89FE1800BF0669 /* DripEventBrushSettings.h */,
 				3ED06C740C89FE1800BF0669 /* DripEventBrushSettings.m */,
+				3E8C399C0C8F80820091E8BE /* DripEventLayerAdd.h */,
+				3E8C399D0C8F80820091E8BE /* DripEventLayerAdd.m */,
+				3E8C39B50C8F82AD0091E8BE /* DripEventLayerDelete.h */,
+				3E8C39B60C8F82AD0091E8BE /* DripEventLayerDelete.m */,
+				3E8C39BC0C8F83520091E8BE /* DripEventLayerMove.h */,
+				3E8C39BD0C8F83520091E8BE /* DripEventLayerMove.m */,
 			);
 			name = Events;
 			sourceTree = "<group>";
@@ -377,6 +392,9 @@
 				3ED06C560C89FBCE00BF0669 /* DripEventBrushDown.m in Sources */,
 				3ED06C6A0C89FDAA00BF0669 /* DripEventBrushDrag.m in Sources */,
 				3ED06C750C89FE1800BF0669 /* DripEventBrushSettings.m in Sources */,
+				3E8C399E0C8F80820091E8BE /* DripEventLayerAdd.m in Sources */,
+				3E8C39B70C8F82AD0091E8BE /* DripEventLayerDelete.m in Sources */,
+				3E8C39BE0C8F83520091E8BE /* DripEventLayerMove.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

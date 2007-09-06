@@ -12,8 +12,12 @@
 #define EVENT_HEADER_LENGTH (1+1)
 typedef enum DripEventType {
 	kDripEventBrushDown = 1,
-	kDripEventBrushDrag = 2,
-	kDripEventBrushSettings = 3,
+	kDripEventBrushDrag,
+	kDripEventBrushSettings,
+	// never sent across network (i.e. not allowed)
+	kDripEventLayerAdd,
+	kDripEventLayerDelete,
+	kDripEventLayerMove
 } DripEventType;
 
 @interface DripEvent : NSObject {

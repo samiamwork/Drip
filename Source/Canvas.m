@@ -127,6 +127,16 @@
 			_currentPlaybackBrush = _playbackEraser;
 		[_currentPlaybackBrush changeSettings:brushSettings];
 		return NSZeroRect;
+	} else if( [theEvent isKindOfClass:[DripEventLayerAdd class]] ) {
+		[self addLayer];
+		return NSMakeRect(0.0f,0.0f,_width,_height);
+	} else if( [theEvent isKindOfClass:[DripEventLayerDelete class]] ) {
+		[self deleteLayer:_currentLayer];
+		return NSMakeRect(0.0f,0.0f,_width,_height);
+	} else if( [theEvent isKindOfClass:[DripEventLayerMove class]] ) {
+		DripEventLayerMove *layerMove = (DripEventLayerMove *)theEvent;
+		[self insertLayer:[_layers objectAtIndex:[layerMove fromIndex]] AtIndex:[layerMove toIndex]];
+		return NSMakeRect(0.0f,0.0f,_width,_height);
 	} else {
 		printf("unknown event!\n");
 	}
@@ -194,6 +204,15 @@
 				case kDripEventBrushSettings:
 					newEvent = [DripEventBrushSettings eventWithBytes:&bytes[position] length:[eventData length]-position];
 					break;
+				case kDripEventLayerAdd:
+					newEvent = [DripEventLayerAdd eventWithBytes:&bytes[position] length:[eventData length]-position];
+					break;
+				case kDripEventLayerDelete:
+					newEvent = [DripEventLayerDelete eventWithBytes:&bytes[position] length:[eventData length]-position];
+					break;
+				case kDripEventLayerMove:
+					newEvent = [DripEventLayerMove eventWithBytes:&bytes[position] length:[eventData length]-position];
+					break;
 				default:
 					printf("unknown event! (%d)\n", bytes[position+1]);
 			}
@@ -259,6 +278,10 @@
 		return;
 	}
 
+	// EVENT:
+	// add new layer
+	if( !_isPlayingBack )
+		[_paintEvents addObject:[[[DripEventLayerAdd alloc] init] autorelease]];
 	PaintLayer *newLayer = [[PaintLayer alloc] initWithWidth:_width height:_height];
 	
 	//rename
@@ -291,6 +314,10 @@
 		return;
 	}
 	
+	// EVENT:
+	// remove layer at "deleteIndex"
+	if( !_isPlayingBack )
+		[_paintEvents addObject:[[[DripEventLayerDelete alloc] init] autorelease]];
 	[_layers removeObjectAtIndex:deleteIndex];
 	
 	if( deleteIndex != 0 )
@@ -307,10 +334,16 @@
 		[_layers insertObject:theLayer atIndex:theTargetIndex];
 		return;
 	}
+	// For event recording and playback purposes we're going to assume that we're always using this
+	// to rearrange layers, rather than to insert foreign layers.
 	
 	if( theLayerIndex == theTargetIndex )
 		return;
 	
+	// EVENT:
+	// move layer at index "theLayerIndex" to "theTargetIndex"
+	if( !_isPlayingBack )
+		[_paintEvents addObject:[[[DripEventLayerMove alloc] initWithFromIndex:theLayerIndex toIndex:theTargetIndex] autorelease]];
 	[_layers insertObject:theLayer atIndex:theTargetIndex];
 	if( theLayerIndex > theTargetIndex )
 		theLayerIndex++;
@@ -326,9 +359,12 @@
 
 - (void)setCurrentLayer:(PaintLayer *)aLayer
 {
-	if( aLayer == _currentLayer || ![_layers containsObject:aLayer] )
+	unsigned int layerIndex = [_layers indexOfObject:aLayer];
+	if( aLayer == _currentLayer || layerIndex == NSNotFound )
 		return;
 	
+	// EVENT:
+	// set CurrentLayer to layer at index "layerIndex"
 	_currentLayer = aLayer;
 	
 	[self rebuildTopAndBottom];
