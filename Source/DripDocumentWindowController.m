@@ -22,9 +22,12 @@
 
 - (IBAction)playBack:(id)sender
 {
+	Canvas *theCanvas = [(DripDocument*)[self document] canvas];
+	if( [theCanvas isPlayingBack] )
+		return;
+	
 	printf("playback\n");
 	_playbackTimer = [NSTimer scheduledTimerWithTimeInterval:0.0 target:self selector:@selector(playbackTick:) userInfo:nil repeats:YES];
-	Canvas *theCanvas = [(DripDocument*)[self document] canvas];
 	[theCanvas beginPlayback];
 	[_sketchView setNeedsDisplay:YES];
 }
@@ -32,6 +35,12 @@
 - (IBAction)pausePlayback:(id)sender
 {
 	printf("pause\n");
+	if( _playbackTimer == nil ) {
+		_playbackTimer = [NSTimer scheduledTimerWithTimeInterval:0.0 target:self selector:@selector(playbackTick:) userInfo:nil repeats:YES];
+	} else {
+		[_playbackTimer invalidate];
+		_playbackTimer = nil;
+	}
 }
 
 - (IBAction)stopPlayback:(id)sender

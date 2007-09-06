@@ -12,7 +12,7 @@
             SUPERCLASS = NSObject; 
         }, 
         {
-            ACTIONS = {playBack = id; }; 
+            ACTIONS = {pausePlayback = id; playBack = id; }; 
             CLASS = FirstResponder; 
             LANGUAGE = ObjC; 
             SUPERCLASS = NSObject; 
