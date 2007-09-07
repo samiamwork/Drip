@@ -20,6 +20,7 @@
 		
 		_layers = [[NSMutableArray alloc] init];
 		_paintEvents = [[NSMutableArray alloc] init];
+		_layerSettings = nil;
 		
 		_width = 0;
 		_height = 0;
@@ -137,6 +138,10 @@
 		DripEventLayerMove *layerMove = (DripEventLayerMove *)theEvent;
 		[self insertLayer:[_layers objectAtIndex:[layerMove fromIndex]] AtIndex:[layerMove toIndex]];
 		return NSMakeRect(0.0f,0.0f,_width,_height);
+	} else if( [theEvent isKindOfClass:[DripEventLayerSettings class]] ) {
+		DripEventLayerSettings *layerSettings = (DripEventLayerSettings *)theEvent;
+		[_currentLayer changeSettings:layerSettings];
+		return NSMakeRect(0.0f,0.0f,_width,_height);
 	} else {
 		printf("unknown event!\n");
 	}
@@ -181,6 +186,7 @@
 		
 		//get events
 		_paintEvents = [[NSMutableArray alloc] init];
+		_layerSettings = nil;
 		NSData *eventData = [[unarchiver decodeObjectForKey:@"events"] gzipInflate];
 		unsigned char *bytes = (unsigned char *)[eventData bytes];
 		//DANGER: could possibly be too small
@@ -213,6 +219,9 @@
 				case kDripEventLayerMove:
 					newEvent = [DripEventLayerMove eventWithBytes:&bytes[position] length:[eventData length]-position];
 					break;
+				case kDripEventLayerSettings:
+					newEvent = [DripEventLayerSettings eventWithBytes:&bytes[position] length:[eventData length]-position];
+					break;
 				default:
 					printf("unknown event! (%d)\n", bytes[position+1]);
 			}
@@ -240,6 +249,7 @@
 		_bottomLayer = nil;
 		
 		_paintEvents = [[NSMutableArray alloc] init];
+		_layerSettings = nil;
 		_document = nil;
 	}
 	
@@ -269,6 +279,8 @@
 		_topLayer = [[PaintLayer alloc] initWithContentsOfLayers:_layers inRange:NSMakeRange(targetIndex+1,[_layers count]-(targetIndex+1))];
 }
 
+#pragma mark Events
+
 - (void)addLayer
 {
 	unsigned int currentIndex = [_layers indexOfObject:_currentLayer];
@@ -278,6 +290,11 @@
 		return;
 	}
 
+	if( _layerSettings != nil ) {
+		[_paintEvents addObject:_layerSettings];
+		[_layerSettings release];
+		_layerSettings = nil;
+	}
 	// EVENT:
 	// add new layer
 	if( !_isPlayingBack )
@@ -314,6 +331,11 @@
 		return;
 	}
 	
+	if( _layerSettings != nil ) {
+		[_paintEvents addObject:_layerSettings];
+		[_layerSettings release];
+		_layerSettings = nil;
+	}
 	// EVENT:
 	// remove layer at "deleteIndex"
 	if( !_isPlayingBack )
@@ -340,6 +362,11 @@
 	if( theLayerIndex == theTargetIndex )
 		return;
 	
+	if( _layerSettings != nil ) {
+		[_paintEvents addObject:_layerSettings];
+		[_layerSettings release];
+		_layerSettings = nil;
+	}
 	// EVENT:
 	// move layer at index "theLayerIndex" to "theTargetIndex"
 	if( !_isPlayingBack )
@@ -363,9 +390,19 @@
 	if( aLayer == _currentLayer || layerIndex == NSNotFound )
 		return;
 	
+	if( _layerSettings != nil ) {
+		[_paintEvents addObject:_layerSettings];
+		[_layerSettings release];
+		_layerSettings = nil;
+	}
 	// EVENT:
 	// set CurrentLayer to layer at index "layerIndex"
 	_currentLayer = aLayer;
+	if( _layerSettings != nil ) {
+		[_paintEvents addObject:_layerSettings];
+		[_layerSettings release];
+		_layerSettings = nil;
+	}
 	
 	[self rebuildTopAndBottom];
 }
@@ -382,6 +419,11 @@
 	if( _isPlayingBack )
 		return NSZeroRect;
 	
+	if( _layerSettings != nil ) {
+		[_paintEvents addObject:_layerSettings];
+		[_layerSettings release];
+		_layerSettings = nil;
+	}
 	[_paintEvents addObject:[aBrush settings]];
 	[_paintEvents addObject:[[[DripEventBrushDown alloc] initWithPosition:NSMakePoint(aPoint.x,aPoint.y) pressure:aPoint.pressure] autorelease]];
 	return [aBrush renderPointAt:aPoint onLayer:[_layers objectAtIndex:layerIndex]];
@@ -391,6 +433,11 @@
 	if( _isPlayingBack )
 		return NSZeroRect;
 	
+	if( _layerSettings != nil ) {
+		[_paintEvents addObject:_layerSettings];
+		[_layerSettings release];
+		_layerSettings = nil;
+	}
 	[_paintEvents addObject:[aBrush settings]];
 	[_paintEvents addObject:[[[DripEventBrushDown alloc] initWithPosition:NSMakePoint(aPoint.x,aPoint.y) pressure:aPoint.pressure] autorelease]];
 	return [aBrush renderPointAt:aPoint onLayer:_currentLayer];
@@ -400,6 +447,11 @@
 	if( _isPlayingBack )
 		return NSZeroRect;
 	
+	if( _layerSettings != nil ) {
+		[_paintEvents addObject:_layerSettings];
+		[_layerSettings release];
+		_layerSettings = nil;
+	}
 	[_paintEvents addObject:[[[DripEventBrushDrag alloc] initWithPosition:NSMakePoint(endPoint->x,endPoint->y) pressure:endPoint->pressure] autorelease]];
 	NSRect affectedRect = [aBrush renderLineFromPoint:startPoint toPoint:endPoint onLayer:[_layers objectAtIndex:layerIndex]];
 	return affectedRect;
@@ -409,6 +461,11 @@
 	if( _isPlayingBack )
 		return NSZeroRect;
 	
+	if( _layerSettings != nil ) {
+		[_paintEvents addObject:_layerSettings];
+		[_layerSettings release];
+		_layerSettings = nil;
+	}
 	[_paintEvents addObject:[[[DripEventBrushDrag alloc] initWithPosition:NSMakePoint(endPoint->x,endPoint->y) pressure:endPoint->pressure] autorelease]];
 	NSRect affectedRect = [aBrush renderLineFromPoint:startPoint toPoint:endPoint onLayer:_currentLayer];
 	return affectedRect;
@@ -438,6 +495,12 @@
 - (NSDocument *)document
 {
 	return _document;
+}
+
+- (void)currentLayerSettingsChanged;
+{
+	[_layerSettings release];
+	_layerSettings = [[_currentLayer settings] retain];
 }
 
 @end

@@ -38,6 +38,7 @@
 	[_layerTable selectRowIndexes:[NSIndexSet indexSetWithIndex:indexToSelect] byExtendingSelection:NO];
 	[_layerTable reloadData];
 	[_sketchView setNeedsDisplay:YES];
+	[_opacitySlider setFloatValue:[[_theCanvas currentLayer] opacity]];
 }
 - (IBAction)deleteLayer:(id)sender
 {
@@ -46,6 +47,7 @@
 	[_layerTable selectRowIndexes:[NSIndexSet indexSetWithIndex:indexToSelect] byExtendingSelection:NO];
 	[_layerTable reloadData];
 	[_sketchView setNeedsDisplay:YES];
+	[_opacitySlider setFloatValue:[[_theCanvas currentLayer] opacity]];
 }
 
 #pragma mark Layer Table Datasource
@@ -70,6 +72,7 @@
 	
 	if( newOpacity != oldOpacity ) {
 		[sender setFloatValue:newOpacity];
+		[_theCanvas currentLayerSettingsChanged];
 		[_sketchView setNeedsDisplay:YES];
 	}
 }
@@ -121,6 +124,7 @@
 
 	[_theCanvas insertLayer:_draggingLayer AtIndex:toLayerRow];
 	[_sketchView setNeedsDisplay:YES];
+	[_opacitySlider setFloatValue:[[_theCanvas currentLayer] opacity]];
 	
 	//the layer order has changed so we need a new array
 	NSArray *newLayers = [_theCanvas layers];

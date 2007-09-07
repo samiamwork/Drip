@@ -201,6 +201,15 @@
 	return _cxt;
 }
 
+- (DripEventLayerSettings *)settings
+{
+	return [[[DripEventLayerSettings alloc] initWithOpacity:_opacity] autorelease];
+}
+- (void)changeSettings:(DripEventLayerSettings *)newSettings
+{
+	[self setOpacity:[newSettings opacity]];
+}
+
 - (void)drawRect:(NSRect)aRect inContext:(CGContextRef)aContext
 {
 	CGColorSpaceRef colorSpace;

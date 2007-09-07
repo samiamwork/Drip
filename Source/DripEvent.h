@@ -17,7 +17,8 @@ typedef enum DripEventType {
 	// never sent across network (i.e. not allowed)
 	kDripEventLayerAdd,
 	kDripEventLayerDelete,
-	kDripEventLayerMove
+	kDripEventLayerMove,
+	kDripEventLayerSettings
 } DripEventType;
 
 @interface DripEvent : NSObject {

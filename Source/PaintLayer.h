@@ -7,6 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "DripEventLayerSettings.h"
 
 @interface PaintLayer : NSObject <NSCoding> {
 	unsigned int _width;
@@ -33,4 +34,7 @@
 - (void)setOpacity:(float)newOpacity;
 
 - (void)drawRect:(NSRect)aRect inContext:(CGContextRef)aContext;
+
+- (DripEventLayerSettings *)settings;
+- (void)changeSettings:(DripEventLayerSettings *)newSettings;
 @end

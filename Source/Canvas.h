@@ -16,6 +16,7 @@
 #import "DripEventLayerAdd.h"
 #import "DripEventLayerDelete.h"
 #import "DripEventLayerMove.h"
+#import "DripEventLayerSettings.h"
 #import "NSData+gzip.h"
 
 @interface Canvas : NSObject <NSCoding> {
@@ -33,6 +34,7 @@
 	Brush *_currentPlaybackBrush;
 	PressurePoint _lastPlaybackPoint;
 	NSMutableArray *_paintEvents;
+	DripEventLayerSettings *_layerSettings;
 	
 	unsigned int _width;
 	unsigned int _height;
@@ -64,4 +66,6 @@
 
 - (void)setDocument:(NSDocument *)newDocument;
 - (NSDocument *)document;
+
+- (void)currentLayerSettingsChanged;
 @end
