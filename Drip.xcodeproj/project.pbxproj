@@ -24,6 +24,7 @@
 		3E8C39B70C8F82AD0091E8BE /* DripEventLayerDelete.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E8C39B60C8F82AD0091E8BE /* DripEventLayerDelete.m */; };
 		3E8C39BE0C8F83520091E8BE /* DripEventLayerMove.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E8C39BD0C8F83520091E8BE /* DripEventLayerMove.m */; };
 		3E8C3A450C90D3400091E8BE /* DripEventLayerSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E8C3A440C90D3400091E8BE /* DripEventLayerSettings.m */; };
+		3E8C3AD70C91D74B0091E8BE /* DripEventLayerChange.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E8C3AD60C91D74B0091E8BE /* DripEventLayerChange.m */; };
 		3ED06C490C89FAF000BF0669 /* DripEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ED06C480C89FAF000BF0669 /* DripEvent.m */; };
 		3ED06C560C89FBCE00BF0669 /* DripEventBrushDown.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ED06C550C89FBCE00BF0669 /* DripEventBrushDown.m */; };
 		3ED06C6A0C89FDAA00BF0669 /* DripEventBrushDrag.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ED06C690C89FDAA00BF0669 /* DripEventBrushDrag.m */; };
@@ -82,6 +83,8 @@
 		3E8C39BD0C8F83520091E8BE /* DripEventLayerMove.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DripEventLayerMove.m; sourceTree = "<group>"; };
 		3E8C3A430C90D3400091E8BE /* DripEventLayerSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripEventLayerSettings.h; sourceTree = "<group>"; };
 		3E8C3A440C90D3400091E8BE /* DripEventLayerSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DripEventLayerSettings.m; sourceTree = "<group>"; };
+		3E8C3AD50C91D74B0091E8BE /* DripEventLayerChange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripEventLayerChange.h; sourceTree = "<group>"; };
+		3E8C3AD60C91D74B0091E8BE /* DripEventLayerChange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DripEventLayerChange.m; sourceTree = "<group>"; };
 		3ED06C470C89FAF000BF0669 /* DripEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripEvent.h; sourceTree = "<group>"; };
 		3ED06C480C89FAF000BF0669 /* DripEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DripEvent.m; sourceTree = "<group>"; };
 		3ED06C540C89FBCE00BF0669 /* DripEventBrushDown.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripEventBrushDown.h; sourceTree = "<group>"; };
@@ -269,6 +272,8 @@
 				3E8C39BD0C8F83520091E8BE /* DripEventLayerMove.m */,
 				3E8C3A430C90D3400091E8BE /* DripEventLayerSettings.h */,
 				3E8C3A440C90D3400091E8BE /* DripEventLayerSettings.m */,
+				3E8C3AD50C91D74B0091E8BE /* DripEventLayerChange.h */,
+				3E8C3AD60C91D74B0091E8BE /* DripEventLayerChange.m */,
 			);
 			name = Events;
 			sourceTree = "<group>";
@@ -401,6 +406,7 @@
 				3E8C39B70C8F82AD0091E8BE /* DripEventLayerDelete.m in Sources */,
 				3E8C39BE0C8F83520091E8BE /* DripEventLayerMove.m in Sources */,
 				3E8C3A450C90D3400091E8BE /* DripEventLayerSettings.m in Sources */,
+				3E8C3AD70C91D74B0091E8BE /* DripEventLayerChange.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

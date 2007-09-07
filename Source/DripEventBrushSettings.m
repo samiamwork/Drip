@@ -155,4 +155,34 @@
 {
 	return [NSColor colorWithCalibratedRed:_RGBAColor[0] green:_RGBAColor[1] blue:_RGBAColor[2] alpha:_RGBAColor[3]];
 }
+
+#pragma mark Equality
+
+- (unsigned int)hash
+{
+	return (*(UInt32 *)&_size ^ *(UInt32 *)&_hardness ^ *(UInt32 *)&_spacing ^ *(UInt32 *)&_RGBAColor[0] ^
+			*(UInt32 *)&_RGBAColor[1] ^ *(UInt32 *)&_RGBAColor[2] ^ *(UInt32 *)&_RGBAColor[3] ^ (_pressureAffectsFlow ? 1:0 | _pressureAffectsSize ? 2:0) ^
+			_type);
+}
+
+- (BOOL)isEqual:(id)anObject
+{
+	if( ![anObject isKindOfClass:[DripEventBrushSettings class]] )
+		return NO;
+	
+	DripEventBrushSettings *_settings = (DripEventBrushSettings *)anObject;
+	if( _type == _settings->_type &&
+		_size == _settings->_size &&
+		_hardness == _settings->_hardness &&
+		_spacing == _settings->_spacing &&
+		_RGBAColor[0] == _settings->_RGBAColor[0] &&
+		_RGBAColor[1] == _settings->_RGBAColor[1] &&
+		_RGBAColor[2] == _settings->_RGBAColor[2] &&
+		_RGBAColor[3] == _settings->_RGBAColor[3] &&
+		_pressureAffectsFlow == _settings->_pressureAffectsFlow &&
+		_pressureAffectsSize == _settings->_pressureAffectsSize )
+		return YES;
+	
+	return NO;
+}
 @end

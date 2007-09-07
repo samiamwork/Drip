@@ -14,6 +14,7 @@ typedef enum DripEventType {
 	kDripEventBrushDown = 1,
 	kDripEventBrushDrag,
 	kDripEventBrushSettings,
+	kDripEventLayerChange,
 	// never sent across network (i.e. not allowed)
 	kDripEventLayerAdd,
 	kDripEventLayerDelete,

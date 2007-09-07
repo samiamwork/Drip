@@ -13,6 +13,7 @@
 #import "DripEventBrushDown.h"
 #import "DripEventBrushDrag.h"
 #import "DripEventBrushSettings.h"
+#import "DripEventLayerChange.h"
 #import "DripEventLayerAdd.h"
 #import "DripEventLayerDelete.h"
 #import "DripEventLayerMove.h"

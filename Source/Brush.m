@@ -430,5 +430,4 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 {
 	return [[[DripEventBrushSettings alloc] initWithType:kBrushTypePaint size:_brushSize hardness:_hardness spacing:_spacing pressureAffectsFlow:_pressureAffectsFlow pressureAffectsSize:_pressureAffectsSize color:[NSColor colorWithCalibratedRed:_RGBAColor[0] green:_RGBAColor[1] blue:_RGBAColor[2] alpha:_RGBAColor[3]]] autorelease];
 }
-
 @end

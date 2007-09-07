@@ -47,18 +47,23 @@
 {
 	NSMutableArray *newEvents = [[NSMutableArray alloc] init];
 	
-	DripEventBrushSettings *lastSetting = nil;
+	DripEventBrushSettings *lastSettings = nil;
+	DripEventBrushSettings *newSettings = nil;
 	NSEnumerator *eventEnumerator = [_paintEvents objectEnumerator];
 	DripEvent *anEvent;
 	while( (anEvent = [eventEnumerator nextObject]) ) {
-		
-		if( ![anEvent isKindOfClass:[DripEventBrushSettings class]] ) {
-			if( lastSetting != nil )
-				[newEvents addObject:lastSetting];
-			lastSetting = nil;
+		if( [anEvent isKindOfClass:[DripEventBrushSettings class]] && ![anEvent isEqual:lastSettings] ) {
+			newSettings = (DripEventBrushSettings *)anEvent;
+		} else if( [anEvent isKindOfClass:[DripEventBrushDown class]] ) {
+			if( newSettings != nil ) {
+				[newEvents addObject:newSettings];
+				lastSettings = newSettings;
+				newSettings = nil;
+			}
 			[newEvents addObject:anEvent];
-		} else 
-			lastSetting = (DripEventBrushSettings *)anEvent;
+		} else {
+			[newEvents addObject:anEvent];
+		}
 	}	
 	
 	[_paintEvents release];
@@ -142,6 +147,8 @@
 		DripEventLayerSettings *layerSettings = (DripEventLayerSettings *)theEvent;
 		[_currentLayer changeSettings:layerSettings];
 		return NSMakeRect(0.0f,0.0f,_width,_height);
+	} else if( [theEvent isKindOfClass:[DripEventLayerChange class]] ) {
+		[self setCurrentLayer:[_layers objectAtIndex:[(DripEventLayerChange *)theEvent layerIndex]]];
 	} else {
 		printf("unknown event!\n");
 	}
@@ -209,6 +216,9 @@
 					break;
 				case kDripEventBrushSettings:
 					newEvent = [DripEventBrushSettings eventWithBytes:&bytes[position] length:[eventData length]-position];
+					break;
+				case kDripEventLayerChange:
+					newEvent = [DripEventLayerChange eventWithBytes:&bytes[position] length:[eventData length]-position];
 					break;
 				case kDripEventLayerAdd:
 					newEvent = [DripEventLayerAdd eventWithBytes:&bytes[position] length:[eventData length]-position];
@@ -279,6 +289,16 @@
 		_topLayer = [[PaintLayer alloc] initWithContentsOfLayers:_layers inRange:NSMakeRange(targetIndex+1,[_layers count]-(targetIndex+1))];
 }
 
+- (void)addDripEvent:(DripEvent *)newEvent
+{
+	if( _layerSettings != nil ) {
+		[_paintEvents addObject:_layerSettings];
+		[_layerSettings release];
+		_layerSettings = nil;
+	}
+	
+}
+
 #pragma mark Events
 
 - (void)addLayer
@@ -290,11 +310,6 @@
 		return;
 	}
 
-	if( _layerSettings != nil ) {
-		[_paintEvents addObject:_layerSettings];
-		[_layerSettings release];
-		_layerSettings = nil;
-	}
 	// EVENT:
 	// add new layer
 	if( !_isPlayingBack )
@@ -395,14 +410,17 @@
 		[_layerSettings release];
 		_layerSettings = nil;
 	}
-	// EVENT:
-	// set CurrentLayer to layer at index "layerIndex"
+
 	_currentLayer = aLayer;
 	if( _layerSettings != nil ) {
 		[_paintEvents addObject:_layerSettings];
 		[_layerSettings release];
 		_layerSettings = nil;
-	}
+	}	
+	// EVENT:
+	// set CurrentLayer to layer at index "layerIndex"
+	if( !_isPlayingBack )
+		[_paintEvents addObject:[[[DripEventLayerChange alloc] initWithLayerIndex:layerIndex] autorelease]];
 	
 	[self rebuildTopAndBottom];
 }
@@ -447,11 +465,6 @@
 	if( _isPlayingBack )
 		return NSZeroRect;
 	
-	if( _layerSettings != nil ) {
-		[_paintEvents addObject:_layerSettings];
-		[_layerSettings release];
-		_layerSettings = nil;
-	}
 	[_paintEvents addObject:[[[DripEventBrushDrag alloc] initWithPosition:NSMakePoint(endPoint->x,endPoint->y) pressure:endPoint->pressure] autorelease]];
 	NSRect affectedRect = [aBrush renderLineFromPoint:startPoint toPoint:endPoint onLayer:[_layers objectAtIndex:layerIndex]];
 	return affectedRect;
@@ -461,11 +474,6 @@
 	if( _isPlayingBack )
 		return NSZeroRect;
 	
-	if( _layerSettings != nil ) {
-		[_paintEvents addObject:_layerSettings];
-		[_layerSettings release];
-		_layerSettings = nil;
-	}
 	[_paintEvents addObject:[[[DripEventBrushDrag alloc] initWithPosition:NSMakePoint(endPoint->x,endPoint->y) pressure:endPoint->pressure] autorelease]];
 	NSRect affectedRect = [aBrush renderLineFromPoint:startPoint toPoint:endPoint onLayer:_currentLayer];
 	return affectedRect;
