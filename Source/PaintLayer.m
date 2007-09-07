@@ -17,6 +17,7 @@
 		_width = 0;
 		_height = 0;
 		_pitch = 0;
+		_opacity = 1.0f;
 		_data = NULL;
 		_cxt = NULL;
 		
@@ -44,6 +45,7 @@
 	NSKeyedArchiver *archiver = (NSKeyedArchiver *)encoder;
 	[archiver encodeInt32:(int)_width forKey:@"width"];
 	[archiver encodeInt32:(int)_height forKey:@"height"];
+	[archiver encodeFloat:_opacity forKey:@"opacity"];
 	[archiver encodeObject:_name forKey:@"name"];
 	NSData *compressedData = [[NSData dataWithBytes:_data length:_width*(_height+1)*4] gzipDeflate];
 	[archiver encodeObject:compressedData forKey:@"data"];
@@ -61,6 +63,7 @@
 		_width = (unsigned int)[unarchiver decodeIntForKey:@"width"];
 		_height = (unsigned int)[unarchiver decodeIntForKey:@"height"];
 		[self setName:[unarchiver decodeObjectForKey:@"name"]];
+		[self setOpacity:[unarchiver decodeFloatForKey:@"opacity"]];
 		
 		_pitch = _width*4;
 		_data = calloc(_width*(_height+1), 4);
@@ -85,6 +88,7 @@
 	if( (self = [super init]) ) {
 		_width = width;
 		_height = height;
+		_opacity = 1.0f;
 		//HACK: +1 to fix problem with creating image from sub-region of bitmapcontext
 		_data = calloc(_width*(_height+1), 4);
 		if( _data == NULL ) {
@@ -117,6 +121,7 @@
 		PaintLayer *sampleLayer = [layers objectAtIndex:range.location];
 		_width = [sampleLayer width];
 		_height = [sampleLayer height];
+		_opacity = 1.0f;
 		
 		_data = calloc(_width*(_height+1), 4);
 		if( _data == NULL ) {
@@ -156,6 +161,23 @@
 	
 	[_name release];
 	_name = [newName retain];
+}
+
+- (float)opacity
+{
+	return _opacity;
+}
+- (void)setOpacity:(float)newOpacity
+{
+	if( newOpacity < 0.0f )
+		newOpacity = 0.0f;
+	else if( newOpacity > 1.0f )
+		newOpacity = 1.0f;
+	
+	if( newOpacity == _opacity )
+		return;
+	
+	_opacity = newOpacity;
 }
 
 - (unsigned int)width
@@ -215,7 +237,10 @@
 		return;
 	}
 	
+	CGContextSaveGState(aContext);
+	CGContextSetAlpha(aContext,_opacity);
 	CGContextDrawImage(aContext, *(CGRect *)&aRect, cachedImage);
+	CGContextRestoreGState(aContext);
 	CFRelease(cachedImage);
 	CGContextRelease(cachedCxt);
 }

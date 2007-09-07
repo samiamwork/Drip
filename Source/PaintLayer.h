@@ -12,6 +12,7 @@
 	unsigned int _width;
 	unsigned int _height;
 	unsigned int _pitch;
+	float _opacity;
 	unsigned char *_data;
 	CGContextRef _cxt;
 	
@@ -28,6 +29,8 @@
 
 - (NSString *)name;
 - (void)setName:(NSString *)newName;
+- (float)opacity;
+- (void)setOpacity:(float)newOpacity;
 
 - (void)drawRect:(NSRect)aRect inContext:(CGContextRef)aContext;
 @end

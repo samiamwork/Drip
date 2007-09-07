@@ -40,10 +40,14 @@
         }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
-            ACTIONS = {addLayer = id; deleteLayer = id; }; 
+            ACTIONS = {addLayer = id; deleteLayer = id; setOpacity = id; }; 
             CLASS = LayerController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {"_layerTable" = AnimatingTableView; "_sketchView" = ScrollingSketchView; }; 
+            OUTLETS = {
+                "_layerTable" = AnimatingTableView; 
+                "_opacitySlider" = NSSlider; 
+                "_sketchView" = ScrollingSketchView; 
+            }; 
             SUPERCLASS = NSObject; 
         }, 
         {CLASS = MyDocument; LANGUAGE = ObjC; SUPERCLASS = NSDocument; }, 

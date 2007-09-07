@@ -61,6 +61,19 @@
 	//layers are sorted in reverse
 	return [[layers objectAtIndex:[layers count]-rowIndex-1] name];
 }
+
+- (IBAction)setOpacity:(id)sender
+{
+	float oldOpacity = [[_theCanvas currentLayer] opacity];
+	[[_theCanvas currentLayer] setOpacity:[sender floatValue]];
+	float newOpacity = [[_theCanvas currentLayer] opacity];
+	
+	if( newOpacity != oldOpacity ) {
+		[sender setFloatValue:newOpacity];
+		[_sketchView setNeedsDisplay:YES];
+	}
+}
+
 #pragma mark Drag and Drop
 
 - (BOOL)tableView:(NSTableView *)tv writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard*)pboard
@@ -130,6 +143,7 @@
 	NSArray *layers = [_theCanvas layers];
 
 	[_theCanvas setCurrentLayer:[layers objectAtIndex:[layers count]-[_layerTable selectedRow]-1]];
+	[_opacitySlider setFloatValue:[[_theCanvas currentLayer] opacity]];
 }
 
 @end
