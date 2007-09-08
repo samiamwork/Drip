@@ -345,7 +345,6 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	float length = sqrtf((endPoint->x-startPoint.x)*(endPoint->x-startPoint.x) + (endPoint->y-startPoint.y)*(endPoint->y-startPoint.y));
 	float xRatio = (endPoint->x - startPoint.x)/length;
 	float yRatio = (endPoint->y - startPoint.y)/length;
-	PressurePoint newEndPoint = startPoint;
 	NSRect rect;
 	NSRect pointRect;
 	
@@ -367,13 +366,16 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	
 	// as long as the step size is less than the distance left to the end of the line...
 	if(length < stepSize ) {
-		//*endPoint = newEndPoint;
 		*leftoverDistance = length;
 		return rect;
 	}
 	
 	x = startPoint.x;
 	y = startPoint.y;
+	rect.size.width = baseBrushSize*pressure;
+	rect.size.height = rect.size.width;
+	rect.origin.x = x-rect.size.width/2.0f;
+	rect.origin.y = y-rect.size.width/2.0f;
 	
 	while( position < length-*leftoverDistance ) {
 		// get new brush size
@@ -381,45 +383,19 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 		// get new step size
 		stepSize = brushSize * _spacing;
 		// advance x and y
-		//x += stepSize * xRatio;
-		//y += stepSize * yRatio;
 		x = startPoint.x + position * xRatio;
 		y = startPoint.y + position * yRatio;
 		
 		// draw dab
 		pointRect = [self renderPointAt:(PressurePoint){x,y,pressure} onLayer:aLayer];
 		
-		if((int)rect.size.width == 0 && (int)rect.size.height == 0)
-			rect = pointRect;
-		else {
-			// grow our rect to fit the line with the new dab rendered at the end
-			if( (pointRect.origin.x + pointRect.size.width) > (rect.origin.x + rect.size.width))
-				rect.size.width = pointRect.origin.x + pointRect.size.width - rect.origin.x;
-			if( (pointRect.origin.y + pointRect.size.height) > (rect.origin.y + rect.size.height))
-				rect.size.height = pointRect.origin.y + pointRect.size.height - rect.origin.y;
-			if(pointRect.origin.x < rect.origin.x) {
-				rect.size.width += rect.origin.x-pointRect.origin.x;
-				rect.origin.x = pointRect.origin.x;
-			}
-			if(pointRect.origin.y < rect.origin.y) {
-				rect.size.height += rect.origin.y - pointRect.origin.y;
-				rect.origin.y = pointRect.origin.y;
-			}
-		}
-		
-		newEndPoint.x = x;
-		newEndPoint.y = y;
-		newEndPoint.pressure = pressure;
-		
 		position += stepSize;
 		pressure = startPoint.pressure + ((position/(length-*leftoverDistance)) * (endPoint->pressure-startPoint.pressure));
 	}
 	
-	*leftoverDistance = length - (position+*leftoverDistance-stepSize);
-	//*endPoint = newEndPoint;
+	*leftoverDistance = length - (position+*leftoverDistance-stepSize);	
 	
-	
-	return rect;
+	return NSUnionRect(rect,pointRect);
 }
 
 #pragma mark Settings

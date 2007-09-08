@@ -16,7 +16,6 @@
 	_inspectors = [DripInspectors sharedController];
 	[_inspectors showWindow:nil];
 	[[_inspectors window] orderOut:nil];
-	printf("awake app! %s\n", [_inspectors isWindowLoaded]?"YES":"NO");
 }
 
 - (IBAction)newFile:(id)sender
