@@ -117,12 +117,13 @@
 	
 	if( [theEvent isKindOfClass:[DripEventBrushDown class]] ) {
 		DripEventBrushDown *brushDown = (DripEventBrushDown *)theEvent;
+		_unusedPlaybackDistance = 0.0f;
 		_lastPlaybackPoint = (PressurePoint){[brushDown position].x, [brushDown position].y, [brushDown pressure]};
 		return [_currentPlaybackBrush renderPointAt:_lastPlaybackPoint onLayer:_currentLayer];
 	} else if( [theEvent isKindOfClass:[DripEventBrushDrag class]] ) {
 		DripEventBrushDrag *brushDrag = (DripEventBrushDrag *)theEvent;
 		PressurePoint dragPoint = (PressurePoint){[brushDrag position].x, [brushDrag position].y, [brushDrag pressure]}; 
-		NSRect affectedRect = [_currentPlaybackBrush renderLineFromPoint:_lastPlaybackPoint toPoint:&dragPoint onLayer:_currentLayer];
+		NSRect affectedRect = [_currentPlaybackBrush renderLineFromPoint:_lastPlaybackPoint toPoint:&dragPoint onLayer:_currentLayer leftover:&_unusedPlaybackDistance];
 		_lastPlaybackPoint = dragPoint;
 		return affectedRect;
 	} else if( [theEvent isKindOfClass:[DripEventBrushSettings class]] ) {
@@ -188,6 +189,7 @@
 		
 		_width = (unsigned int)[unarchiver decodeIntForKey:@"width"];
 		_height = (unsigned int)[unarchiver decodeIntForKey:@"height"];
+		// TODO: should probably be fixed to add some kind of release.
 		_layers = [[NSMutableArray alloc] initWithArray:[unarchiver decodeObjectForKey:@"layers"]];
 		[self setCurrentLayer:[_layers objectAtIndex:0]];
 		
@@ -444,6 +446,7 @@
 		[_layerSettings release];
 		_layerSettings = nil;
 	}
+	_unusedPlaybackDistance = 0.0f;
 	[_paintEvents addObject:[aBrush settings]];
 	[_paintEvents addObject:[[[DripEventBrushDown alloc] initWithPosition:NSMakePoint(aPoint.x,aPoint.y) pressure:aPoint.pressure] autorelease]];
 	return [aBrush renderPointAt:aPoint onLayer:[_layers objectAtIndex:layerIndex]];
@@ -458,6 +461,7 @@
 		[_layerSettings release];
 		_layerSettings = nil;
 	}
+	_unusedPlaybackDistance = 0.0f;
 	[_paintEvents addObject:[aBrush settings]];
 	[_paintEvents addObject:[[[DripEventBrushDown alloc] initWithPosition:NSMakePoint(aPoint.x,aPoint.y) pressure:aPoint.pressure] autorelease]];
 	return [aBrush renderPointAt:aPoint onLayer:_currentLayer];
@@ -468,7 +472,7 @@
 		return NSZeroRect;
 	
 	[_paintEvents addObject:[[[DripEventBrushDrag alloc] initWithPosition:NSMakePoint(endPoint->x,endPoint->y) pressure:endPoint->pressure] autorelease]];
-	NSRect affectedRect = [aBrush renderLineFromPoint:startPoint toPoint:endPoint onLayer:[_layers objectAtIndex:layerIndex]];
+	NSRect affectedRect = [aBrush renderLineFromPoint:startPoint toPoint:endPoint onLayer:[_layers objectAtIndex:layerIndex] leftover:&_unusedPlaybackDistance];
 	return affectedRect;
 }
 - (NSRect)drawLineFromPoint:(PressurePoint)startPoint toPoint:(PressurePoint *)endPoint withBrushOnCurrentLayer:(Brush *)aBrush;
@@ -477,7 +481,7 @@
 		return NSZeroRect;
 	
 	[_paintEvents addObject:[[[DripEventBrushDrag alloc] initWithPosition:NSMakePoint(endPoint->x,endPoint->y) pressure:endPoint->pressure] autorelease]];
-	NSRect affectedRect = [aBrush renderLineFromPoint:startPoint toPoint:endPoint onLayer:_currentLayer];
+	NSRect affectedRect = [aBrush renderLineFromPoint:startPoint toPoint:endPoint onLayer:_currentLayer leftover:&_unusedPlaybackDistance];
 	return affectedRect;
 }
 

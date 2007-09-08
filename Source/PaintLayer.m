@@ -78,6 +78,7 @@
 			return nil;
 		}
 		CGColorSpaceRelease(colorSpace);
+		CGContextSetInterpolationQuality(_cxt,kCGInterpolationHigh);
 	}
 	
 	return self;
@@ -105,6 +106,7 @@
 			return nil;
 		}
 		CGColorSpaceRelease(colorSpace);
+		CGContextSetInterpolationQuality(_cxt,kCGInterpolationHigh);
 		
 		_name = [[NSString alloc] initWithString:@"Unnamed"];
 	}
@@ -138,6 +140,7 @@
 			return nil;
 		}
 		CGColorSpaceRelease(colorSpace);
+		CGContextSetInterpolationQuality(_cxt,kCGInterpolationHigh);
 		
 		NSRect layerRect = NSMakeRect(0.0f,0.0f,(float)_width,(float)_height);
 		unsigned int layerIndex;

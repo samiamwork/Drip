@@ -48,7 +48,7 @@ typedef struct PressurePoint {
 - (void)drawDabAtPoint:(NSPoint)aPoint;
 
 - (NSRect)renderPointAt:(PressurePoint)aPoint onLayer:(PaintLayer *)aLayer;
-- (NSRect)renderLineFromPoint:(PressurePoint)startPoint toPoint:(PressurePoint *)endPoint onLayer:(PaintLayer *)aLayer;
+- (NSRect)renderLineFromPoint:(PressurePoint)startPoint toPoint:(PressurePoint *)endPoint onLayer:(PaintLayer *)aLayer leftover:(float *)leftoverDistance;
 
 - (void)changeSettings:(DripEventBrushSettings *)theSettings;
 - (DripEventBrushSettings *)settings;

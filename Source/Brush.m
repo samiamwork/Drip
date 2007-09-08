@@ -104,6 +104,8 @@ float valueWithCosCurve(float t, float crossover)
 	
 	unsigned char *p = _dabData;
 	float center = _brushSize/2.0f;
+	// better? still doesn't fix problem though
+	//float center = ((float)intSize)/2.0f;
 	float distanceFromCenter;
 	int row;
 	int col;
@@ -326,13 +328,14 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	
 	brushSizeHalf = brushSize/2.0f;
 	CGContextDrawImage([aLayer cxt],CGRectMake(aPoint.x-brushSize/2.0f,aPoint.y-brushSize/2.0f,brushSize,brushSize),_dab);
+	//CGContextFillRect([aLayer cxt],CGRectMake(aPoint.x-5.0f,aPoint.y-5.0f,10.0f,10.0f));
 	
 	//I don't really  think this fix is very good but...
 	//it does work and doesn't cost much.
 	return NSMakeRect(aPoint.x-brushSizeHalf-2, aPoint.y-brushSizeHalf-2, brushSize+4, brushSize+4);
 }
 
-- (NSRect)renderLineFromPoint:(PressurePoint)startPoint toPoint:(PressurePoint *)endPoint onLayer:(PaintLayer *)aLayer
+- (NSRect)renderLineFromPoint:(PressurePoint)startPoint toPoint:(PressurePoint *)endPoint onLayer:(PaintLayer *)aLayer leftover:(float *)leftoverDistance
 {
 	float x,y;
 	float brushSize;
@@ -346,8 +349,6 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	NSRect rect;
 	NSRect pointRect;
 	
-	x = startPoint.x;
-	y = startPoint.y;
 	rect = NSMakeRect(x,y,0.0f,0.0f);
 	
 	// FIX: this breaks pressure affecting opacity
@@ -360,15 +361,21 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	brushSize = baseBrushSize * pressure;
 	stepSize = brushSize * _spacing;
 
-	float position = stepSize;
-	pressure = startPoint.pressure + ((position/length) * (endPoint->pressure-startPoint.pressure));
+	float position = stepSize-*leftoverDistance;
+	length += *leftoverDistance;
+	pressure = startPoint.pressure + ((position/(length-*leftoverDistance)) * (endPoint->pressure-startPoint.pressure));
 	
 	// as long as the step size is less than the distance left to the end of the line...
 	if(length < stepSize ) {
-		*endPoint = newEndPoint;
+		//*endPoint = newEndPoint;
+		*leftoverDistance = length;
 		return rect;
 	}
-	while( position < length ) {
+	
+	x = startPoint.x;
+	y = startPoint.y;
+	
+	while( position < length-*leftoverDistance ) {
 		// get new brush size
 		brushSize = baseBrushSize * pressure;
 		// get new step size
@@ -405,10 +412,12 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 		newEndPoint.pressure = pressure;
 		
 		position += stepSize;
-		pressure = startPoint.pressure + ((position/length) * (endPoint->pressure-startPoint.pressure));
+		pressure = startPoint.pressure + ((position/(length-*leftoverDistance)) * (endPoint->pressure-startPoint.pressure));
 	}
 	
-	*endPoint = newEndPoint;
+	*leftoverDistance = length - (position+*leftoverDistance-stepSize);
+	//*endPoint = newEndPoint;
+	
 	
 	return rect;
 }

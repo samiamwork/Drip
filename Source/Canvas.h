@@ -34,6 +34,7 @@
 	BrushEraser *_playbackEraser;
 	Brush *_currentPlaybackBrush;
 	PressurePoint _lastPlaybackPoint;
+	float _unusedPlaybackDistance;
 	NSMutableArray *_paintEvents;
 	DripEventLayerSettings *_layerSettings;
 	
