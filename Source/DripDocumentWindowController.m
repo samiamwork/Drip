@@ -14,6 +14,7 @@
 
 - (void)awakeFromNib
 {
+	printf("awake from nib\n");
 	_playbackTimer = nil;
 	
 	Canvas *newCanvas = [(DripDocument*)[self document] canvas];

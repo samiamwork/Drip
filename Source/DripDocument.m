@@ -22,8 +22,8 @@
 		_canvasHeight = 300;
 		_canvas = nil;
 		
-		_brush = nil;
-		_eraser = nil;
+		_brush = [[Brush alloc] init];
+		_eraser = [[BrushEraser alloc] init];
     }
     return self;
 }
@@ -110,8 +110,11 @@
 
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
 {
+	printf("read\n");
 	[_canvas release];
     _canvas = [NSKeyedUnarchiver unarchiveObjectWithFile:[absoluteURL path]];
+	_canvasWidth = [_canvas size].width;
+	_canvasHeight = [_canvas size].height;
 	[_canvas setDocument:self];
 
     return YES;
