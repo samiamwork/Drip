@@ -342,7 +342,6 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	float length = sqrtf((endPoint->x-startPoint.x)*(endPoint->x-startPoint.x) + (endPoint->y-startPoint.y)*(endPoint->y-startPoint.y));
 	float xRatio = (endPoint->x - startPoint.x)/length;
 	float yRatio = (endPoint->y - startPoint.y)/length;
-	float position = 0.0f;
 	PressurePoint newEndPoint = startPoint;
 	NSRect rect;
 	NSRect pointRect;
@@ -361,7 +360,7 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	brushSize = baseBrushSize * pressure;
 	stepSize = brushSize * _spacing;
 
-	position += fabsf(stepSize);
+	float position = stepSize;
 	pressure = startPoint.pressure + ((position/length) * (endPoint->pressure-startPoint.pressure));
 	
 	// as long as the step size is less than the distance left to the end of the line...
@@ -375,8 +374,10 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 		// get new step size
 		stepSize = brushSize * _spacing;
 		// advance x and y
-		x += stepSize * xRatio;
-		y += stepSize * yRatio;
+		//x += stepSize * xRatio;
+		//y += stepSize * yRatio;
+		x = startPoint.x + position * xRatio;
+		y = startPoint.y + position * yRatio;
 		
 		// draw dab
 		pointRect = [self renderPointAt:(PressurePoint){x,y,pressure} onLayer:aLayer];
@@ -403,7 +404,7 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 		newEndPoint.y = y;
 		newEndPoint.pressure = pressure;
 		
-		position += fabsf(stepSize);
+		position += stepSize;
 		pressure = startPoint.pressure + ((position/length) * (endPoint->pressure-startPoint.pressure));
 	}
 	
