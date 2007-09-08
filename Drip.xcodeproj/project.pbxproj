@@ -169,9 +169,9 @@
 				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
 				2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */,
 				2A37F4B4FDCFA73011CA2CEA /* DripDocument.nib */,
+				3E8C3BB60C922A0C0091E8BE /* DripInspectors.nib */,
 				8D15AC360486D014006FF6A4 /* Info.plist */,
 				089C165FFE840EACC02AAC07 /* InfoPlist.strings */,
-				3E8C3BB60C922A0C0091E8BE /* DripInspectors.nib */,
 			);
 			path = Resources;
 			sourceTree = "<group>";

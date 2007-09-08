@@ -22,6 +22,7 @@
 	IBOutlet NSButton *_flowExpressionCheckbox;
 	IBOutlet BrushView *_brushView;
 	IBOutlet NSColorWell *_colorWell;
+	IBOutlet NSMatrix *_brushSelector;
 	
 	ScrollingSketchView *_sketchView;
 	Brush *_currentBrush;
@@ -43,4 +44,5 @@
 
 - (void)setNewBrush:(Brush *)newBrush eraser:(BrushEraser *)newEraser;
 - (void)setScrollingSketchView:(ScrollingSketchView *)newSketchView;
+- (void)disable;
 @end

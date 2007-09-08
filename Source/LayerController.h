@@ -14,6 +14,8 @@
 @interface LayerController : NSObject {
 	IBOutlet AnimatingTableView *_layerTable;
 	IBOutlet NSSlider *_opacitySlider;
+	IBOutlet NSButton *_plusButton;
+	IBOutlet NSButton *_minusButton;
 	
 	ScrollingSketchView *_sketchView;
 	Canvas *_theCanvas;
@@ -28,4 +30,5 @@
 - (IBAction)setOpacity:(id)sender;
 
 - (void)setScrollingSketchView:(ScrollingSketchView *)newSketchView;
+- (void)disable;
 @end

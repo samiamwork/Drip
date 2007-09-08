@@ -68,6 +68,11 @@
 // TODO: should set the buttons to reflect this since we won't always be called from the UI
 - (void)setBrush:(Brush*)brush
 {
+	if( brush == _paintBrush )
+		[_brushSelector selectCellWithTag:1];
+	else
+		[_brushSelector selectCellWithTag:2];
+	
 	if( brush == _currentBrush )
 		return;
 	
@@ -83,7 +88,9 @@
 	[_sizeExpressionCheckbox setState:[_currentBrush pressureAffectsSize]?NSOnState:NSOffState];
 	[_flowExpressionCheckbox setState:[_currentBrush pressureAffectsFlow]?NSOnState:NSOffState];
 	[_brushView setBrush:_currentBrush];
-	[_currentBrush setColor:[_colorWell color]];
+	//[_currentBrush setColor:[_colorWell color]];
+	if( [brush isMemberOfClass:[Brush class]] )
+		[_colorWell setColor:[brush color]];
 }
 
 - (IBAction)colorChanged:(id)sender
@@ -117,6 +124,14 @@
 	
 	[_eraserBrush release];
 	_eraserBrush = [newEraser retain];
+
+	[_brushSizeSlider setEnabled:YES];
+	[_brushHardnessSlider setEnabled:YES];
+	[_brushSpacingSlider setEnabled:YES];
+	[_sizeExpressionCheckbox setEnabled:YES];
+	[_flowExpressionCheckbox setEnabled:YES];
+	[_brushSelector setEnabled:YES];
+	[_colorWell setEnabled:YES];
 	
 	[self setBrush:_paintBrush];
 }
@@ -128,5 +143,30 @@
 	
 	[_sketchView release];
 	_sketchView = [newSketchView retain];
+}
+
+- (void)disable
+{
+	[_sketchView release];
+	_sketchView = nil;
+	
+	[_brushSizeSlider setFloatValue:1.0f];
+	[_brushSizeText setIntValue:1];
+	[_brushHardnessSlider setFloatValue:0.0f];
+	[_brushHardnessText setFloatValue:0.0f];
+	[_brushSpacingSlider setFloatValue:0.1f];
+	[_brushSpacingText setFloatValue:0.1f];
+	
+	[_sizeExpressionCheckbox setState:NSOffState];
+	[_flowExpressionCheckbox setState:NSOffState];
+	[_brushView setBrush:nil];
+	
+	[_brushSizeSlider setEnabled:NO];
+	[_brushHardnessSlider setEnabled:NO];
+	[_brushSpacingSlider setEnabled:NO];
+	[_sizeExpressionCheckbox setEnabled:NO];
+	[_flowExpressionCheckbox setEnabled:NO];
+	[_brushSelector setEnabled:NO];
+	[_colorWell setEnabled:NO];
 }
 @end

@@ -16,6 +16,7 @@
             OUTLETS = {
                 "_brushHardnessSlider" = NSSlider; 
                 "_brushHardnessText" = NSTextField; 
+                "_brushSelector" = NSMatrix; 
                 "_brushSizeSlider" = NSSlider; 
                 "_brushSizeText" = NSTextField; 
                 "_brushSpacingSlider" = NSSlider; 
@@ -39,7 +40,12 @@
             ACTIONS = {addLayer = id; deleteLayer = id; setOpacity = id; }; 
             CLASS = LayerController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {"_layerTable" = AnimatingTableView; "_opacitySlider" = NSSlider; }; 
+            OUTLETS = {
+                "_layerTable" = AnimatingTableView; 
+                "_minusButton" = NSButton; 
+                "_opacitySlider" = NSSlider; 
+                "_plusButton" = NSButton; 
+            }; 
             SUPERCLASS = NSObject; 
         }
     ); 

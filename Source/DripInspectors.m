@@ -33,14 +33,14 @@ static DripInspectors *g_sharedController;
 	[super dealloc];
 }
 
-- (void)awakeFromNib
-{
-	printf("awake!\n");
-}
-
 - (void)setDripDocument:(DripDocument *)newDocument
 {
-	printf("set document\n");
+	if( newDocument == nil ) {
+		[_brushController disable];
+		[_layerController disable];
+		return;
+	}
+	
 	[_brushController setNewBrush:[newDocument brush] eraser:[newDocument eraser]];
 	[_brushController setBrush:[[newDocument scrollingSketchView] brush]];
 	[_brushController setScrollingSketchView:[newDocument scrollingSketchView]];

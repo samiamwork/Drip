@@ -28,7 +28,50 @@
 	[_theCanvas release];
 	_theCanvas = [newCanvas retain];
 	
+	[_layerTable setEnabled:YES];
+	[_opacitySlider setEnabled:YES];
+	[_plusButton setEnabled:YES];
+	[_minusButton setEnabled:YES];
+	
 	[_layerTable reloadData];
+	unsigned int indexToSelect = [[_theCanvas layers] indexOfObject:[_theCanvas currentLayer]];
+	[_layerTable selectRowIndexes:[NSIndexSet indexSetWithIndex:indexToSelect] byExtendingSelection:NO];
+	[_opacitySlider setFloatValue:[[_theCanvas currentLayer] opacity]];
+}
+
+- (IBAction)setOpacity:(id)sender
+{
+	float oldOpacity = [[_theCanvas currentLayer] opacity];
+	[[_theCanvas currentLayer] setOpacity:[sender floatValue]];
+	float newOpacity = [[_theCanvas currentLayer] opacity];
+	
+	if( newOpacity != oldOpacity ) {
+		[sender setFloatValue:newOpacity];
+		[_theCanvas currentLayerSettingsChanged];
+		[_sketchView setNeedsDisplay:YES];
+	}
+}
+
+- (void)setScrollingSketchView:(ScrollingSketchView *)newSketchView
+{
+	if( newSketchView == _sketchView )
+		return;
+	
+	[_sketchView release];
+	_sketchView = [newSketchView retain];
+}
+
+- (void)disable
+{
+	[_sketchView release];
+	_sketchView = nil;
+	[_theCanvas release];
+	_theCanvas = nil;
+	
+	[_opacitySlider setEnabled:NO];
+	[_layerTable setEnabled:NO];
+	[_plusButton setEnabled:NO];
+	[_minusButton setEnabled:NO];
 }
 
 - (IBAction)addLayer:(id)sender
@@ -62,28 +105,6 @@
 	NSArray *layers = [_theCanvas layers];
 	//layers are sorted in reverse
 	return [[layers objectAtIndex:[layers count]-rowIndex-1] name];
-}
-
-- (IBAction)setOpacity:(id)sender
-{
-	float oldOpacity = [[_theCanvas currentLayer] opacity];
-	[[_theCanvas currentLayer] setOpacity:[sender floatValue]];
-	float newOpacity = [[_theCanvas currentLayer] opacity];
-	
-	if( newOpacity != oldOpacity ) {
-		[sender setFloatValue:newOpacity];
-		[_theCanvas currentLayerSettingsChanged];
-		[_sketchView setNeedsDisplay:YES];
-	}
-}
-
-- (void)setScrollingSketchView:(ScrollingSketchView *)newSketchView
-{
-	if( newSketchView == _sketchView )
-		return;
-	
-	[_sketchView release];
-	_sketchView = [newSketchView retain];
 }
 
 #pragma mark Drag and Drop
