@@ -1,0 +1,47 @@
+{
+    IBClasses = (
+        {CLASS = AnimatingTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
+        {
+            ACTIONS = {
+                changeFlowExpression = id; 
+                changeHardness = id; 
+                changeSize = id; 
+                changeSizeExpression = id; 
+                changeSpacing = id; 
+                colorChanged = id; 
+                selectBrush = id; 
+            }; 
+            CLASS = BrushController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                "_brushHardnessSlider" = NSSlider; 
+                "_brushHardnessText" = NSTextField; 
+                "_brushSizeSlider" = NSSlider; 
+                "_brushSizeText" = NSTextField; 
+                "_brushSpacingSlider" = NSSlider; 
+                "_brushSpacingText" = NSTextField; 
+                "_brushView" = BrushView; 
+                "_colorWell" = NSColorWell; 
+                "_flowExpressionCheckbox" = NSButton; 
+                "_sizeExpressionCheckbox" = NSButton; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = BrushView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {
+            CLASS = DripInspectors; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {"_brushController" = BrushController; "_layerController" = LayerController; }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {addLayer = id; deleteLayer = id; setOpacity = id; }; 
+            CLASS = LayerController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {"_layerTable" = AnimatingTableView; "_opacitySlider" = NSSlider; }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}

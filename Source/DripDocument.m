@@ -7,6 +7,7 @@
 //
 
 #import "DripDocument.h"
+#import "DripInspectors.h"
 
 @implementation DripDocument
 
@@ -20,6 +21,9 @@
 		_canvasWidth = 300;
 		_canvasHeight = 300;
 		_canvas = nil;
+		
+		_brush = nil;
+		_eraser = nil;
     }
     return self;
 }
@@ -32,6 +36,9 @@
 		
 		_canvas = [[Canvas alloc] initWithWidth:_canvasWidth  height:_canvasHeight];
 		[_canvas setDocument:self];
+		
+		_brush = [[Brush alloc] init];
+		_eraser = [[BrushEraser alloc] init];
 	}
 	
 	return self;
@@ -40,11 +47,11 @@
 - (void)dealloc
 {
 	[_canvas release];
+	[_brush release];
+	[_eraser release];
 
 	[super dealloc];
 }
-
-
 
 - (unsigned int)width
 {
@@ -57,6 +64,23 @@
 - (Canvas *)canvas
 {
 	return _canvas;
+}
+- (Brush *)brush
+{
+	return _brush;
+}
+- (BrushEraser *)eraser
+{
+	return _eraser;
+}
+- (ScrollingSketchView *)scrollingSketchView
+{
+	return _sketchView;
+}
+// we don't need to retain it since we do nothing with it but give it out to those who ask for it.
+- (void)setScrollingSketchView:(ScrollingSketchView *)newSketchView
+{
+	_sketchView = newSketchView;
 }
 
 - (NSString *)windowNibName

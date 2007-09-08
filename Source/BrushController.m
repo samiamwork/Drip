@@ -15,6 +15,10 @@
 {
 	if( (self = [super init]) ) {
 		_currentBrush = nil;
+		
+		_paintBrush = nil;
+		_eraserBrush = nil;
+		_sketchView = nil;
 	}
 
 	return self;
@@ -22,7 +26,9 @@
 
 - (void)dealloc
 {
-	[_currentBrush release];
+	[_paintBrush release];
+	[_eraserBrush release];
+	[_sketchView release];
 
 	[super dealloc];
 }
@@ -59,13 +65,13 @@
 	[_brushSpacingSlider setFloatValue:[_currentBrush spacing]];
 }
 
+// TODO: should set the buttons to reflect this since we won't always be called from the UI
 - (void)setBrush:(Brush*)brush
 {
 	if( brush == _currentBrush )
 		return;
 	
-	[_currentBrush release];
-	_currentBrush = [brush retain];
+	_currentBrush = brush;
 	
 	[_brushSizeSlider setFloatValue:[_currentBrush size]];
 	[_brushSizeText setIntValue:(unsigned int)[_currentBrush size]];
@@ -83,5 +89,44 @@
 - (IBAction)colorChanged:(id)sender
 {
 	[_currentBrush setColor:[sender color]];
+}
+
+- (IBAction)selectBrush:(id)sender
+{
+	Brush *_selectedBrush = nil;
+	
+	switch( [[sender selectedCell] tag] ) {
+		case 1:
+			_selectedBrush = _paintBrush;
+			break;
+		case 2:
+			_selectedBrush = _eraserBrush;
+			break;
+		default:
+			_selectedBrush = _paintBrush;
+	}
+	
+	[self setBrush:_selectedBrush];
+	[_sketchView setBrush:_selectedBrush];
+}
+
+- (void)setNewBrush:(Brush *)newBrush eraser:(BrushEraser *)newEraser
+{
+	[_paintBrush release];
+	_paintBrush = [newBrush retain];
+	
+	[_eraserBrush release];
+	_eraserBrush = [newEraser retain];
+	
+	[self setBrush:_paintBrush];
+}
+
+- (void)setScrollingSketchView:(ScrollingSketchView *)newSketchView
+{
+	if( newSketchView == _sketchView )
+		return;
+	
+	[_sketchView release];
+	_sketchView = [newSketchView retain];
 }
 @end

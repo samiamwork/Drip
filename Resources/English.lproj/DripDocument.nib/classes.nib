@@ -31,11 +31,7 @@
         {
             CLASS = DripDocumentWindowController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {
-                "_layerController" = LayerController; 
-                "_sketchView" = ScrollingSketchView; 
-                "_toolWindow" = NSWindow; 
-            }; 
+            OUTLETS = {"_sketchView" = ScrollingSketchView; }; 
             SUPERCLASS = NSWindowController; 
         }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 

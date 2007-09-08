@@ -194,7 +194,9 @@
 		//get events
 		_paintEvents = [[NSMutableArray alloc] init];
 		_layerSettings = nil;
-		NSData *eventData = [[unarchiver decodeObjectForKey:@"events"] gzipInflate];
+		NSData *zippedEvents = [unarchiver decodeObjectForKey:@"events"];
+		printf("events: %d\n", [zippedEvents length]);
+		NSData *eventData = [zippedEvents gzipInflate];
 		unsigned char *bytes = (unsigned char *)[eventData bytes];
 		//DANGER: could possibly be too small
 		unsigned int position = 0;

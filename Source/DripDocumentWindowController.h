@@ -14,8 +14,6 @@
 @interface DripDocumentWindowController : NSWindowController
 {
 	IBOutlet ScrollingSketchView *_sketchView;
-	IBOutlet NSWindow *_toolWindow;
-	IBOutlet LayerController *_layerController;
 	
 	NSTimer *_playbackTimer;
 }

@@ -77,6 +77,15 @@
 	}
 }
 
+- (void)setScrollingSketchView:(ScrollingSketchView *)newSketchView
+{
+	if( newSketchView == _sketchView )
+		return;
+	
+	[_sketchView release];
+	_sketchView = [newSketchView retain];
+}
+
 #pragma mark Drag and Drop
 
 - (BOOL)tableView:(NSTableView *)tv writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard*)pboard

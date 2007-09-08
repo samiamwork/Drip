@@ -8,6 +8,7 @@
 
 #import "DripDocumentWindowController.h"
 #import "DripDocument.h"
+#import "DripInspectors.h"
 
 @implementation DripDocumentWindowController
 
@@ -17,7 +18,8 @@
 	
 	Canvas *newCanvas = [(DripDocument*)[self document] canvas];
 	[_sketchView setCanvas:newCanvas];
-	[_layerController setCanvas:newCanvas];
+	
+	[(DripDocument*)[self document] setScrollingSketchView:_sketchView];
 }
 
 - (IBAction)playBack:(id)sender
@@ -66,5 +68,24 @@
 	}
 	//TODO: should be more precise
 	[_sketchView invalidateCanvasRect:invalidCanvasRect];
+}
+
+- (void)windowDidBecomeMain:(NSNotification *)notification
+{
+	printf("did become main\n");
+	[[DripInspectors sharedController] setDripDocument:[self document]];
+}
+
+// we don't really care about this one since the new main will take care of it
+- (void)windowDidResignMain:(NSNotification *)notification
+{
+	printf("did resign main\n");
+}
+// this we care about, only if we were main.
+- (void)windowWillClose:(NSNotification *) notification
+{
+	printf("will close\n");
+	if( [[self window] isMainWindow] )
+		printf("was main\n");
 }
 @end

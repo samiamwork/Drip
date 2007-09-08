@@ -22,9 +22,12 @@
 	IBOutlet NSButton *_flowExpressionCheckbox;
 	IBOutlet BrushView *_brushView;
 	IBOutlet NSColorWell *_colorWell;
-	IBOutlet ScrollingSketchView *_sketchView;
 	
+	ScrollingSketchView *_sketchView;
 	Brush *_currentBrush;
+	
+	Brush *_paintBrush;
+	BrushEraser *_eraserBrush;
 }
 
 - (IBAction)colorChanged:(id)sender;
@@ -35,4 +38,9 @@
 - (IBAction)changeSizeExpression:(id)sender;
 - (IBAction)changeFlowExpression:(id)sender;
 - (void)setBrush:(Brush*)brush;
+
+- (IBAction)selectBrush:(id)sender;
+
+- (void)setNewBrush:(Brush *)newBrush eraser:(BrushEraser *)newEraser;
+- (void)setScrollingSketchView:(ScrollingSketchView *)newSketchView;
 @end
