@@ -14,8 +14,7 @@
 - (void)awakeFromNib
 {
 	_inspectors = [DripInspectors sharedController];
-	[_inspectors showWindow:nil];
-	[[_inspectors window] orderOut:nil];
+	[_inspectors loadWindow];
 }
 
 - (IBAction)newFile:(id)sender
