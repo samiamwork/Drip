@@ -231,22 +231,15 @@
 	// first reposition horizontally
 	if( [self visibleWidth] >= [_canvas size].width )
 		_canvasOrigin.x = floorf( ([self visibleWidth] - [_canvas size].width)/2.0f);
-	else {
-		if( (oldSize.width - (oldSize.height<[_canvas size].height?[NSScroller scrollerWidth]:0)) >= [_canvas size].width &&
-			_canvasOrigin.x + [_canvas size].width > [self visibleWidth])
-			_canvasOrigin.x = 0.0f;
-	}
 
 	// then reposition vertically
+	
+	// if the canvas does fit in the view...
 	if( [self visibleHeight] >= [_canvas size].height )
 		_canvasOrigin.y = floorf( ([self visibleHeight] - [_canvas size].height)/2.0f) + (IS_HORIZONTAL_SCROLLER?[NSScroller scrollerWidth]:0.0f);
+	// if the canvas doesn't fit in the view...
 	else if( [self visibleHeight] < [_canvas size].height ) {
 		_canvasOrigin.y += newSize.height - oldSize.height;
-		
-		// in the special case that we're switching from one state to the other...
-		if( (oldSize.height - (oldSize.width<[_canvas size].width?[NSScroller scrollerWidth]:0)) >= [_canvas size].height &&
-			_canvasOrigin.y + [_canvas size].height > [self visibleHeight])
-			_canvasOrigin.y = [self visibleHeight]-[_canvas size].height + (IS_HORIZONTAL_SCROLLER?[NSScroller scrollerWidth]:0.0f);
 	}
 	
 	[self redoScrollers];
@@ -265,9 +258,9 @@
 - (void)updateVerticalScroller
 {
 	float knobSize = [self visibleHeight]/[_canvas size].height;
-	float position = (-_canvasOrigin.y)/([_canvas size].height-[self visibleHeight]);
+	float position = (-_canvasOrigin.y + (IS_HORIZONTAL_SCROLLER?[NSScroller scrollerWidth]:0.0f))/([_canvas size].height-[self visibleHeight]);
 	
-	[_verticalScroller setFloatValue:(1.0f-position) knobProportion:knobSize]; 
+	[_verticalScroller setFloatValue:(1.0f-position) knobProportion:knobSize];
 }
 
 - (void)verticalScrollerClicked:(id)sender
@@ -275,7 +268,7 @@
 	switch( [sender hitPart] ) {
 		case NSScrollerKnob:
 		case NSScrollerKnobSlot:
-			_canvasOrigin.y = -roundf((1.0f-[sender floatValue])*([_canvas size].height-[self visibleHeight]));
+			_canvasOrigin.y = -roundf((1.0f-[sender floatValue])*([_canvas size].height-[self visibleHeight])) + (IS_HORIZONTAL_SCROLLER?[NSScroller scrollerWidth]:0.0f);
 			break;
 		case NSScrollerDecrementLine:
 			_canvasOrigin.y -= 1.0f;
@@ -290,11 +283,10 @@
 			_canvasOrigin.y += [self visibleHeight];
 			break;
 	}
-	
 	// we let the scroller handle the bounds checking and then we read the position
 	// back out
 	[self updateVerticalScroller];
-	_canvasOrigin.y = -roundf((1.0f-[_verticalScroller floatValue])*([_canvas size].height-[self visibleHeight]));
+	_canvasOrigin.y = -roundf((1.0f-[_verticalScroller floatValue])*([_canvas size].height-[self visibleHeight])) + (IS_HORIZONTAL_SCROLLER?[NSScroller scrollerWidth]:0.0f);
 	
 	[self setNeedsDisplay:YES];
 }
@@ -378,6 +370,17 @@
 										 [_horizontalScroller frame].origin.y,
 										 [NSScroller scrollerWidth],[NSScroller scrollerWidth])];
 		[self addSubview:_cornerView];
+
+		if( _canvasOrigin.y + [_canvas size].height < boundSize.height ) {
+			_canvasOrigin.y = boundSize.height-[_canvas size].height;
+		} else if( _canvasOrigin.y > [NSScroller scrollerWidth] ) {
+			_canvasOrigin.y = [NSScroller scrollerWidth];
+		}
+		
+		if( _canvasOrigin.x + [_canvas size].width < boundSize.width-[NSScroller scrollerWidth] )
+			_canvasOrigin.x = boundSize.width-[NSScroller scrollerWidth]-[_canvas size].width;
+		else if( _canvasOrigin.x > 0.0f )
+			_canvasOrigin.x = 0.0f;
 		
 		[self updateVerticalScroller];
 		[self updateHorizontalScroller];
@@ -385,11 +388,19 @@
 		[_verticalScroller setFrame:NSMakeRect(boundSize.width-[NSScroller scrollerWidth],0.0f,[NSScroller scrollerWidth],boundSize.height)];
 		[_cornerView removeFromSuperview];
 		
+		if( _canvasOrigin.y + [_canvas size].height < boundSize.height )
+			_canvasOrigin.y = boundSize.height-[_canvas size].height;
+		else if( _canvasOrigin.y > 0.0f )
+			_canvasOrigin.y = 0.0f;
 		[self updateVerticalScroller];
 	} else if( [_horizontalScroller superview] == self ) {
 		[_horizontalScroller setFrame:NSMakeRect(0.0f,0.0f,boundSize.width,[NSScroller scrollerWidth])];
 		[_cornerView removeFromSuperview];
 		
+		if( _canvasOrigin.x + [_canvas size].width < boundSize.width )
+			_canvasOrigin.x = boundSize.width-[_canvas size].width;
+		else if( _canvasOrigin.x > 0.0f )
+			_canvasOrigin.x = 0.0f;
 		[self updateHorizontalScroller];
 	}
 	
