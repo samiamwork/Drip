@@ -21,6 +21,9 @@
 	PressurePoint _lastMousePoint;
 	
 	NSCursor *_brushCursor;
+	BOOL _panningMode;
+	BOOL _isPanning;
+	NSPoint _lastDragPoint;
 }
 
 - (void)setCanvas:(Canvas *)newCanvas;

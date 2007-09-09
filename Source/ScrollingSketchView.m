@@ -43,6 +43,7 @@
 		
 		_currentBrush = nil;
 		_brushCursor = nil;
+		_isPanning = NO;
 		[self setBrush:[[Brush alloc] init]];
     }
     return self;
@@ -106,6 +107,13 @@
 	_lastMousePoint.x -= _canvasOrigin.x;
 	_lastMousePoint.y -= _canvasOrigin.y;
 	
+	if( _panningMode ) {
+		_isPanning = YES;
+		_lastDragPoint = clickPoint;
+		[self resetCursorRects];
+		return;
+	}
+	
 	NSRect drawnRect = [_canvas drawAtPoint:_lastMousePoint withBrushOnCurrentLayer:_currentBrush];
 	drawnRect.origin.x += _canvasOrigin.x;
 	drawnRect.origin.y += _canvasOrigin.y;
@@ -115,23 +123,96 @@
 	[self setNeedsDisplayInRect:drawnRect];
 }
 
+- (void)boundsCheckCanvas
+{
+	if( [_verticalScroller superview] == self ) {
+		if( _canvasOrigin.y + [_canvas size].height < [self bounds].size.height ) {
+			_canvasOrigin.y = [self bounds].size.height-[_canvas size].height;
+		} else if( _canvasOrigin.y > (IS_HORIZONTAL_SCROLLER ? [NSScroller scrollerWidth] : 0.0f) ) {
+			_canvasOrigin.y = (IS_HORIZONTAL_SCROLLER ? [NSScroller scrollerWidth] : 0.0f);
+		}
+	}
+	
+	if( [_horizontalScroller superview] == self ) {
+		if( _canvasOrigin.x + [_canvas size].width < [self visibleWidth] )
+			_canvasOrigin.x = [self visibleWidth]-[_canvas size].width;
+		else if( _canvasOrigin.x > 0.0f )
+			_canvasOrigin.x = 0.0f;
+	}
+}
+
 - (void)mouseDragged:(NSEvent *)theEvent
 {
 	if( [_canvas isPlayingBack] )
 		return;
 	
 	NSPoint newPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-	newPoint.x -= _canvasOrigin.x;
-	newPoint.y -= _canvasOrigin.y;
-	float newPressure = [theEvent pressure];
+	PressurePoint newPressurePoint = (PressurePoint){ newPoint.x, newPoint.y, [theEvent pressure] };
+	newPressurePoint.x -= _canvasOrigin.x;
+	newPressurePoint.y -= _canvasOrigin.y;
 	
-	PressurePoint newPressurePoint = (PressurePoint){ newPoint.x, newPoint.y, newPressure };
+	if( _panningMode ) {
+		if( [_verticalScroller superview] == self )
+			_canvasOrigin.y += newPoint.y - _lastDragPoint.y;
+		if( [_horizontalScroller superview] == self )
+			_canvasOrigin.x += newPoint.x - _lastDragPoint.x;
+		
+		_lastDragPoint = newPoint;
+		[self boundsCheckCanvas];
+		
+		[self updateVerticalScroller];
+		[self updateHorizontalScroller];
+		
+		[self setNeedsDisplay:YES];
+		return;
+	}
+	
 	NSRect drawnRect = [_canvas drawLineFromPoint:_lastMousePoint toPoint:&newPressurePoint withBrushOnCurrentLayer:_currentBrush];
 	_lastMousePoint = newPressurePoint;
 	
 	drawnRect.origin.x += _canvasOrigin.x;
 	drawnRect.origin.y += _canvasOrigin.y;
 	[self setNeedsDisplayInRect:drawnRect];
+}
+
+- (void)mouseUp:(NSEvent *)theEvent
+{
+	if( _panningMode ) {
+		_isPanning = NO;
+		[self resetCursorRects];
+		return;
+	}
+	
+}
+
+- (BOOL)acceptsFirstResponder
+{
+	return YES;
+}
+
+- (void)keyDown:(NSEvent *)theEvent
+{
+	if( ![[theEvent charactersIgnoringModifiers] isEqualToString:@" "] ) {
+		[super keyDown:theEvent];
+		return;
+	}
+	
+	if( [theEvent isARepeat] )
+		return;
+	
+	_panningMode = YES;
+	[self resetCursorRects];
+}
+
+- (void)keyUp:(NSEvent *)theEvent
+{
+	if( ![[theEvent charactersIgnoringModifiers]  isEqualToString:@" "] ) {
+		[super keyUp:theEvent];
+		return;
+	}
+	
+	[self resetCursorRects];
+	_panningMode = NO;
 }
 
 - (void)setBrush:(Brush *)newBrush
@@ -204,13 +285,14 @@
 
 - (void)resetCursorRects
 {
+	[[self window] invalidateCursorRectsForView:self];
 	[self discardCursorRects];
 	
 	if( _brushCursor == nil ) {
 		[self addCursorRect:[self bounds] cursor:[NSCursor arrowCursor]];
 		return;
 	}
-	
+		
 	NSRect visibleRect = [self bounds];
 	if( [_verticalScroller superview] == self )
 		visibleRect.size.width -= [NSScroller scrollerWidth];
@@ -218,7 +300,11 @@
 		visibleRect.size.height -= [NSScroller scrollerWidth];
 		visibleRect.origin.y += [NSScroller scrollerWidth];
 	}
-	[self addCursorRect:visibleRect cursor:_brushCursor];
+	
+	NSCursor *aCursor = _brushCursor;
+	if( _panningMode )
+		aCursor = _isPanning ? [NSCursor closedHandCursor] : [NSCursor openHandCursor];
+	[self addCursorRect:visibleRect cursor:aCursor];
 }
 
 #define IDENTITY_TRANSFORM ((NSAffineTransformStruct){1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f})
