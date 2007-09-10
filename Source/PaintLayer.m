@@ -21,6 +21,7 @@
 		_data = NULL;
 		_cxt = NULL;
 		
+		_thumbnail = nil;
 		_name = [[NSString alloc] initWithString:@"Unnamed"];
 	}
 
@@ -33,6 +34,7 @@
 	if( _data != NULL )
 		free( _data );
 	[_name release];
+	[_thumbnail release];
 
 	[super dealloc];
 }
@@ -108,6 +110,7 @@
 		CGColorSpaceRelease(colorSpace);
 		CGContextSetInterpolationQuality(_cxt,kCGInterpolationHigh);
 		
+		_thumbnail = nil;
 		_name = [[NSString alloc] initWithString:@"Unnamed"];
 	}
 	
@@ -147,6 +150,7 @@
 		for( layerIndex = range.location; layerIndex < range.location+range.length; layerIndex++ )
 			[[layers objectAtIndex:layerIndex] drawRect:layerRect inContext:_cxt];
 
+		_thumbnail = nil;
 		_name = [[NSString alloc] initWithString:@"Composite"];
 	}
 	
@@ -211,6 +215,45 @@
 - (void)changeSettings:(DripEventLayerSettings *)newSettings
 {
 	[self setOpacity:[newSettings opacity]];
+}
+
+- (NSImage *)thumbnail
+{
+	if( _thumbnail == nil ) {
+		// max thumbnail size of 50x50
+		NSSize thumbSize = NSMakeSize(50.0f,50.0f);
+		if( _width > _height )
+			thumbSize.height = ((float)_height*50.0f)/(float)_width;
+		else if( _width < _height )
+			thumbSize.width = ((float)_width*50.0f)/(float)_height;
+
+		printf("thumbnail size = %.01f x %.01f\n", thumbSize.width, thumbSize.height);
+		_thumbnail = [[NSImage alloc] initWithSize:thumbSize];
+		[self updateThumbnail];
+	}
+	
+	return _thumbnail;
+}
+- (void)updateThumbnail
+{
+	[_thumbnail lockFocus];
+	
+	CGRect thumbRect;
+	thumbRect.size.width = [_thumbnail size].width;
+	thumbRect.size.height = [_thumbnail size].height;
+	thumbRect.origin.x = thumbRect.origin.y = 0.0f;
+	
+	CGContextRef thumbContext = [[NSGraphicsContext currentContext] graphicsPort];
+	CGContextSetRGBFillColor(thumbContext,1.0f,1.0f,1.0f,1.0f);
+	CGContextFillRect( thumbContext, thumbRect );
+	
+	CGContextSetInterpolationQuality( thumbContext, kCGInterpolationNone );
+	CGContextSaveGState( thumbContext );
+	CGContextScaleCTM( thumbContext, thumbRect.size.width/(float)_width,thumbRect.size.width/(float)_width);
+	[self drawRect:NSMakeRect(0.0f,0.0f,_width,_height) inContext:thumbContext];
+	CGContextRestoreGState( thumbContext );
+	
+	[_thumbnail unlockFocus];
 }
 
 - (void)drawRect:(NSRect)aRect inContext:(CGContextRef)aContext

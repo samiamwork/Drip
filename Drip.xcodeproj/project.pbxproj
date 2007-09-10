@@ -62,8 +62,8 @@
 		3E1671520C61AD830014705B /* SketchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SketchController.m; sourceTree = "<group>"; };
 		3E39D9360C67B1A300F0D3FD /* Brush.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Brush.h; sourceTree = "<group>"; };
 		3E39D9370C67B1A300F0D3FD /* Brush.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Brush.m; sourceTree = "<group>"; };
-		3E39DA8F0C6822CA00F0D3FD /* BrushController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrushController.h; sourceTree = "<group>"; };
-		3E39DA900C6822CA00F0D3FD /* BrushController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BrushController.m; sourceTree = "<group>"; };
+		3E39DA8F0C6822CA00F0D3FD /* BrushController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BrushController.h; path = Source/BrushController.h; sourceTree = "<group>"; };
+		3E39DA900C6822CA00F0D3FD /* BrushController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BrushController.m; path = Source/BrushController.m; sourceTree = "<group>"; };
 		3E39DD180C69080500F0D3FD /* BrushEraser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrushEraser.h; sourceTree = "<group>"; };
 		3E39DD190C69080500F0D3FD /* BrushEraser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BrushEraser.m; sourceTree = "<group>"; };
 		3E39DF0C0C696EF600F0D3FD /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
@@ -87,8 +87,8 @@
 		3E8C3A440C90D3400091E8BE /* DripEventLayerSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DripEventLayerSettings.m; sourceTree = "<group>"; };
 		3E8C3AD50C91D74B0091E8BE /* DripEventLayerChange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripEventLayerChange.h; sourceTree = "<group>"; };
 		3E8C3AD60C91D74B0091E8BE /* DripEventLayerChange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DripEventLayerChange.m; sourceTree = "<group>"; };
-		3E8C3B5C0C921D1B0091E8BE /* DripInspectors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripInspectors.h; sourceTree = "<group>"; };
-		3E8C3B5D0C921D1B0091E8BE /* DripInspectors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DripInspectors.m; sourceTree = "<group>"; };
+		3E8C3B5C0C921D1B0091E8BE /* DripInspectors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DripInspectors.h; path = Source/DripInspectors.h; sourceTree = "<group>"; };
+		3E8C3B5D0C921D1B0091E8BE /* DripInspectors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DripInspectors.m; path = Source/DripInspectors.m; sourceTree = "<group>"; };
 		3E8C3BB70C922A0C0091E8BE /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/DripInspectors.nib; sourceTree = "<group>"; };
 		3ED06C470C89FAF000BF0669 /* DripEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripEvent.h; sourceTree = "<group>"; };
 		3ED06C480C89FAF000BF0669 /* DripEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DripEvent.m; sourceTree = "<group>"; };
@@ -98,8 +98,8 @@
 		3ED06C690C89FDAA00BF0669 /* DripEventBrushDrag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DripEventBrushDrag.m; sourceTree = "<group>"; };
 		3ED06C730C89FE1800BF0669 /* DripEventBrushSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripEventBrushSettings.h; sourceTree = "<group>"; };
 		3ED06C740C89FE1800BF0669 /* DripEventBrushSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DripEventBrushSettings.m; sourceTree = "<group>"; };
-		3EE0888B0C62C60000CAE28C /* LayerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LayerController.h; sourceTree = "<group>"; };
-		3EE0888C0C62C60000CAE28C /* LayerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LayerController.m; sourceTree = "<group>"; };
+		3EE0888B0C62C60000CAE28C /* LayerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LayerController.h; path = Source/LayerController.h; sourceTree = "<group>"; };
+		3EE0888C0C62C60000CAE28C /* LayerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LayerController.m; path = Source/LayerController.m; sourceTree = "<group>"; };
 		3EE088950C62C6A500CAE28C /* BrushView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrushView.h; sourceTree = "<group>"; };
 		3EE088960C62C6A500CAE28C /* BrushView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BrushView.m; sourceTree = "<group>"; };
 		3EE088EC0C62F9C400CAE28C /* PaintLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaintLayer.h; sourceTree = "<group>"; };
@@ -216,12 +216,22 @@
 				3E5488AA0B4C9572005ED4DA /* DripDocumentWindowController.m */,
 				3E1671510C61AD830014705B /* SketchController.h */,
 				3E1671520C61AD830014705B /* SketchController.m */,
+			);
+			name = Document;
+			sourceTree = "<group>";
+		};
+		3E37E6FB0C95E24400A476D5 /* Inspector */ = {
+			isa = PBXGroup;
+			children = (
+				3E8C3B5C0C921D1B0091E8BE /* DripInspectors.h */,
+				3E8C3B5D0C921D1B0091E8BE /* DripInspectors.m */,
 				3E39DA8F0C6822CA00F0D3FD /* BrushController.h */,
 				3E39DA900C6822CA00F0D3FD /* BrushController.m */,
 				3EE0888B0C62C60000CAE28C /* LayerController.h */,
 				3EE0888C0C62C60000CAE28C /* LayerController.m */,
 			);
-			name = Document;
+			name = Inspector;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		3E39E1360C6BAFE000F0D3FD /* Views */ = {
@@ -238,6 +248,7 @@
 		3E89C85A0B499F4200134E08 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				3E37E6FB0C95E24400A476D5 /* Inspector */,
 				3E39E1360C6BAFE000F0D3FD /* Views */,
 				3E0A59D30C601D2B0094610C /* Centered View */,
 				3E0A59D20C601D1A0094610C /* Brushes */,
@@ -255,8 +266,6 @@
 				3E5849D10C7022850093CD10 /* AnimatingTableView.m */,
 				3E7AB1180C7BD98A004389F6 /* NSData+gzip.h */,
 				3E7AB1190C7BD98A004389F6 /* NSData+gzip.m */,
-				3E8C3B5C0C921D1B0091E8BE /* DripInspectors.h */,
-				3E8C3B5D0C921D1B0091E8BE /* DripInspectors.m */,
 			);
 			path = Source;
 			sourceTree = "<group>";

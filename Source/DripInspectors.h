@@ -21,4 +21,5 @@
 + (DripInspectors *)sharedController;
 
 - (void)setDripDocument:(DripDocument *)newDocument;
+- (void)layersUpdated;
 @end

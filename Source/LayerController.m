@@ -74,6 +74,11 @@
 	[_minusButton setEnabled:NO];
 }
 
+- (void)layersUpdated
+{
+	[_layerTable reloadData];
+}
+
 - (IBAction)addLayer:(id)sender
 {
 	[_theCanvas addLayer];
@@ -104,7 +109,12 @@
 {
 	NSArray *layers = [_theCanvas layers];
 	//layers are sorted in reverse
-	return [[layers objectAtIndex:[layers count]-rowIndex-1] name];
+	PaintLayer *theLayer = [layers objectAtIndex:[layers count]-rowIndex-1];
+	
+	if( [[aTableColumn identifier] isEqualTo:@"name"] )
+		return [theLayer name];
+	else
+		return [theLayer thumbnail];
 }
 
 #pragma mark Drag and Drop

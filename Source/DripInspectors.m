@@ -50,4 +50,9 @@ static DripInspectors *g_sharedController;
 	
 	[[self window] orderFront:nil];
 }
+
+- (void)layersUpdated
+{
+	[_layerController layersUpdated];
+}
 @end

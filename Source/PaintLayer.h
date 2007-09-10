@@ -18,6 +18,7 @@
 	CGContextRef _cxt;
 	
 	NSString *_name;
+	NSImage *_thumbnail;
 }
 
 - (id)initWithWidth:(unsigned int)width height:(unsigned int)height;
@@ -37,4 +38,7 @@
 
 - (DripEventLayerSettings *)settings;
 - (void)changeSettings:(DripEventLayerSettings *)newSettings;
+
+- (NSImage *)thumbnail;
+- (void)updateThumbnail;
 @end

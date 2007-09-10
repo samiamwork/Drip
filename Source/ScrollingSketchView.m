@@ -7,7 +7,7 @@
 //
 
 #import "ScrollingSketchView.h"
-
+#import "DripInspectors.h"
 
 @implementation ScrollingSketchView
 
@@ -181,6 +181,9 @@
 		_isPanning = NO;
 		[self resetCursorRects];
 		return;
+	} else {
+		[[_canvas currentLayer] updateThumbnail];
+		[[DripInspectors sharedController] layersUpdated];
 	}
 	
 }

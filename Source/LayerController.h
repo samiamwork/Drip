@@ -31,4 +31,6 @@
 
 - (void)setScrollingSketchView:(ScrollingSketchView *)newSketchView;
 - (void)disable;
+
+- (void)layersUpdated;
 @end
