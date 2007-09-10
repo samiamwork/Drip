@@ -10,7 +10,6 @@
 		3E0A59CE0C601CF20094610C /* CenteredClipView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E0A59C70C601CF20094610C /* CenteredClipView.m */; };
 		3E0A59D00C601CF20094610C /* MyScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E0A59CB0C601CF20094610C /* MyScrollView.m */; };
 		3E1670660C61740F0014705B /* DripDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E1670650C61740F0014705B /* DripDelegate.m */; };
-		3E1671530C61AD830014705B /* SketchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E1671520C61AD830014705B /* SketchController.m */; };
 		3E39D9380C67B1A300F0D3FD /* Brush.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E39D9370C67B1A300F0D3FD /* Brush.m */; };
 		3E39DA910C6822CA00F0D3FD /* BrushController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E39DA900C6822CA00F0D3FD /* BrushController.m */; };
 		3E39DD1A0C69080500F0D3FD /* BrushEraser.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E39DD190C69080500F0D3FD /* BrushEraser.m */; };
@@ -58,8 +57,6 @@
 		3E0A59CB0C601CF20094610C /* MyScrollView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = MyScrollView.m; sourceTree = "<group>"; };
 		3E1670640C61740F0014705B /* DripDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripDelegate.h; sourceTree = "<group>"; };
 		3E1670650C61740F0014705B /* DripDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DripDelegate.m; sourceTree = "<group>"; };
-		3E1671510C61AD830014705B /* SketchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SketchController.h; sourceTree = "<group>"; };
-		3E1671520C61AD830014705B /* SketchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SketchController.m; sourceTree = "<group>"; };
 		3E39D9360C67B1A300F0D3FD /* Brush.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Brush.h; sourceTree = "<group>"; };
 		3E39D9370C67B1A300F0D3FD /* Brush.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Brush.m; sourceTree = "<group>"; };
 		3E39DA8F0C6822CA00F0D3FD /* BrushController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BrushController.h; path = Source/BrushController.h; sourceTree = "<group>"; };
@@ -214,8 +211,6 @@
 				3E89C85E0B499F4200134E08 /* DripDocument.m */,
 				3E5488A90B4C9572005ED4DA /* DripDocumentWindowController.h */,
 				3E5488AA0B4C9572005ED4DA /* DripDocumentWindowController.m */,
-				3E1671510C61AD830014705B /* SketchController.h */,
-				3E1671520C61AD830014705B /* SketchController.m */,
 			);
 			name = Document;
 			sourceTree = "<group>";
@@ -405,7 +400,6 @@
 				3E0A59CE0C601CF20094610C /* CenteredClipView.m in Sources */,
 				3E0A59D00C601CF20094610C /* MyScrollView.m in Sources */,
 				3E1670660C61740F0014705B /* DripDelegate.m in Sources */,
-				3E1671530C61AD830014705B /* SketchController.m in Sources */,
 				3EE0888D0C62C60000CAE28C /* LayerController.m in Sources */,
 				3EE088970C62C6A500CAE28C /* BrushView.m in Sources */,
 				3EE088EE0C62F9C400CAE28C /* PaintLayer.m in Sources */,
