@@ -76,4 +76,26 @@
 	[self setNeedsDisplay:YES];
 }
 
+- (void)mouseDown:(NSEvent *)theEvent
+{
+	NSPoint location = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+	
+	int row = [self rowAtPoint:location];
+	int col = [self columnAtPoint:location];
+	
+	NSTableColumn *clickedColumn = [[self tableColumns] objectAtIndex:col];
+	NSCell *clickedCell = [clickedColumn dataCellForRow:row];
+	
+	if( ![clickedCell isKindOfClass:[NSButtonCell class]] ) {
+		[super mouseDown:theEvent];
+		return;
+	}
+	
+	NSNumber *value = [[self dataSource] tableView:self objectValueForTableColumn:clickedColumn row:row];
+	if( [[self dataSource] respondsToSelector:@selector(tableView:setObjectValue:forTableColumn:row:)] )
+		[[self dataSource] tableView:self setObjectValue:([value boolValue] ? [NSNumber numberWithBool:NO] : [NSNumber numberWithBool:YES]) forTableColumn:clickedColumn row:row];
+	
+	[self setNeedsDisplayInRect:[self rectOfRow:row]];
+}
+
 @end
