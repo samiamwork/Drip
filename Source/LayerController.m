@@ -47,7 +47,7 @@
 	
 	if( newOpacity != oldOpacity ) {
 		[sender setFloatValue:newOpacity];
-		[_theCanvas currentLayerSettingsChanged];
+		[_theCanvas settingsChangedForLayer:[[_theCanvas layers] indexOfObject:[_theCanvas currentLayer]]];
 		[_sketchView setNeedsDisplay:YES];
 	}
 }
@@ -129,6 +129,7 @@
 		if( theLayer != [_theCanvas currentLayer] )
 			[_theCanvas rebuildTopAndBottom];
 		
+		[_theCanvas settingsChangedForLayer:[layers count]-rowIndex-1];
 		[_sketchView setNeedsDisplay:YES];
 	}
 }

@@ -146,7 +146,7 @@
 		return NSMakeRect(0.0f,0.0f,_width,_height);
 	} else if( [theEvent isKindOfClass:[DripEventLayerSettings class]] ) {
 		DripEventLayerSettings *layerSettings = (DripEventLayerSettings *)theEvent;
-		[_currentLayer changeSettings:layerSettings];
+		[[_layers objectAtIndex:[layerSettings layerIndex]] changeSettings:layerSettings];
 		return NSMakeRect(0.0f,0.0f,_width,_height);
 	} else if( [theEvent isKindOfClass:[DripEventLayerChange class]] ) {
 		[self setCurrentLayer:[_layers objectAtIndex:[(DripEventLayerChange *)theEvent layerIndex]]];
@@ -416,11 +416,6 @@
 	}
 
 	_currentLayer = aLayer;
-	if( _layerSettings != nil ) {
-		[_paintEvents addObject:_layerSettings];
-		[_layerSettings release];
-		_layerSettings = nil;
-	}	
 	// EVENT:
 	// set CurrentLayer to layer at index "layerIndex"
 	if( !_isPlayingBack )
@@ -511,10 +506,15 @@
 	return _document;
 }
 
-- (void)currentLayerSettingsChanged;
+- (void)settingsChangedForLayer:(unsigned int)layerIndex;
 {
+	// if these settings are on a different layer than before then we should write the old ones
+	if( _layerSettings != nil && [_layerSettings layerIndex] != layerIndex )
+		[_paintEvents addObject:_layerSettings];
+	
 	[_layerSettings release];
-	_layerSettings = [[_currentLayer settings] retain];
+	PaintLayer *aLayer = [_layers objectAtIndex:layerIndex];
+	_layerSettings = [[DripEventLayerSettings alloc] initWithLayerIndex:layerIndex opacity:[aLayer opacity] visible:[aLayer visible]];
 }
 
 @end

@@ -49,6 +49,7 @@
 	[archiver encodeInt32:(int)_width forKey:@"width"];
 	[archiver encodeInt32:(int)_height forKey:@"height"];
 	[archiver encodeFloat:_opacity forKey:@"opacity"];
+	[archiver encodeBool:_visible forKey:@"visible"];
 	[archiver encodeObject:_name forKey:@"name"];
 	NSData *compressedData = [[NSData dataWithBytes:_data length:_width*(_height+1)*4] gzipDeflate];
 	[archiver encodeObject:compressedData forKey:@"data"];
@@ -67,8 +68,7 @@
 		_height = (unsigned int)[unarchiver decodeIntForKey:@"height"];
 		[self setName:[unarchiver decodeObjectForKey:@"name"]];
 		[self setOpacity:[unarchiver decodeFloatForKey:@"opacity"]];
-		//[self setVisible:[unarchiver decodeFloatForKey:@"visible"]];
-		_visible = YES;
+		[self setVisible:[unarchiver decodeFloatForKey:@"visible"]];
 		
 		_pitch = _width*4;
 		_data = calloc(_width*(_height+1), 4);
@@ -230,13 +230,10 @@
 	return _cxt;
 }
 
-- (DripEventLayerSettings *)settings
-{
-	return [[[DripEventLayerSettings alloc] initWithOpacity:_opacity] autorelease];
-}
 - (void)changeSettings:(DripEventLayerSettings *)newSettings
 {
 	[self setOpacity:[newSettings opacity]];
+	[self setVisible:[newSettings visible]];
 }
 
 - (NSImage *)thumbnail

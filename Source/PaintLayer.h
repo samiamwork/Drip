@@ -41,7 +41,7 @@
 
 - (void)drawRect:(NSRect)aRect inContext:(CGContextRef)aContext;
 
-- (DripEventLayerSettings *)settings;
+//- (DripEventLayerSettings *)settings;
 - (void)changeSettings:(DripEventLayerSettings *)newSettings;
 
 - (NSImage *)thumbnail;

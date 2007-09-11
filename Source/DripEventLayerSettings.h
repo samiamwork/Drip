@@ -12,8 +12,12 @@
 
 @interface DripEventLayerSettings : DripEvent {
 	float _opacity;
+	BOOL _visible;
+	unsigned int _layerIndex;
 }
 
-- (id)initWithOpacity:(float)opacity;
+- (id)initWithLayerIndex:(unsigned int)layerIndex opacity:(float)opacity visible:(BOOL)isVisible;
+- (unsigned int)layerIndex;
 - (float)opacity;
+- (BOOL)visible;
 @end
