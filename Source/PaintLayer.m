@@ -68,7 +68,7 @@
 		_height = (unsigned int)[unarchiver decodeIntForKey:@"height"];
 		[self setName:[unarchiver decodeObjectForKey:@"name"]];
 		[self setOpacity:[unarchiver decodeFloatForKey:@"opacity"]];
-		[self setVisible:[unarchiver decodeFloatForKey:@"visible"]];
+		[self setVisible:[unarchiver decodeBoolForKey:@"visible"]];
 		
 		_pitch = _width*4;
 		_data = calloc(_width*(_height+1), 4);
