@@ -70,5 +70,5 @@
 - (void)setDocument:(NSDocument *)newDocument;
 - (NSDocument *)document;
 
-- (void)settingsChangedForLayer:(unsigned int)layerIndex;
+- (void)settingsChangedForLayer:(PaintLayer *)aLayer;
 @end

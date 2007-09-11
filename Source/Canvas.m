@@ -509,14 +509,17 @@
 	return _document;
 }
 
-- (void)settingsChangedForLayer:(unsigned int)layerIndex;
+- (void)settingsChangedForLayer:(PaintLayer *)aLayer;
 {
+	unsigned int layerIndex = [_layers indexOfObject:aLayer];
+	if( layerIndex == NSNotFound )
+		return;
+	
 	// if these settings are on a different layer than before then we should write the old ones
 	if( _layerSettings != nil && [_layerSettings layerIndex] != layerIndex )
 		[_paintEvents addObject:_layerSettings];
 	
 	[_layerSettings release];
-	PaintLayer *aLayer = [_layers objectAtIndex:layerIndex];
 	_layerSettings = [[DripEventLayerSettings alloc] initWithLayerIndex:layerIndex opacity:[aLayer opacity] visible:[aLayer visible]];
 }
 
