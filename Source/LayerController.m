@@ -207,4 +207,7 @@
 	[_opacitySlider setFloatValue:[[_theCanvas currentLayer] opacity]];
 }
 
+- (void)tableViewAnimationDone:(AnimatingTableView *)aTableView
+{
+}
 @end

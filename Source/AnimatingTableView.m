@@ -8,6 +8,9 @@
 
 #import "AnimatingTableView.h"
 
+@interface NSObject (AnimationDelegate)
+- (void)tableViewAnimationDone:(AnimatingTableView *)aTableView;
+@end
 
 @implementation AnimatingTableView
 
@@ -71,9 +74,21 @@
 		_animationTimer = nil;
 		[_slidingAnimation release];
 		_slidingAnimation = nil;
+		
+		if( [self delegate] && [[self delegate] respondsToSelector:@selector(tableViewAnimationDone:)] )
+			[[self delegate] tableViewAnimationDone:self];
 	}
 	
 	[self setNeedsDisplay:YES];
+}
+
+- (BOOL)acceptsFirstResponder
+{
+	return NO;
+}
+- (BOOL)acceptsFirstMouse:(NSEvent *)theEvent
+{
+	return YES;
 }
 
 - (void)mouseDown:(NSEvent *)theEvent
