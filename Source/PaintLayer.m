@@ -18,6 +18,7 @@
 		_height = 0;
 		_pitch = 0;
 		_opacity = 1.0f;
+		_visible = YES;
 		_data = NULL;
 		_cxt = NULL;
 		
@@ -66,6 +67,8 @@
 		_height = (unsigned int)[unarchiver decodeIntForKey:@"height"];
 		[self setName:[unarchiver decodeObjectForKey:@"name"]];
 		[self setOpacity:[unarchiver decodeFloatForKey:@"opacity"]];
+		//[self setVisible:[unarchiver decodeFloatForKey:@"visible"]];
+		_visible = YES;
 		
 		_pitch = _width*4;
 		_data = calloc(_width*(_height+1), 4);
@@ -92,6 +95,7 @@
 		_width = width;
 		_height = height;
 		_opacity = 1.0f;
+		_visible = YES;
 		//HACK: +1 to fix problem with creating image from sub-region of bitmapcontext
 		_data = calloc(_width*(_height+1), 4);
 		if( _data == NULL ) {
@@ -127,6 +131,7 @@
 		_width = [sampleLayer width];
 		_height = [sampleLayer height];
 		_opacity = 1.0f;
+		_visible = YES;
 		
 		_data = calloc(_width*(_height+1), 4);
 		if( _data == NULL ) {
@@ -187,6 +192,23 @@
 	_opacity = newOpacity;
 }
 
+- (BOOL)visible
+{
+	return _visible;
+}
+- (void)setVisible:(BOOL)isVisible
+{
+	_visible = isVisible;
+}
+- (void)toggleVisible
+{
+	if( _visible )
+		[self setVisible:NO];
+	else
+		[self setVisible:YES];
+}
+
+
 - (unsigned int)width
 {
 	return _width;
@@ -227,7 +249,6 @@
 		else if( _width < _height )
 			thumbSize.width = ((float)_width*50.0f)/(float)_height;
 
-		printf("thumbnail size = %.01f x %.01f\n", thumbSize.width, thumbSize.height);
 		_thumbnail = [[NSImage alloc] initWithSize:thumbSize];
 		[self updateThumbnail];
 	}
@@ -258,6 +279,9 @@
 
 - (void)drawRect:(NSRect)aRect inContext:(CGContextRef)aContext
 {
+	if( !_visible )
+		return;
+	
 	CGColorSpaceRef colorSpace;
 	CGImageRef cachedImage;
 	CGContextRef cachedCxt;

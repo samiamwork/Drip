@@ -14,6 +14,8 @@
 	unsigned int _height;
 	unsigned int _pitch;
 	float _opacity;
+	BOOL _visible;
+	
 	unsigned char *_data;
 	CGContextRef _cxt;
 	
@@ -33,6 +35,9 @@
 - (void)setName:(NSString *)newName;
 - (float)opacity;
 - (void)setOpacity:(float)newOpacity;
+- (BOOL)visible;
+- (void)setVisible:(BOOL)isVisible;
+- (void)toggleVisible;
 
 - (void)drawRect:(NSRect)aRect inContext:(CGContextRef)aContext;
 

@@ -113,8 +113,24 @@
 	
 	if( [[aTableColumn identifier] isEqualTo:@"name"] )
 		return [theLayer name];
+	else if( [[aTableColumn identifier] isEqualTo:@"visible"] )
+		return [NSNumber numberWithBool:[theLayer visible]];
 	else
 		return [theLayer thumbnail];
+}
+
+// editing
+- (void)tableView:(NSTableView *)aTableView setObjectValue:(id)anObject forTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
+{
+	if( [[aTableColumn identifier] isEqualTo:@"visible"] ) {
+		NSArray *layers = [_theCanvas layers];
+		PaintLayer *theLayer = [layers objectAtIndex:[layers count]-rowIndex-1];
+		[theLayer setVisible:[(NSNumber *)anObject boolValue]];
+		if( theLayer != [_theCanvas currentLayer] )
+			[_theCanvas rebuildTopAndBottom];
+		
+		[_sketchView setNeedsDisplay:YES];
+	}
 }
 
 #pragma mark Drag and Drop

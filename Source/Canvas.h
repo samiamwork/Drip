@@ -52,6 +52,7 @@
 - (void)setCurrentLayer:(PaintLayer *)aLayer;
 - (PaintLayer *)currentLayer;
 - (NSSize)size;
+- (void)rebuildTopAndBottom;
 
 - (void)compactEvents;
 - (void)beginPlayback;
