@@ -21,6 +21,7 @@ typedef struct PressurePoint {
 	float *_brushLookup;
 	
 	float _brushSize;
+	float _intSize;
 	float _hardness;
 	float _spacing;
 	BOOL _pressureAffectsFlow;

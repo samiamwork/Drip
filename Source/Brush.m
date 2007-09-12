@@ -98,20 +98,26 @@ float valueWithCosCurve(float t, float crossover)
 		CGImageRelease(_dab);
 	
 	unsigned int intSize = (int)ceilf(_brushSize);
+	if( !(intSize & 1) )
+		intSize += 1;
+	
 	if( _dabData != NULL )
 		free(_dabData);
 	_dabData = (unsigned char *)calloc(intSize*intSize,1);
 	
 	unsigned char *p = _dabData;
-	float center = _brushSize/2.0f;
+	float center = (float)((intSize-1)/2);
 	// better? still doesn't fix problem though
 	//float center = ((float)intSize)/2.0f;
 	float distanceFromCenter;
 	int row;
 	int col;
-	for( row=intSize-1; row >= 0; row-- ) {
+	for( row=0; row < intSize; row++ ) {
 		for( col=0; col < intSize; col++ ) {
-			distanceFromCenter = sqrtf(((float)(col) - center)*((float)(col) - center)+((float)(row) - center)*((float)(row) - center))/center;
+			if( (float)row == center && (float)col == center )
+				distanceFromCenter = 0.0f;
+			else
+				distanceFromCenter = sqrtf(((float)(col) - center)*((float)(col) - center)+((float)(row) - center)*((float)(row) - center))/(_brushSize/2.0f);
 			
 			if( distanceFromCenter > 1.0f || distanceFromCenter < 0.0f ) {
 				*p = 0;
@@ -121,8 +127,9 @@ float valueWithCosCurve(float t, float crossover)
 			p++;
 		}
 	}
-	
-	CGDataProviderRef dataProviderRef = CGDataProviderCreateWithData(NULL, _dabData,intSize*intSize*4, NULL);
+
+	_intSize = (float)intSize;
+	CGDataProviderRef dataProviderRef = CGDataProviderCreateWithData(NULL, _dabData,intSize*intSize, NULL);
 	float decode[2] = {1.0,0.0f};
 	_dab = CGImageMaskCreate(intSize,intSize,8,8,intSize,dataProviderRef,decode,YES);
 	if( _dab == NULL )
@@ -311,23 +318,23 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 
 - (void)drawDabAtPoint:(NSPoint)aPoint
 {
-	CGContextDrawImage([[NSGraphicsContext currentContext] graphicsPort],CGRectMake(aPoint.x-_brushSize/2.0f,aPoint.y-_brushSize/2.0f,_brushSize,_brushSize),_dab);
+	CGContextDrawImage([[NSGraphicsContext currentContext] graphicsPort],CGRectMake(aPoint.x-(_intSize-1)/2.0f,aPoint.y-(_intSize-1)/2.0f,_intSize,_intSize),_dab);
 }
 
 - (NSRect)renderPointAt:(PressurePoint)aPoint onLayer:(PaintLayer *)aLayer
 {
-	float brushSize = _brushSize*aPoint.pressure;
+	float brushSize = _intSize*aPoint.pressure;
 	int brushSizeHalf;
 
 	if(!_pressureAffectsSize)
-		brushSize = _brushSize;
+		brushSize = _intSize;
 	if(_pressureAffectsFlow)
 		CGContextSetRGBFillColor([aLayer cxt],_RGBAColor[0],_RGBAColor[1],_RGBAColor[2],aPoint.pressure);
 	else
 		CGContextSetRGBFillColor([aLayer cxt],_RGBAColor[0],_RGBAColor[1],_RGBAColor[2],_RGBAColor[3]);
 	
 	brushSizeHalf = brushSize/2.0f;
-	CGContextDrawImage([aLayer cxt],CGRectMake(aPoint.x-brushSize/2.0f,aPoint.y-brushSize/2.0f,brushSize,brushSize),_dab);
+	CGContextDrawImage([aLayer cxt],CGRectMake(aPoint.x-(brushSize-1.0f)/2.0f,aPoint.y-(brushSize-1.0f)/2.0f,brushSize,brushSize),_dab);
 	//CGContextFillRect([aLayer cxt],CGRectMake(aPoint.x-5.0f,aPoint.y-5.0f,10.0f,10.0f));
 	
 	//I don't really  think this fix is very good but...
@@ -339,7 +346,7 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 {
 	float x,y;
 	float brushSize;
-	float baseBrushSize = _brushSize;
+	float baseBrushSize = _intSize;
 	float pressure;
 	float stepSize;
 	float length = sqrtf((endPoint->x-startPoint.x)*(endPoint->x-startPoint.x) + (endPoint->y-startPoint.y)*(endPoint->y-startPoint.y));

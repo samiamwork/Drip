@@ -27,7 +27,7 @@
 	if( _currentBrush == nil )
 		return;
 	
-	NSPoint center = NSMakePoint(bounds.origin.x+bounds.size.width/2.0f,bounds.origin.y+bounds.size.height/2.0f);
+	NSPoint center = NSMakePoint(roundf(bounds.origin.x+bounds.size.width/2.0f),roundf(bounds.origin.y+bounds.size.height/2.0f));
 	[[NSColor blackColor] set];
 	[_currentBrush drawDabAtPoint:center];
 }
