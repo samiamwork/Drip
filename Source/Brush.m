@@ -87,6 +87,8 @@ float valueWithCosCurve(float t, float crossover)
 {
 	if( t <= crossover )
 		return 1.0f;
+	else if( t > 1.0f || t<0.0f )
+		return 0.0f;
 	
 	float y = 0.5f*cosf(M_PI*(t-crossover)/(1.0f-crossover))+0.5f;
 	return y;
@@ -112,18 +114,27 @@ float valueWithCosCurve(float t, float crossover)
 	float distanceFromCenter;
 	int row;
 	int col;
+	int vOffset;
+	int hOffset;
+	float x;
+	float y;
+	float totalValue;
 	for( row=0; row < intSize; row++ ) {
 		for( col=0; col < intSize; col++ ) {
-			if( (float)row == center && (float)col == center )
-				distanceFromCenter = 0.0f;
-			else
-				distanceFromCenter = sqrtf(((float)(col) - center)*((float)(col) - center)+((float)(row) - center)*((float)(row) - center))/(_brushSize/2.0f);
-			
-			if( distanceFromCenter > 1.0f || distanceFromCenter < 0.0f ) {
-				*p = 0;
-			} else {
-				*p = (unsigned char)(255.0f*valueWithCosCurve(distanceFromCenter,_hardness));
+			totalValue = 0.0f;
+			for( vOffset=-1; vOffset < 2; vOffset++ ) {
+				for( hOffset=-1; hOffset < 2; hOffset++ ) {
+					x = (float)col + (float)hOffset*0.5f;
+					y = (float)row + (float)vOffset*0.5f;
+					if( (float)x == center && (float)y == center )
+						distanceFromCenter = 0.0f;
+					else
+						distanceFromCenter = sqrtf((x - center)*(x - center)+(y - center)*(y - center))/(_brushSize/2.0f);
+					
+					totalValue += valueWithCosCurve(distanceFromCenter,_hardness);
+				}
 			}
+			*p = (unsigned char)(255.0f*(totalValue/9.0f));
 			p++;
 		}
 	}
