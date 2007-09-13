@@ -22,22 +22,26 @@
 		_size = 20.0f;
 		_hardness = 0.8f;
 		_spacing = 0.2f;
+		_resaturation = 1.0f;
 		_pressureAffectsFlow = NO;
 		_pressureAffectsSize = YES;
+		_pressureAffectsResaturation = YES;
 	}
 
 	return self;
 }
 
-- (id)initWithType:(BrushType)theType size:(float)theSize hardness:(float)theHardness spacing:(float)theSpacing pressureAffectsFlow:(BOOL)willAffectFlow pressureAffectsSize:(BOOL)willAffectSize color:(NSColor *)theColor
+- (id)initWithType:(BrushType)theType size:(float)theSize hardness:(float)theHardness spacing:(float)theSpacing resaturation:(float)theResaturation pressureAffectsFlow:(BOOL)willAffectFlow pressureAffectsSize:(BOOL)willAffectSize pressureAffectsResaturation:(BOOL)willAffectResaturation color:(NSColor *)theColor
 {
 	if( (self = [super init]) ) {
 		_type = theType;
 		_size = theSize;
 		_spacing = theSpacing;
 		_hardness = theHardness;
+		_resaturation = theResaturation;
 		_pressureAffectsFlow = willAffectFlow;
 		_pressureAffectsSize = willAffectSize;
+		_pressureAffectsResaturation = willAffectResaturation;
 		
 		NSColor *rgbColor = [theColor colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
 		[rgbColor getRed:&_RGBAColor[0] green:&_RGBAColor[1] blue:&_RGBAColor[2] alpha:&_RGBAColor[3]];
@@ -46,7 +50,7 @@
 	return self;
 }
 
-#define EVENT_LENGTH (EVENT_HEADER_LENGTH+1+sizeof(CFSwappedFloat32)*7+1)
+#define EVENT_LENGTH (EVENT_HEADER_LENGTH+1+sizeof(CFSwappedFloat32)*8+1)
 + (id)eventWithBytes:(void *)bytes length:(unsigned int)length
 {
 	unsigned char eventLength = *(unsigned char *)bytes;
@@ -61,6 +65,7 @@
 	float size;
 	float hardness;
 	float spacing;
+	float resaturation;
 	// bit field for pressure expressions
 	unsigned char pressureAffects;
 	
@@ -80,6 +85,8 @@
 	bytes += sizeof(CFSwappedFloat32);
 	spacing = CFConvertFloat32SwappedToHost( *(CFSwappedFloat32 *)bytes );
 	bytes += sizeof(CFSwappedFloat32);
+	resaturation = CFConvertFloat32SwappedToHost( *(CFSwappedFloat32 *)bytes );
+	bytes += sizeof(CFSwappedFloat32);
 	
 	pressureAffects = *(unsigned char *)bytes;
 	
@@ -87,8 +94,10 @@
 													size:size
 												hardness:hardness
 												 spacing:spacing
+											resaturation:resaturation
 									 pressureAffectsFlow:(pressureAffects & 1)
 									 pressureAffectsSize:(pressureAffects & 2)
+							 pressureAffectsResaturation:(pressureAffects & 4)
 												   color:[NSColor colorWithCalibratedRed:rgba[0] green:rgba[1] blue:rgba[2] alpha:rgba[3]]] autorelease];
 }
 
@@ -119,8 +128,10 @@
 	ptr += sizeof(CFSwappedFloat32);
 	*(CFSwappedFloat32 *)ptr = CFConvertFloat32HostToSwapped(_spacing);
 	ptr += sizeof(CFSwappedFloat32);
+	*(CFSwappedFloat32 *)ptr = CFConvertFloat32HostToSwapped(_resaturation);
+	ptr += sizeof(CFSwappedFloat32);
 	
-	*ptr = (_pressureAffectsSize ? 2:0) | (_pressureAffectsFlow ? 1:0);
+	*ptr = (_pressureAffectsSize ? 2:0) | (_pressureAffectsFlow ? 1:0) | (_pressureAffectsResaturation ? 4:0);
 	
 	NSData *theData = [NSData dataWithBytes:bytes length:EVENT_LENGTH];
 	free(bytes);
@@ -143,6 +154,10 @@
 {
 	return _spacing;
 }
+- (float)resaturation
+{
+	return _resaturation;
+}
 - (BOOL)pressureAffectsFlow
 {
 	return _pressureAffectsFlow;
@@ -150,6 +165,10 @@
 - (BOOL)pressureAffectsSize
 {
 	return _pressureAffectsSize;
+}
+- (BOOL)pressureAffectsResaturation
+{
+	return _pressureAffectsResaturation;
 }
 - (NSColor*)color
 {
@@ -161,7 +180,7 @@
 - (unsigned int)hash
 {
 	return (*(UInt32 *)&_size ^ *(UInt32 *)&_hardness ^ *(UInt32 *)&_spacing ^ *(UInt32 *)&_RGBAColor[0] ^
-			*(UInt32 *)&_RGBAColor[1] ^ *(UInt32 *)&_RGBAColor[2] ^ *(UInt32 *)&_RGBAColor[3] ^ (_pressureAffectsFlow ? 1:0 | _pressureAffectsSize ? 2:0) ^
+			*(UInt32 *)&_RGBAColor[1] ^ *(UInt32 *)&_RGBAColor[2] ^ *(UInt32 *)&_RGBAColor[3] ^ (_pressureAffectsFlow ? 1:0 | _pressureAffectsSize ? 2:0 | _pressureAffectsResaturation ? 4:0) ^
 			_type);
 }
 

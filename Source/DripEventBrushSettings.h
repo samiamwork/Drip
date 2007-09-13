@@ -21,17 +21,21 @@ typedef enum BrushType {
 	float _size;
 	float _hardness;
 	float _spacing;
+	float _resaturation;
 	BOOL _pressureAffectsFlow;
 	BOOL _pressureAffectsSize;
+	BOOL _pressureAffectsResaturation;
 }
 
-- (id)initWithType:(BrushType)theType size:(float)theSize hardness:(float)theHardness spacing:(float)theSpacing pressureAffectsFlow:(BOOL)willAffectFlow pressureAffectsSize:(BOOL)willAffectSize color:(NSColor *)theColor;
+- (id)initWithType:(BrushType)theType size:(float)theSize hardness:(float)theHardness spacing:(float)theSpacing resaturation:(float)theResaturation pressureAffectsFlow:(BOOL)willAffectFlow pressureAffectsSize:(BOOL)willAffectSize pressureAffectsResaturation:(BOOL)willAffectResaturation color:(NSColor *)theColor;
 
 - (BrushType)type;
 - (float)size;
 - (float)hardness;
 - (float)spacing;
+- (float)resaturation;
 - (BOOL)pressureAffectsFlow;
 - (BOOL)pressureAffectsSize;
+- (BOOL)pressureAffectsResaturation;
 - (NSColor*)color;
 @end
