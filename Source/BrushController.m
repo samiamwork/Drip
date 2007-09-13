@@ -43,6 +43,11 @@
 	[_currentBrush setPressureAffectsFlow:[sender state]==NSOnState?YES:NO];
 }
 
+- (IBAction)changeResaturationExpression:(id)sender
+{
+	[_currentBrush setPressureAffectsResaturation:[sender state]==NSOnState?YES:NO];
+}
+
 - (IBAction)changeSize:(id)sender
 {
 	[_currentBrush setSize:[sender floatValue]];
@@ -65,6 +70,13 @@
 	[_brushSpacingSlider setFloatValue:[_currentBrush spacing]];
 }
 
+- (IBAction)changeResaturation:(id)sender
+{
+	[_currentBrush setResaturation:[sender floatValue]];
+	[_brushResaturationText setFloatValue:[_currentBrush resaturation]];
+	[_brushResaturationSlider setFloatValue:[_currentBrush resaturation]];
+}
+
 // TODO: should set the buttons to reflect this since we won't always be called from the UI
 - (void)setBrush:(Brush*)brush
 {
@@ -84,9 +96,13 @@
 	[_brushHardnessText setFloatValue:[_currentBrush hardness]];
 	[_brushSpacingSlider setFloatValue:[_currentBrush spacing]];
 	[_brushSpacingText setFloatValue:[_currentBrush spacing]];
+	[_brushResaturationSlider setFloatValue:[_currentBrush resaturation]];
+	[_brushResaturationText setFloatValue:[_currentBrush resaturation]];
 	
 	[_sizeExpressionCheckbox setState:[_currentBrush pressureAffectsSize]?NSOnState:NSOffState];
 	[_flowExpressionCheckbox setState:[_currentBrush pressureAffectsFlow]?NSOnState:NSOffState];
+	[_resaturationExpressionCheckbox setState:[_currentBrush pressureAffectsResaturation]?NSOnState:NSOffState];
+	
 	[_brushView setBrush:_currentBrush];
 	//[_currentBrush setColor:[_colorWell color]];
 	if( [brush isMemberOfClass:[Brush class]] )
@@ -128,8 +144,10 @@
 	[_brushSizeSlider setEnabled:YES];
 	[_brushHardnessSlider setEnabled:YES];
 	[_brushSpacingSlider setEnabled:YES];
+	[_brushResaturationSlider setEnabled:YES];
 	[_sizeExpressionCheckbox setEnabled:YES];
 	[_flowExpressionCheckbox setEnabled:YES];
+	[_resaturationExpressionCheckbox setEnabled:YES];
 	[_brushSelector setEnabled:YES];
 	[_colorWell setEnabled:YES];
 	
@@ -156,16 +174,21 @@
 	[_brushHardnessText setFloatValue:0.0f];
 	[_brushSpacingSlider setFloatValue:0.1f];
 	[_brushSpacingText setFloatValue:0.1f];
+	[_brushResaturationSlider setFloatValue:1.0f];
+	[_brushResaturationText setFloatValue:1.0f];
 	
 	[_sizeExpressionCheckbox setState:NSOffState];
 	[_flowExpressionCheckbox setState:NSOffState];
+	[_resaturationExpressionCheckbox setState:NSOffState];
 	[_brushView setBrush:nil];
 	
 	[_brushSizeSlider setEnabled:NO];
 	[_brushHardnessSlider setEnabled:NO];
 	[_brushSpacingSlider setEnabled:NO];
+	[_brushResaturationSlider setEnabled:NO];
 	[_sizeExpressionCheckbox setEnabled:NO];
 	[_flowExpressionCheckbox setEnabled:NO];
+	[_resaturationExpressionCheckbox setEnabled:NO];
 	[_brushSelector setEnabled:NO];
 	[_colorWell setEnabled:NO];
 }

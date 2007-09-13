@@ -5,6 +5,8 @@
             ACTIONS = {
                 changeFlowExpression = id; 
                 changeHardness = id; 
+                changeResaturation = id; 
+                changeResaturationExpression = id; 
                 changeSize = id; 
                 changeSizeExpression = id; 
                 changeSpacing = id; 
@@ -16,6 +18,8 @@
             OUTLETS = {
                 "_brushHardnessSlider" = NSSlider; 
                 "_brushHardnessText" = NSTextField; 
+                "_brushResaturationSlider" = NSSlider; 
+                "_brushResaturationText" = NSTextField; 
                 "_brushSelector" = NSMatrix; 
                 "_brushSizeSlider" = NSSlider; 
                 "_brushSizeText" = NSTextField; 
@@ -24,6 +28,7 @@
                 "_brushView" = BrushView; 
                 "_colorWell" = NSColorWell; 
                 "_flowExpressionCheckbox" = NSButton; 
+                "_resaturationExpressionCheckbox" = NSButton; 
                 "_sizeExpressionCheckbox" = NSButton; 
             }; 
             SUPERCLASS = NSObject; 

@@ -20,6 +20,8 @@ typedef struct PressurePoint {
 	float _RGBAColor[4];
 	float *_brushLookup;
 	
+	float _resaturation;
+	BOOL _pressureAffectsResaturation;
 	float _resatColor[3];
 	float _leftoverDistance;
 	PressurePoint _lastBrushPosition;
@@ -42,10 +44,14 @@ typedef struct PressurePoint {
 - (float)hardness;
 - (void)setSpacing:(float)newSpacing;
 - (float)spacing;
+- (void)setResaturation:(float)newResaturation;
+- (float)resaturation;
 - (void)setPressureAffectsFlow:(BOOL)willAffectFlow;
 - (BOOL)pressureAffectsFlow;
 - (void)setPressureAffectsSize:(BOOL)willAffectSize;
 - (BOOL)pressureAffectsSize;
+- (void)setPressureAffectsResaturation:(BOOL)willAffectResaturation;
+- (BOOL)pressureAffectsResaturation;
 - (void)setColor:(NSColor*)aColor;
 - (NSColor*)color;
 

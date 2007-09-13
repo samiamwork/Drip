@@ -22,6 +22,8 @@
 		_brushSize = 0.0f;
 		_hardness = 0.4f;
 		_spacing = 0.25f;
+		_resaturation = 1.0f;
+		_pressureAffectsResaturation = NO;
 		_pressureAffectsFlow = NO;
 		_pressureAffectsSize = YES;
 
@@ -193,6 +195,20 @@ float valueWithCosCurve(float t, float crossover)
 	return _spacing;
 }
 
+- (void)setResaturation:(float)newResaturation
+{
+	if( newResaturation < 0.0f )
+		newResaturation = 0.0f;
+	else if( newResaturation > 1.0f )
+		newResaturation = 1.0f;
+	
+	_resaturation = newResaturation;
+}
+- (float)resaturation
+{
+	return _resaturation;
+}
+
 - (void)setPressureAffectsFlow:(BOOL)willAffectFlow
 {
 	_pressureAffectsFlow = willAffectFlow;
@@ -209,6 +225,15 @@ float valueWithCosCurve(float t, float crossover)
 - (BOOL)pressureAffectsSize
 {
 	return _pressureAffectsSize;
+}
+
+- (void)setPressureAffectsResaturation:(BOOL)willAffectResaturation
+{
+	_pressureAffectsResaturation = willAffectResaturation;
+}
+- (BOOL)pressureAffectsResaturation
+{
+	return _pressureAffectsResaturation;
 }
 
 - (void)setColor:(NSColor*)aColor
@@ -334,6 +359,25 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 
 - (NSRect)beginStrokeAtPoint:(PressurePoint)aPoint onLayer:(PaintLayer *)aLayer
 {
+	int x = (int)aPoint.x;
+	int y = (int)aPoint.y;
+	unsigned int layerHeight = [aLayer height];
+	unsigned int layerPitch = [aLayer pitch];
+	unsigned char *p = [aLayer data] + (layerHeight-y-1)*layerPitch + x*4;
+	float alpha;
+	if( aPoint.x < 0.0f || aPoint.x > [aLayer width] || aPoint.y < 0.0f || aPoint.y > [aLayer height] )
+		alpha = 0.0f;
+	else
+		alpha = ((float)*p)/255.0f; p++;
+		
+	if( alpha == 0.0f ) {
+		_resatColor[0] = _resatColor[1] = _resatColor[3] = 0.0f;
+	} else {
+		_resatColor[0] = ((float)*p)/(255.0f*alpha); p++;
+		_resatColor[1] = ((float)*p)/(255.0f*alpha); p++;
+		_resatColor[2] = ((float)*p)/(255.0f*alpha);
+	}
+	
 	_paintingLayer = aLayer;
 	_lastBrushPosition = aPoint;
 	_leftoverDistance = 0.0f;
@@ -355,12 +399,16 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	float brushSize = _intSize*aPoint.pressure;
 	int brushSizeHalf;
 
+	_resatColor[0] = _resatColor[0]*(1.0f-_resaturation)+_RGBAColor[0]*_resaturation;
+	_resatColor[1] = _resatColor[1]*(1.0f-_resaturation)+_RGBAColor[1]*_resaturation;
+	_resatColor[2] = _resatColor[2]*(1.0f-_resaturation)+_RGBAColor[2]*_resaturation;
+	
 	if(!_pressureAffectsSize)
 		brushSize = _intSize;
 	if(_pressureAffectsFlow)
-		CGContextSetRGBFillColor([aLayer cxt],_RGBAColor[0],_RGBAColor[1],_RGBAColor[2],aPoint.pressure);
+		CGContextSetRGBFillColor([aLayer cxt],_resatColor[0],_resatColor[1],_resatColor[2],aPoint.pressure);
 	else
-		CGContextSetRGBFillColor([aLayer cxt],_RGBAColor[0],_RGBAColor[1],_RGBAColor[2],_RGBAColor[3]);
+		CGContextSetRGBFillColor([aLayer cxt],_resatColor[0],_resatColor[1],_resatColor[2],_RGBAColor[3]);
 	
 	brushSizeHalf = brushSize/2.0f;
 	CGContextDrawImage([aLayer cxt],CGRectMake(aPoint.x-(brushSize-1.0f)/2.0f,aPoint.y-(brushSize-1.0f)/2.0f,brushSize,brushSize),_dab);

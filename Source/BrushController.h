@@ -18,8 +18,11 @@
 	IBOutlet NSTextField *_brushHardnessText;
 	IBOutlet NSSlider *_brushSpacingSlider;
 	IBOutlet NSTextField *_brushSpacingText;
+	IBOutlet NSSlider *_brushResaturationSlider;
+	IBOutlet NSTextField *_brushResaturationText;
 	IBOutlet NSButton *_sizeExpressionCheckbox;
 	IBOutlet NSButton *_flowExpressionCheckbox;
+	IBOutlet NSButton *_resaturationExpressionCheckbox;
 	IBOutlet BrushView *_brushView;
 	IBOutlet NSColorWell *_colorWell;
 	IBOutlet NSMatrix *_brushSelector;
@@ -36,8 +39,10 @@
 - (IBAction)changeSize:(id)sender;
 - (IBAction)changeHardness:(id)sender;
 - (IBAction)changeSpacing:(id)sender;
+- (IBAction)changeResaturation:(id)sender;
 - (IBAction)changeSizeExpression:(id)sender;
 - (IBAction)changeFlowExpression:(id)sender;
+- (IBAction)changeResaturationExpression:(id)sender;
 - (void)setBrush:(Brush*)brush;
 
 - (IBAction)selectBrush:(id)sender;
