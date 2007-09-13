@@ -332,6 +332,24 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	CGContextDrawImage([[NSGraphicsContext currentContext] graphicsPort],CGRectMake(aPoint.x-(_intSize-1)/2.0f,aPoint.y-(_intSize-1)/2.0f,_intSize,_intSize),_dab);
 }
 
+- (NSRect)beginStrokeAtPoint:(PressurePoint)aPoint onLayer:(PaintLayer *)aLayer
+{
+	_paintingLayer = aLayer;
+	_lastBrushPosition = aPoint;
+	_leftoverDistance = 0.0f;
+	return [self renderPointAt:aPoint onLayer:aLayer];
+}
+- (NSRect)continueStrokeAtPoint:(PressurePoint)aPoint
+{
+	NSRect invalidRect = [self renderLineFromPoint:_lastBrushPosition toPoint:&aPoint onLayer:_paintingLayer leftover:&_leftoverDistance];
+	_lastBrushPosition = aPoint;
+	return invalidRect;
+}
+- (void)endStroke
+{
+	//nothing
+}
+
 - (NSRect)renderPointAt:(PressurePoint)aPoint onLayer:(PaintLayer *)aLayer
 {
 	float brushSize = _intSize*aPoint.pressure;

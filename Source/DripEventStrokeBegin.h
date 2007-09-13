@@ -1,15 +1,15 @@
 //
-//  DripEventBrushDown.h
+//  DripEventStrokeBegin.h
 //  Drip
 //
-//  Created by Nur Monson on 9/1/07.
+//  Created by Nur Monson on 9/13/07.
 //  Copyright 2007 theidiotproject. All rights reserved.
 //
 
 #import <Cocoa/Cocoa.h>
 #import "DripEvent.h"
 
-@interface DripEventBrushDown : DripEvent {
+@interface DripEventStrokeBegin : DripEvent {
 	NSPoint _canvasPosition;
 	float _pressure;
 }

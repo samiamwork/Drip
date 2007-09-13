@@ -1,15 +1,15 @@
 //
-//  DripEventBrushDrag.m
+//  DripEventStrokeContinue.m
 //  Drip
 //
-//  Created by Nur Monson on 9/1/07.
+//  Created by Nur Monson on 9/13/07.
 //  Copyright 2007 theidiotproject. All rights reserved.
 //
 
-#import "DripEventBrushDrag.h"
+#import "DripEventStrokeContinue.h"
 
 
-@implementation DripEventBrushDrag
+@implementation DripEventStrokeContinue
 - (id)init
 {
 	if( (self = [super init]) ) {
@@ -35,7 +35,7 @@
 {
 	unsigned char eventLength = *(unsigned char *)bytes;
 	bytes++;
-	if( eventLength != EVENT_LENGTH || eventLength > length || *(unsigned char *)bytes != kDripEventBrushDrag )
+	if( eventLength != EVENT_LENGTH || eventLength > length || *(unsigned char *)bytes != kDripEventStrokeContinue )
 		return nil;
 	bytes++;
 	NSPoint position;
@@ -47,24 +47,24 @@
 	bytes += sizeof(CFSwappedFloat32);
 	pressure = CFConvertFloat32SwappedToHost( *(CFSwappedFloat32 *)bytes );
 	
-	return [[[DripEventBrushDrag alloc] initWithPosition:position pressure:pressure] autorelease];
+	return [[[DripEventStrokeContinue alloc] initWithPosition:position pressure:pressure] autorelease];
 }
 
 - (NSData *)data
 {
 	unsigned char *bytes = (unsigned char*)malloc(EVENT_LENGTH);
 	*bytes = EVENT_LENGTH;
-
+	
 	unsigned char *ptr = bytes;
 	ptr++;
-	*ptr = kDripEventBrushDrag;
+	*ptr = kDripEventStrokeContinue;
 	ptr++;
 	*(CFSwappedFloat32 *)ptr = CFConvertFloat32HostToSwapped(_canvasPosition.x);
 	ptr += sizeof(CFSwappedFloat32);
 	*(CFSwappedFloat32 *)ptr = CFConvertFloat32HostToSwapped(_canvasPosition.y);
 	ptr += sizeof(CFSwappedFloat32);
 	*(CFSwappedFloat32 *)ptr = CFConvertFloat32HostToSwapped(_pressure);
-
+	
 	NSData *theData = [NSData dataWithBytes:bytes length:EVENT_LENGTH];
 	free(bytes);
 	return theData;

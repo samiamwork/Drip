@@ -20,6 +20,11 @@ typedef struct PressurePoint {
 	float _RGBAColor[4];
 	float *_brushLookup;
 	
+	float _resatColor[3];
+	float _leftoverDistance;
+	PressurePoint _lastBrushPosition;
+	PaintLayer *_paintingLayer;
+	
 	float _brushSize;
 	float _intSize;
 	float _hardness;
@@ -47,6 +52,10 @@ typedef struct PressurePoint {
 - (void)createBezierCurveWithCrossover:(float)crossover;
 
 - (void)drawDabAtPoint:(NSPoint)aPoint;
+
+- (NSRect)beginStrokeAtPoint:(PressurePoint)aPoint onLayer:(PaintLayer *)aLayer;
+- (NSRect)continueStrokeAtPoint:(PressurePoint)aPoint;
+- (void)endStroke;
 
 - (NSRect)renderPointAt:(PressurePoint)aPoint onLayer:(PaintLayer *)aLayer;
 - (NSRect)renderLineFromPoint:(PressurePoint)startPoint toPoint:(PressurePoint *)endPoint onLayer:(PaintLayer *)aLayer leftover:(float *)leftoverDistance;

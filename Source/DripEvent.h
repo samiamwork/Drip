@@ -11,8 +11,8 @@
 // length + type
 #define EVENT_HEADER_LENGTH (1+1)
 typedef enum DripEventType {
-	kDripEventBrushDown = 1,
-	kDripEventBrushDrag,
+	kDripEventStrokeBegin = 1,
+	kDripEventStrokeContinue,
 	kDripEventBrushSettings,
 	kDripEventLayerChange,
 	// never sent across network (i.e. not allowed)

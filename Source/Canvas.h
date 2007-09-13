@@ -10,8 +10,8 @@
 #import "PaintLayer.h"
 #import "Brush.h"
 #import "BrushEraser.h"
-#import "DripEventBrushDown.h"
-#import "DripEventBrushDrag.h"
+#import "DripEventStrokeBegin.h"
+#import "DripEventStrokeContinue.h"
 #import "DripEventBrushSettings.h"
 #import "DripEventLayerChange.h"
 #import "DripEventLayerAdd.h"
@@ -59,11 +59,15 @@
 - (void)endPlayback;
 - (BOOL)isPlayingBack;
 - (NSRect)playNextEvent;
-
+/*
 - (NSRect)drawAtPoint:(PressurePoint)aPoint withBrush:(Brush *)aBrush onLayer:(int)layerIndex;
 - (NSRect)drawAtPoint:(PressurePoint)aPoint withBrushOnCurrentLayer:(Brush *)aBrush;
 - (NSRect)drawLineFromPoint:(PressurePoint)startPoint toPoint:(PressurePoint *)endPoint withBrush:(Brush *)aBrush onLayer:(int)layerIndex;
 - (NSRect)drawLineFromPoint:(PressurePoint)startPoint toPoint:(PressurePoint *)endPoint withBrushOnCurrentLayer:(Brush *)aBrush;
+*/
+- (NSRect)beginStrokeAtPoint:(PressurePoint)aPoint withBrush:(Brush *)aBrush;
+- (NSRect)continueStrokeAtPoint:(PressurePoint)aPoint withBrush:(Brush *)aBrush;
+- (void)endStroke;
 
 - (void)drawRect:(NSRect)aRect;
 

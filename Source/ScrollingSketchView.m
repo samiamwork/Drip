@@ -114,7 +114,7 @@
 		return;
 	}
 	
-	NSRect drawnRect = [_canvas drawAtPoint:_lastMousePoint withBrushOnCurrentLayer:_currentBrush];
+	NSRect drawnRect = [_canvas beginStrokeAtPoint:_lastMousePoint withBrush:_currentBrush];//[_canvas drawAtPoint:_lastMousePoint withBrushOnCurrentLayer:_currentBrush];
 	drawnRect.origin.x += _canvasOrigin.x;
 	drawnRect.origin.y += _canvasOrigin.y;
 	
@@ -167,7 +167,7 @@
 		return;
 	}
 	
-	NSRect drawnRect = [_canvas drawLineFromPoint:_lastMousePoint toPoint:&newPressurePoint withBrushOnCurrentLayer:_currentBrush];
+	NSRect drawnRect = [_canvas continueStrokeAtPoint:newPressurePoint withBrush:_currentBrush];//[_canvas drawLineFromPoint:_lastMousePoint toPoint:&newPressurePoint withBrushOnCurrentLayer:_currentBrush];
 	_lastMousePoint = newPressurePoint;
 	
 	drawnRect.origin.x += _canvasOrigin.x;
@@ -182,6 +182,7 @@
 		[self resetCursorRects];
 		return;
 	} else {
+		[_currentBrush endStroke];
 		[[_canvas currentLayer] updateThumbnail];
 		[[DripInspectors sharedController] layersUpdated];
 	}

@@ -13,6 +13,7 @@
 
 - (void)awakeFromNib
 {
+	SetMouseCoalescingEnabled(true,NULL);
 	_inspectors = [DripInspectors sharedController];
 	[_inspectors loadWindow];
 }

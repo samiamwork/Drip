@@ -12,6 +12,7 @@
 #import "Canvas.h"
 #import "Brush.h"
 #import "BrushEraser.h"
+#import "BrushResat.h"
 #import "ScrollingSketchView.h"
 
 @interface DripDocument : NSDocument

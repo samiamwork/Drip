@@ -1,23 +1,22 @@
 //
-//  DripEventBrushDown.m
+//  DripEventStrokeBegin.m
 //  Drip
 //
-//  Created by Nur Monson on 9/1/07.
+//  Created by Nur Monson on 9/13/07.
 //  Copyright 2007 theidiotproject. All rights reserved.
 //
 
-#import "DripEventBrushDown.h"
+#import "DripEventStrokeBegin.h"
 
 
-@implementation DripEventBrushDown
-
+@implementation DripEventStrokeBegin
 - (id)init
 {
 	if( (self = [super init]) ) {
 		_canvasPosition = NSZeroPoint;
 		_pressure = 1.0f;
 	}
-
+	
 	return self;
 }
 
@@ -36,7 +35,7 @@
 {
 	unsigned char eventLength = *(unsigned char *)bytes;
 	bytes++;
-	if( eventLength != EVENT_LENGTH || eventLength > length || *(unsigned char *)bytes != kDripEventBrushDown )
+	if( eventLength != EVENT_LENGTH || eventLength > length || *(unsigned char *)bytes != kDripEventStrokeBegin )
 		return nil;
 	bytes++;
 	NSPoint position;
@@ -48,7 +47,7 @@
 	bytes += sizeof(CFSwappedFloat32);
 	pressure = CFConvertFloat32SwappedToHost( *(CFSwappedFloat32 *)bytes );
 	
-	return [[[DripEventBrushDown alloc] initWithPosition:position pressure:pressure] autorelease];
+	return [[[DripEventStrokeBegin alloc] initWithPosition:position pressure:pressure] autorelease];
 }
 
 - (NSData *)data
@@ -58,7 +57,7 @@
 	
 	unsigned char *ptr = bytes;
 	ptr++;
-	*ptr = kDripEventBrushDown;
+	*ptr = kDripEventStrokeBegin;
 	ptr++;
 	*(CFSwappedFloat32 *)ptr = CFConvertFloat32HostToSwapped(_canvasPosition.x);
 	ptr += sizeof(CFSwappedFloat32);
