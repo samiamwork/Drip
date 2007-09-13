@@ -113,6 +113,7 @@
 	printf("read\n");
 	[_canvas release];
     _canvas = [NSKeyedUnarchiver unarchiveObjectWithFile:[absoluteURL path]];
+	[_canvas retain];
 	_canvasWidth = [_canvas size].width;
 	_canvasHeight = [_canvas size].height;
 	[_canvas setDocument:self];
