@@ -188,6 +188,24 @@
 	
 }
 
+- (void)tabletProximity:(NSEvent *)theEvent
+{
+	if( ![theEvent isEnteringProximity] )
+		return;
+	
+	switch( [theEvent pointingDeviceType] ) {
+		case NSEraserPointingDevice:
+			printf("eraser entered!\n");
+			break;
+		case NSPenPointingDevice:
+			printf("pen entered!\n");
+			break;
+		default:
+			printf("other!\n");
+			break;
+	}
+}
+
 - (BOOL)acceptsFirstResponder
 {
 	return YES;
