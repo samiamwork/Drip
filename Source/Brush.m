@@ -357,10 +357,28 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	CGContextDrawImage([[NSGraphicsContext currentContext] graphicsPort],CGRectMake(aPoint.x-(_intSize-1)/2.0f,aPoint.y-(_intSize-1)/2.0f,_intSize,_intSize),_dab);
 }
 
+void sampleBitmap(unsigned char *bitmap, unsigned int pitch, unsigned int width, unsigned int height, unsigned int x, unsigned int y, float *red, float *green, float *blue)
+{
+	float alpha;
+	unsigned char *p = bitmap + (height-y-1)*pitch + x*4;
+	if( x < 0 || x >= width || y < 0 || y >= height )
+		alpha = 0.0f;
+	else
+		alpha = ((float)*p)/255.0f; p++;
+		
+	if( alpha == 0.0f ) {
+		*red = *green = *blue = 0.0f;
+	} else {
+		*red = ((float)*p)/(255.0f*(alpha)); p++;
+		*green = ((float)*p)/(255.0f*(alpha)); p++;
+		*blue = ((float)*p)/(255.0f*(alpha));
+	}
+}
 - (NSRect)beginStrokeAtPoint:(PressurePoint)aPoint onLayer:(PaintLayer *)aLayer
 {
 	int x = (int)aPoint.x;
 	int y = (int)aPoint.y;
+	/*
 	unsigned int layerHeight = [aLayer height];
 	unsigned int layerPitch = [aLayer pitch];
 	unsigned char *p = [aLayer data] + (layerHeight-y-1)*layerPitch + x*4;
@@ -377,7 +395,32 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 		_resatColor[1] = ((float)*p)/(255.0f*alpha); p++;
 		_resatColor[2] = ((float)*p)/(255.0f*alpha);
 	}
+	*/
+	float red, green, blue;
+	sampleBitmap( [aLayer data], [aLayer pitch], [aLayer width], [aLayer height], x, y, &red, &green, &blue);
+	_resatColor[0] = red;
+	_resatColor[1] = green;
+	_resatColor[2] = blue;
+	sampleBitmap( [aLayer data], [aLayer pitch], [aLayer width], [aLayer height], x, y+_intSize/4, &red, &green, &blue);
+	_resatColor[0] += red;
+	_resatColor[1] += green;
+	_resatColor[2] += blue;
+	sampleBitmap( [aLayer data], [aLayer pitch], [aLayer width], [aLayer height], x+_intSize/4, y, &red, &green, &blue);
+	_resatColor[0] += red;
+	_resatColor[1] += green;
+	_resatColor[2] += blue;
+	sampleBitmap( [aLayer data], [aLayer pitch], [aLayer width], [aLayer height], x, y-_intSize/4, &red, &green, &blue);
+	_resatColor[0] += red;
+	_resatColor[1] += green;
+	_resatColor[2] += blue;
+	sampleBitmap( [aLayer data], [aLayer pitch], [aLayer width], [aLayer height], x-_intSize/4, y, &red, &green, &blue);
+	_resatColor[0] += red;
+	_resatColor[1] += green;
+	_resatColor[2] += blue;
 	
+	_resatColor[0] /= 5.0f;
+	_resatColor[1] /= 5.0f;
+	_resatColor[2] /= 5.0f;
 	_paintingLayer = aLayer;
 	_lastBrushPosition = aPoint;
 	_leftoverDistance = 0.0f;
