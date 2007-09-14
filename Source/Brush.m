@@ -399,14 +399,19 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	float brushSize = _intSize*aPoint.pressure;
 	int brushSizeHalf;
 
-	_resatColor[0] = _resatColor[0]*(1.0f-_resaturation)+_RGBAColor[0]*_resaturation;
-	_resatColor[1] = _resatColor[1]*(1.0f-_resaturation)+_RGBAColor[1]*_resaturation;
-	_resatColor[2] = _resatColor[2]*(1.0f-_resaturation)+_RGBAColor[2]*_resaturation;
+	float resat = _resaturation;
+	if( _pressureAffectsResaturation )
+		resat *= aPoint.pressure;
+	
+	_resatColor[0] = _resatColor[0]*(1.0f-resat)+_RGBAColor[0]*resat;
+	_resatColor[1] = _resatColor[1]*(1.0f-resat)+_RGBAColor[1]*resat;
+	_resatColor[2] = _resatColor[2]*(1.0f-resat)+_RGBAColor[2]*resat;
 	
 	if(!_pressureAffectsSize)
 		brushSize = _intSize;
+	
 	if(_pressureAffectsFlow)
-		CGContextSetRGBFillColor([aLayer cxt],_resatColor[0],_resatColor[1],_resatColor[2],aPoint.pressure);
+		CGContextSetRGBFillColor([aLayer cxt],_resatColor[0],_resatColor[1],_resatColor[2],_RGBAColor[3]*aPoint.pressure);
 	else
 		CGContextSetRGBFillColor([aLayer cxt],_resatColor[0],_resatColor[1],_resatColor[2],_RGBAColor[3]);
 	
@@ -436,12 +441,14 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	
 	// FIX: this breaks pressure affecting opacity
 	if(!_pressureAffectsSize) {
-		startPoint.pressure = 1.0f;
-		endPoint->pressure = 1.0f;
+		//startPoint.pressure = 1.0f;
+		//endPoint->pressure = 1.0f;
 	}
-	
+	 
 	pressure = startPoint.pressure;
-	brushSize = baseBrushSize * pressure;
+	brushSize = baseBrushSize;
+	if( _pressureAffectsSize )
+		brushSize = baseBrushSize * pressure;
 	stepSize = brushSize * _spacing;
 
 	float position = stepSize-*leftoverDistance;
@@ -451,19 +458,22 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	// as long as the step size is less than the distance left to the end of the line...
 	if(length < stepSize ) {
 		*leftoverDistance = length;
-		return rect;
+		return NSZeroRect;
 	}
 	
 	x = startPoint.x;
 	y = startPoint.y;
-	rect.size.width = baseBrushSize*pressure;
+	rect.size.width = baseBrushSize;
+	if( _pressureAffectsSize )
+		rect.size.width = baseBrushSize*pressure;
 	rect.size.height = rect.size.width;
 	rect.origin.x = x-rect.size.width/2.0f;
 	rect.origin.y = y-rect.size.width/2.0f;
 	
 	while( position < length-*leftoverDistance ) {
 		// get new brush size
-		brushSize = baseBrushSize * pressure;
+		if( _pressureAffectsSize )
+			brushSize = baseBrushSize * pressure;
 		// get new step size
 		stepSize = brushSize * _spacing;
 		// advance x and y
