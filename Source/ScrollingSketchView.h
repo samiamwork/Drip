@@ -18,7 +18,6 @@
 	
 	Canvas *_canvas;
 	NSPoint _canvasOrigin;
-	PressurePoint _lastMousePoint;
 	
 	NSCursor *_brushCursor;
 	BOOL _panningMode;

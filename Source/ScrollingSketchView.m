@@ -76,10 +76,6 @@
 	if( _canvas == nil )
 		return;
 	
-	NSAffineTransform *tempTransform = [NSAffineTransform transform];
-	[tempTransform translateXBy:_canvasOrigin.x yBy:_canvasOrigin.y+[_canvas size].height];
-	[tempTransform scaleXBy:1.0f yBy:-1.0f];
-	
 	NSRect canvasRect = NSMakeRect(0.0f,0.0f,[_canvas size].width,[_canvas size].height);
 	NSRect drawRect = rect;
 	drawRect.origin.x -= _canvasOrigin.x;
@@ -91,9 +87,9 @@
 	
 	CGContextRef cxt = [[NSGraphicsContext currentContext] graphicsPort];
 	CGContextSaveGState(cxt);
-	//CGContextTranslateCTM(cxt,_canvasOrigin.x,_canvasOrigin.y);
-	//CGContextTranslateCTM(cxt,0.0f,[_canvas size].height);
-	//CGContextScaleCTM(cxt,1.0f,-1.0f);
+	NSAffineTransform *tempTransform = [NSAffineTransform transform];
+	[tempTransform translateXBy:_canvasOrigin.x yBy:_canvasOrigin.y+[_canvas size].height];
+	[tempTransform scaleXBy:1.0f yBy:-1.0f];
 	[tempTransform concat];
 	[_canvas drawRect:canvasDrawRect];
 	CGContextRestoreGState(cxt);
@@ -113,9 +109,9 @@
 		return;
 	
 	NSPoint clickPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-	_lastMousePoint = (PressurePoint){clickPoint.x, clickPoint.y, [theEvent pressure]};
-	_lastMousePoint.x -= _canvasOrigin.x;
-	_lastMousePoint.y = [_canvas size].height-(_lastMousePoint.y-_canvasOrigin.y);
+	PressurePoint theMousePoint = (PressurePoint){clickPoint.x, clickPoint.y, [theEvent pressure]};
+	theMousePoint.x -= _canvasOrigin.x;
+	theMousePoint.y = [_canvas size].height-(theMousePoint.y-_canvasOrigin.y);
 	
 	
 	if( _panningMode ) {
@@ -125,7 +121,7 @@
 		return;
 	}
 	
-	NSRect drawnRect = [_canvas beginStrokeAtPoint:_lastMousePoint withBrush:_currentBrush];
+	NSRect drawnRect = [_canvas beginStrokeAtPoint:theMousePoint withBrush:_currentBrush];
 	
 	[[_canvas document] updateChangeCount:NSChangeDone];
 	
@@ -176,12 +172,8 @@
 		return;
 	}
 	
-	NSRect drawnRect = [_canvas continueStrokeAtPoint:newPressurePoint withBrush:_currentBrush];//[_canvas drawLineFromPoint:_lastMousePoint toPoint:&newPressurePoint withBrushOnCurrentLayer:_currentBrush];
-	_lastMousePoint = newPressurePoint;
+	NSRect drawnRect = [_canvas continueStrokeAtPoint:newPressurePoint withBrush:_currentBrush];
 	
-	//drawnRect.origin.x += _canvasOrigin.x;
-	//drawnRect.origin.y += _canvasOrigin.y;
-	//[self setNeedsDisplayInRect:drawnRect];
 	[self invalidateCanvasRect:drawnRect];
 }
 
@@ -342,9 +334,9 @@
 #define IDENTITY_TRANSFORM ((NSAffineTransformStruct){1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f})
 - (void)setFrame:(NSRect)frameRect
 {
-	NSSize oldSize = [self bounds].size;
+	//NSSize oldSize = [self bounds].size;
 	[super setFrame:frameRect];
-	NSSize newSize = [self bounds].size;
+	//NSSize newSize = [self bounds].size;
 	
 	// first reposition horizontally
 	if( [self visibleWidth] >= [_canvas size].width )
