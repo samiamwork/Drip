@@ -307,6 +307,7 @@
 	NSSize oldCanvasSize = _canvasSize;
 	_canvasSize.width = [_canvas size].width*_zoom;
 	_canvasSize.height = [_canvas size].height*_zoom;
+	[self rebuildBrushCursor];
 	
 	// first reposition horizontally
 	if( [self visibleWidth] >= _canvasSize.width )
@@ -337,7 +338,9 @@
 		return;
 	}
 	
-	float brushSize = [_currentBrush size];
+	float brushSize = [_currentBrush size]*_zoom;
+	if( brushSize < 2.0f )
+		brushSize = 2.0f;
 	int cursorSize = (int)ceilf(brushSize+2.0f);
 	if( !(cursorSize & 1) )
 		cursorSize++;
