@@ -33,7 +33,7 @@ typedef struct PressurePoint {
 	float _spacing;
 	BOOL _pressureAffectsFlow;
 	BOOL _pressureAffectsSize;
-	
+	CGBlendMode _blendMode;
 	unsigned char *_dabData;
 	CGImageRef _dab;
 }
@@ -52,6 +52,8 @@ typedef struct PressurePoint {
 - (BOOL)pressureAffectsSize;
 - (void)setPressureAffectsResaturation:(BOOL)willAffectResaturation;
 - (BOOL)pressureAffectsResaturation;
+- (void)setBlendMode:(CGBlendMode)newBlendMode;
+- (CGBlendMode)blendMode;
 - (void)setColor:(NSColor*)aColor;
 - (NSColor*)color;
 

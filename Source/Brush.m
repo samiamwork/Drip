@@ -26,6 +26,7 @@
 		_pressureAffectsResaturation = NO;
 		_pressureAffectsFlow = NO;
 		_pressureAffectsSize = YES;
+		_blendMode = kCGBlendModeNormal;
 
 		_brushLookup = (float *)malloc(1001*sizeof(float));
 		[self createBezierCurveWithCrossover:0.4f];
@@ -236,6 +237,15 @@ float valueWithCosCurve(float t, float crossover)
 	return _pressureAffectsResaturation;
 }
 
+- (void)setBlendMode:(CGBlendMode)newBlendMode
+{
+	_blendMode = newBlendMode;
+}
+- (CGBlendMode)blendMode
+{
+	return _blendMode;
+}
+
 - (void)setColor:(NSColor*)aColor
 {
 	NSColor *rgb = [aColor colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
@@ -378,24 +388,7 @@ void sampleBitmap(unsigned char *bitmap, unsigned int pitch, unsigned int width,
 {
 	int x = (int)aPoint.x;
 	int y = (int)aPoint.y;
-	/*
-	unsigned int layerHeight = [aLayer height];
-	unsigned int layerPitch = [aLayer pitch];
-	unsigned char *p = [aLayer data] + (layerHeight-y-1)*layerPitch + x*4;
-	float alpha;
-	if( aPoint.x < 0.0f || aPoint.x > [aLayer width] || aPoint.y < 0.0f || aPoint.y > [aLayer height] )
-		alpha = 0.0f;
-	else
-		alpha = ((float)*p)/255.0f; p++;
-		
-	if( alpha == 0.0f ) {
-		_resatColor[0] = _resatColor[1] = _resatColor[3] = 0.0f;
-	} else {
-		_resatColor[0] = ((float)*p)/(255.0f*alpha); p++;
-		_resatColor[1] = ((float)*p)/(255.0f*alpha); p++;
-		_resatColor[2] = ((float)*p)/(255.0f*alpha);
-	}
-	*/
+	
 	float red, green, blue;
 	sampleBitmap( [aLayer data], [aLayer pitch], [aLayer width], [aLayer height], x, y, &red, &green, &blue);
 	_resatColor[0] = red;
@@ -459,7 +452,10 @@ void sampleBitmap(unsigned char *bitmap, unsigned int pitch, unsigned int width,
 		CGContextSetRGBFillColor([aLayer cxt],_resatColor[0],_resatColor[1],_resatColor[2],_RGBAColor[3]);
 	
 	brushSizeHalf = brushSize/2.0f;
+	//CGContextSaveGState([aLayer cxt]);
+	//CGContextSetBlendMode([aLayer cxt],_blendMode);
 	CGContextDrawImage([aLayer cxt],CGRectMake(aPoint.x-(brushSize-1.0f)/2.0f,aPoint.y-(brushSize-1.0f)/2.0f,brushSize,brushSize),_dab);
+	//CGContextRestoreGState([aLayer cxt]);
 	//CGContextFillRect([aLayer cxt],CGRectMake(aPoint.x-5.0f,aPoint.y-5.0f,10.0f,10.0f));
 	
 	//I don't really  think this fix is very good but...
