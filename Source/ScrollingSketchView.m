@@ -374,10 +374,8 @@
 	NSRect visibleRect = [self bounds];
 	if( [_verticalScroller superview] == self )
 		visibleRect.size.width -= [NSScroller scrollerWidth];
-	if( [_horizontalScroller superview] == self ) {
+	if( [_horizontalScroller superview] == self )
 		visibleRect.size.height -= [NSScroller scrollerWidth];
-		visibleRect.origin.y += [NSScroller scrollerWidth];
-	}
 	
 	NSCursor *aCursor = _brushCursor;
 	if( _panningMode )
