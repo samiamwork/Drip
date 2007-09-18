@@ -276,6 +276,7 @@
 	[_canvas release];
 	_canvas = [newCanvas retain];
 	
+	_zoom = 1.0f;
 	_canvasSize = [_canvas size];
 	_canvasSize.width *= _zoom;
 	_canvasSize.height *= _zoom;
@@ -303,16 +304,21 @@
 		return;
 	
 	_zoom = newZoom;
+	NSSize oldCanvasSize = _canvasSize;
 	_canvasSize.width = [_canvas size].width*_zoom;
 	_canvasSize.height = [_canvas size].height*_zoom;
 	
 	// first reposition horizontally
 	if( [self visibleWidth] >= _canvasSize.width )
 		_canvasOrigin.x = floorf( ([self visibleWidth] - _canvasSize.width)/2.0f);
+	else
+		_canvasOrigin.x -= floorf( (_canvasSize.width-oldCanvasSize.width)/2.0f);
 	
 	// then reposition vertically
 	if( [self visibleHeight] >= _canvasSize.height )
 		_canvasOrigin.y = floorf( ([self visibleHeight] - _canvasSize.height)/2.0f);
+	else
+		_canvasOrigin.y -= floorf( (_canvasSize.height-oldCanvasSize.height)/2.0f);
 	
 	[self redoScrollers];
 	[self setNeedsDisplay:YES];
