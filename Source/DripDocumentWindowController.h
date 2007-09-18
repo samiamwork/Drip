@@ -14,8 +14,10 @@
 @interface DripDocumentWindowController : NSWindowController
 {
 	IBOutlet ScrollingSketchView *_sketchView;
+	IBOutlet NSSlider *_zoomSlider;
 	
 	NSTimer *_playbackTimer;
 }
 
+- (IBAction)setZoom:(id)sender;
 @end

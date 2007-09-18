@@ -29,9 +29,10 @@
         }, 
         {CLASS = BrushView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {
+            ACTIONS = {setZoom = id; }; 
             CLASS = DripDocumentWindowController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {"_sketchView" = ScrollingSketchView; }; 
+            OUTLETS = {"_sketchView" = ScrollingSketchView; "_zoomSlider" = NSSlider; }; 
             SUPERCLASS = NSWindowController; 
         }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 

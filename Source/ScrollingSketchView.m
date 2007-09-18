@@ -38,7 +38,7 @@
 		_currentBrush = [[Brush alloc] init];
 		_canvas = nil;
 		_canvasOrigin = NSZeroPoint;
-		_zoom = 2.0f;
+		_zoom = 1.0f;
 		
 		_currentBrush = nil;
 		_brushCursor = nil;
@@ -292,6 +292,36 @@
 	return _canvas;
 }
 
+- (void)setZoom:(float)newZoom
+{
+	if( newZoom > 10.0f )
+		newZoom = 10.0f;
+	else if( newZoom < 0.1f )
+		newZoom = 0.1f;
+	
+	if( newZoom == _zoom )
+		return;
+	
+	_zoom = newZoom;
+	_canvasSize.width = [_canvas size].width*_zoom;
+	_canvasSize.height = [_canvas size].height*_zoom;
+	
+	// first reposition horizontally
+	if( [self visibleWidth] >= _canvasSize.width )
+		_canvasOrigin.x = floorf( ([self visibleWidth] - _canvasSize.width)/2.0f);
+	
+	// then reposition vertically
+	if( [self visibleHeight] >= _canvasSize.height )
+		_canvasOrigin.y = floorf( ([self visibleHeight] - _canvasSize.height)/2.0f);
+	
+	[self redoScrollers];
+	[self setNeedsDisplay:YES];
+}
+- (float)zoom
+{
+	return _zoom;
+}
+
 - (void)rebuildBrushCursor
 {
 	if( _currentBrush == nil ) {
@@ -361,8 +391,6 @@
 		_canvasOrigin.x = floorf( ([self visibleWidth] - [_canvas size].width*_zoom)/2.0f);
 
 	// then reposition vertically
-	
-	// if the canvas does fit in the view...
 	if( [self visibleHeight] >= [_canvas size].height*_zoom )
 		_canvasOrigin.y = floorf( ([self visibleHeight] - [_canvas size].height*_zoom)/2.0f);
 	

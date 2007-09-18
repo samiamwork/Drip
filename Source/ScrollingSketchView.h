@@ -31,6 +31,8 @@
 - (Canvas *)canvas;
 - (void)setBrush:(Brush *)newBrush;
 - (Brush *)brush;
+- (void)setZoom:(float)newZoom;
+- (float)zoom;
 
 - (void)rebuildBrushCursor;
 

@@ -72,6 +72,12 @@
 	[_sketchView invalidateCanvasRect:invalidCanvasRect];
 }
 
+- (IBAction)setZoom:(id)sender
+{
+	[_sketchView setZoom:powf(10.0f,[sender floatValue])];
+	[_zoomSlider setFloatValue:log10f([_sketchView zoom])];
+}
+
 - (void)windowDidBecomeMain:(NSNotification *)notification
 {
 	[[DripInspectors sharedController] setDripDocument:[self document]];
