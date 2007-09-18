@@ -19,6 +19,7 @@
 		_pitch = 0;
 		_opacity = 1.0f;
 		_visible = YES;
+		_blendMode = kCGBlendModeNormal;
 		_data = NULL;
 		_cxt = NULL;
 		
@@ -208,6 +209,14 @@
 		[self setVisible:YES];
 }
 
+- (void)setBlendMode:(CGBlendMode)newBlendMode
+{
+	_blendMode = newBlendMode;
+}
+- (CGBlendMode)blendMode
+{
+	return _blendMode;
+}
 
 - (unsigned int)width
 {
@@ -234,6 +243,7 @@
 {
 	[self setOpacity:[newSettings opacity]];
 	[self setVisible:[newSettings visible]];
+	[self setBlendMode:[newSettings blendMode]];
 }
 
 - (NSImage *)thumbnail
@@ -315,6 +325,7 @@
 	
 	CGContextSaveGState(aContext);
 	CGContextSetAlpha(aContext,_opacity);
+	CGContextSetBlendMode(aContext,_blendMode);
 	CGContextDrawImage(aContext, *(CGRect *)&aRect, cachedImage);
 	CGContextRestoreGState(aContext);
 	CFRelease(cachedImage);

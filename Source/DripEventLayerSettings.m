@@ -11,12 +11,13 @@
 
 @implementation DripEventLayerSettings
 
-- (id)initWithLayerIndex:(unsigned int)layerIndex opacity:(float)opacity visible:(BOOL)isVisible;
+- (id)initWithLayerIndex:(unsigned int)layerIndex opacity:(float)opacity visible:(BOOL)isVisible blendMode:(CGBlendMode)blendMode;
 {
 	if( (self = [super init]) ) {
 		_layerIndex = layerIndex;
 		_opacity = opacity;
 		_visible = isVisible;
+		_blendMode = blendMode;
 	}
 	
 	return self;
@@ -34,8 +35,12 @@
 {
 	return _visible;
 }
+- (CGBlendMode)blendMode
+{
+	return _blendMode;
+}
 
-#define EVENT_LENGTH (EVENT_HEADER_LENGTH+sizeof(UInt32)+sizeof(CFSwappedFloat32)+1)
+#define EVENT_LENGTH (EVENT_HEADER_LENGTH+sizeof(UInt32)*2+sizeof(CFSwappedFloat32)+1)
 + (id)eventWithBytes:(void *)bytes length:(unsigned int)length
 {
 	unsigned char eventLength = *(unsigned char *)bytes;
@@ -46,11 +51,13 @@
 	
 	unsigned int layerIndex = CFSwapInt32BigToHost( *(UInt32 *)bytes );
 	bytes += sizeof( UInt32 );
+	CGBlendMode blendMode = CFSwapInt32BigToHost( *(UInt32 *)bytes );
+	bytes += sizeof( UInt32 );
 	float opacity = CFConvertFloatSwappedToHost( *(CFSwappedFloat32 *)bytes );
 	bytes += sizeof( CFSwappedFloat32 );
 	BOOL visible = *(unsigned char *)bytes & 1;
 	
-	return [[[DripEventLayerSettings alloc] initWithLayerIndex:layerIndex opacity:opacity visible:visible] autorelease];
+	return [[[DripEventLayerSettings alloc] initWithLayerIndex:layerIndex opacity:opacity visible:visible blendMode:blendMode] autorelease];
 }
 
 - (NSData *)data
@@ -63,6 +70,8 @@
 	*ptr = kDripEventLayerSettings;
 	ptr++;
 	*(UInt32 *)ptr = CFSwapInt32HostToBig( _layerIndex );
+	ptr += sizeof( UInt32 );
+	*(UInt32 *)ptr = CFSwapInt32HostToBig( _blendMode );
 	ptr += sizeof( UInt32 );
 	*(CFSwappedFloat32 *)ptr = CFConvertFloatHostToSwapped( _opacity );
 	ptr += sizeof(CFSwappedFloat32);

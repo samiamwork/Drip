@@ -15,6 +15,7 @@
 	unsigned int _pitch;
 	float _opacity;
 	BOOL _visible;
+	CGBlendMode _blendMode;
 	
 	unsigned char *_data;
 	CGContextRef _cxt;
@@ -38,6 +39,8 @@
 - (BOOL)visible;
 - (void)setVisible:(BOOL)isVisible;
 - (void)toggleVisible;
+- (void)setBlendMode:(CGBlendMode)newBlendMode;
+- (CGBlendMode)blendMode;
 
 - (void)drawRect:(NSRect)aRect inContext:(CGContextRef)aContext;
 

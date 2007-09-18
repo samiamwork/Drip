@@ -26,7 +26,6 @@
 		_pressureAffectsResaturation = NO;
 		_pressureAffectsFlow = NO;
 		_pressureAffectsSize = YES;
-		_blendMode = kCGBlendModeNormal;
 
 		_brushLookup = (float *)malloc(1001*sizeof(float));
 		[self createBezierCurveWithCrossover:0.4f];
@@ -209,7 +208,24 @@ float valueWithCosCurve(float t, float crossover)
 {
 	return _resaturation;
 }
-
+/*
+- (void)setStrokeOpacity:(float)newStrokeOpacity
+{
+	if( newStrokeOpacity < 0.0f )
+		newStrokeOpacity = 0.0f;
+	else if( newStrokeOpacity > 1.0f )
+		newStrokeOpacity = 1.0f;
+	
+	if( newStrokeOpacity == _strokeOpacity )
+		return;
+	
+	_strokeOpacity = newStrokeOpacity;
+}
+- (float)strokeOpacity
+{
+	return _strokeOpacity;
+}
+*/
 - (void)setPressureAffectsFlow:(BOOL)willAffectFlow
 {
 	_pressureAffectsFlow = willAffectFlow;
@@ -235,15 +251,6 @@ float valueWithCosCurve(float t, float crossover)
 - (BOOL)pressureAffectsResaturation
 {
 	return _pressureAffectsResaturation;
-}
-
-- (void)setBlendMode:(CGBlendMode)newBlendMode
-{
-	_blendMode = newBlendMode;
-}
-- (CGBlendMode)blendMode
-{
-	return _blendMode;
 }
 
 - (void)setColor:(NSColor*)aColor

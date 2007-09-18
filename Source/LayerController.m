@@ -11,6 +11,8 @@
 #define LayerTableViewType @"LayerTableViewType"
 @implementation LayerController
 
+#define MAKE_BLEND_ITEM(yy,zz) blendItem = [[NSMenuItem alloc] init]; [blendItem setTitle:yy]; [blendItem setTag:zz]; [blendMenu addItem:blendItem]; [blendItem release]
+
 - (void)awakeFromNib
 {
 	[_layerTable setDelegate:self];
@@ -18,6 +20,28 @@
 	
 	[_layerTable registerForDraggedTypes:[NSArray arrayWithObject:LayerTableViewType]];
 	_draggingLayer = nil;
+	
+	NSMenu *blendMenu = [[NSMenu alloc] init];
+	NSMenuItem *blendItem;
+	MAKE_BLEND_ITEM(@"Normal",kCGBlendModeNormal);
+	MAKE_BLEND_ITEM(@"Multiply",kCGBlendModeMultiply);
+	MAKE_BLEND_ITEM(@"Screen",kCGBlendModeScreen);
+	MAKE_BLEND_ITEM(@"Overlay",kCGBlendModeOverlay);
+	MAKE_BLEND_ITEM(@"Darken",kCGBlendModeDarken);
+	MAKE_BLEND_ITEM(@"Lighten",kCGBlendModeLighten);
+	MAKE_BLEND_ITEM(@"Color Dodge",kCGBlendModeColorDodge);
+	MAKE_BLEND_ITEM(@"Color Burn",kCGBlendModeColorBurn);
+	MAKE_BLEND_ITEM(@"Soft Light",kCGBlendModeSoftLight);
+	MAKE_BLEND_ITEM(@"Hard Light",kCGBlendModeHardLight);
+	MAKE_BLEND_ITEM(@"Difference",kCGBlendModeDifference);
+	MAKE_BLEND_ITEM(@"Exclusion",kCGBlendModeExclusion);
+	MAKE_BLEND_ITEM(@"Hue",kCGBlendModeHue);
+	MAKE_BLEND_ITEM(@"Saturation",kCGBlendModeSaturation);
+	MAKE_BLEND_ITEM(@"Color",kCGBlendModeColor);
+	MAKE_BLEND_ITEM(@"Luminosity",kCGBlendModeLuminosity);
+		
+	[_layerBlendModePopUpButton setMenu:blendMenu];
+	[blendMenu release];
 }
 
 - (void)setCanvas:(Canvas *)newCanvas
@@ -50,6 +74,19 @@
 		[_theCanvas settingsChangedForLayer:[_theCanvas currentLayer]];
 		[_sketchView setNeedsDisplay:YES];
 	}
+}
+
+- (IBAction)setBlendMode:(id)sender
+{
+	CGBlendMode oldBlendMode = [[_theCanvas currentLayer] blendMode];
+	[[_theCanvas currentLayer] setBlendMode:[[sender selectedItem] tag]];
+	CGBlendMode newBlendMode = [[_theCanvas currentLayer] blendMode];
+	
+	if( oldBlendMode != newBlendMode ) {
+		[_theCanvas settingsChangedForLayer:[_theCanvas currentLayer]];
+		[_sketchView setNeedsDisplay:YES];
+	}
+		
 }
 
 - (void)setScrollingSketchView:(ScrollingSketchView *)newSketchView

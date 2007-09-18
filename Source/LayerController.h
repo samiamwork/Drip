@@ -16,6 +16,7 @@
 	IBOutlet NSSlider *_opacitySlider;
 	IBOutlet NSButton *_plusButton;
 	IBOutlet NSButton *_minusButton;
+	IBOutlet NSPopUpButton *_layerBlendModePopUpButton;
 	
 	ScrollingSketchView *_sketchView;
 	Canvas *_theCanvas;
@@ -28,6 +29,7 @@
 - (IBAction)addLayer:(id)sender;
 - (IBAction)deleteLayer:(id)sender;
 - (IBAction)setOpacity:(id)sender;
+- (IBAction)setBlendMode:(id)sender;
 
 - (void)setScrollingSketchView:(ScrollingSketchView *)newSketchView;
 - (void)disable;

@@ -551,7 +551,7 @@
 		[_paintEvents addObject:_layerSettings];
 	
 	[_layerSettings release];
-	_layerSettings = [[DripEventLayerSettings alloc] initWithLayerIndex:layerIndex opacity:[aLayer opacity] visible:[aLayer visible]];
+	_layerSettings = [[DripEventLayerSettings alloc] initWithLayerIndex:layerIndex opacity:[aLayer opacity] visible:[aLayer visible] blendMode:[aLayer blendMode]];
 }
 
 @end

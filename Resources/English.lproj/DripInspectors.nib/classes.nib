@@ -42,10 +42,11 @@
         }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
-            ACTIONS = {addLayer = id; deleteLayer = id; setOpacity = id; }; 
+            ACTIONS = {addLayer = id; deleteLayer = id; setBlendMode = id; setOpacity = id; }; 
             CLASS = LayerController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                "_layerBlendModePopUpButton" = NSPopUpButton; 
                 "_layerTable" = AnimatingTableView; 
                 "_minusButton" = NSButton; 
                 "_opacitySlider" = NSSlider; 

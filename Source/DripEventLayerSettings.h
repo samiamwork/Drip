@@ -13,11 +13,13 @@
 @interface DripEventLayerSettings : DripEvent {
 	float _opacity;
 	BOOL _visible;
+	CGBlendMode _blendMode;
 	unsigned int _layerIndex;
 }
 
-- (id)initWithLayerIndex:(unsigned int)layerIndex opacity:(float)opacity visible:(BOOL)isVisible;
+- (id)initWithLayerIndex:(unsigned int)layerIndex opacity:(float)opacity visible:(BOOL)isVisible blendMode:(CGBlendMode)blendMode;
 - (unsigned int)layerIndex;
 - (float)opacity;
 - (BOOL)visible;
+- (CGBlendMode)blendMode;
 @end
