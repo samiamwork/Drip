@@ -211,17 +211,7 @@
 	if( ![theEvent isEnteringProximity] )
 		return;
 	
-	switch( [theEvent pointingDeviceType] ) {
-		case NSEraserPointingDevice:
-			printf("eraser entered!\n");
-			break;
-		case NSPenPointingDevice:
-			printf("pen entered!\n");
-			break;
-		default:
-			printf("other!\n");
-			break;
-	}
+	[[NSNotificationCenter defaultCenter] postNotificationName:DripPenEnteredNotification object:nil userInfo:[NSDictionary dictionaryWithObject:theEvent forKey:@"event"]];
 }
 
 - (BOOL)acceptsFirstResponder

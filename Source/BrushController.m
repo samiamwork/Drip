@@ -8,6 +8,7 @@
 
 #import "BrushController.h"
 
+NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 
 @implementation BrushController
 
@@ -31,6 +32,26 @@
 	[_sketchView release];
 
 	[super dealloc];
+}
+
+- (void)awakeFromNib
+{
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(penEntered:) name:DripPenEnteredNotification object:nil];
+}
+
+- (void)penEntered:(NSNotification *)theNotification
+{
+	NSEvent *penEnteredEvent = [[theNotification userInfo] objectForKey:@"event"];
+	switch( [penEnteredEvent pointingDeviceType] ) {
+		case NSEraserPointingDevice:
+			[self setBrush:_eraserBrush];
+			break;
+		case NSPenPointingDevice:
+		default:
+			[self setBrush:_paintBrush];
+			break;
+	}
+	
 }
 
 - (IBAction)changeSizeExpression:(id)sender
@@ -107,6 +128,8 @@
 	//[_currentBrush setColor:[_colorWell color]];
 	if( [brush isMemberOfClass:[Brush class]] )
 		[_colorWell setColor:[brush color]];
+	
+	[_sketchView setBrush:_currentBrush];
 }
 
 - (IBAction)colorChanged:(id)sender
@@ -116,21 +139,20 @@
 
 - (IBAction)selectBrush:(id)sender
 {
-	Brush *_selectedBrush = nil;
+	Brush *selectedBrush = nil;
 	
 	switch( [[sender selectedCell] tag] ) {
 		case 1:
-			_selectedBrush = _paintBrush;
+			selectedBrush = _paintBrush;
 			break;
 		case 2:
-			_selectedBrush = _eraserBrush;
+			selectedBrush = _eraserBrush;
 			break;
 		default:
-			_selectedBrush = _paintBrush;
+			selectedBrush = _paintBrush;
 	}
 	
-	[self setBrush:_selectedBrush];
-	[_sketchView setBrush:_selectedBrush];
+	[self setBrush:selectedBrush];
 }
 
 - (void)setNewBrush:(Brush *)newBrush eraser:(BrushEraser *)newEraser
