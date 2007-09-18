@@ -11,8 +11,6 @@
 
 @implementation ScrollingSketchView
 
-#define IS_HORIZONTAL_SCROLLER ( [_canvas size].width > [self bounds].size.width - (([_canvas size].height > [self bounds].size.height)?[NSScroller scrollerWidth]:0.0f) )
-
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
@@ -40,6 +38,7 @@
 		_currentBrush = [[Brush alloc] init];
 		_canvas = nil;
 		_canvasOrigin = NSZeroPoint;
+		_zoom = 2.0f;
 		
 		_currentBrush = nil;
 		_brushCursor = nil;
@@ -61,10 +60,20 @@
 	[super dealloc];
 }
 
+#define SCALE_RECT(a,z) NSMakeRect(a.origin.x*z,a.origin.y*z,a.size.width*z,a.size.height*z)
+#define DESCALE_RECT(a,z) NSMakeRect(a.origin.x/z,a.origin.y/z,a.size.width/z,a.size.height/z)
+
 - (void)invalidateCanvasRect:(NSRect)invalidCanvasRect
 {
-	invalidCanvasRect.origin.x += _canvasOrigin.x;
-	invalidCanvasRect.origin.y = [_canvas size].height - (invalidCanvasRect.origin.y+invalidCanvasRect.size.height) + _canvasOrigin.y;
+	invalidCanvasRect.origin.x += _canvasOrigin.x/_zoom;
+	invalidCanvasRect.origin.y = [_canvas size].height - (invalidCanvasRect.origin.y+invalidCanvasRect.size.height) + _canvasOrigin.y/_zoom;
+
+	invalidCanvasRect = SCALE_RECT(invalidCanvasRect,_zoom);
+	invalidCanvasRect = NSIntegralRect(invalidCanvasRect);
+	invalidCanvasRect.origin.x -= 1.0f;
+	invalidCanvasRect.origin.y -= 1.0f;
+	invalidCanvasRect.size.width += 2.0f;
+	invalidCanvasRect.size.width += 2.0f;
 	[self setNeedsDisplayInRect:invalidCanvasRect];
 }
 
@@ -79,7 +88,8 @@
 	NSRect canvasRect = NSMakeRect(0.0f,0.0f,[_canvas size].width,[_canvas size].height);
 	NSRect drawRect = rect;
 	drawRect.origin.x -= _canvasOrigin.x;
-	drawRect.origin.y = [_canvas size].height-(drawRect.origin.y-_canvasOrigin.y)-drawRect.size.height;
+	drawRect.origin.y = _canvasSize.height-(drawRect.origin.y-_canvasOrigin.y)-drawRect.size.height;
+	drawRect = DESCALE_RECT(drawRect,_zoom);
 	
 	NSRect canvasDrawRect = NSIntersectionRect(canvasRect,drawRect);
 	if( NSIsEmptyRect(canvasDrawRect) )
@@ -88,9 +98,10 @@
 	CGContextRef cxt = [[NSGraphicsContext currentContext] graphicsPort];
 	CGContextSaveGState(cxt);
 	NSAffineTransform *tempTransform = [NSAffineTransform transform];
-	[tempTransform translateXBy:_canvasOrigin.x yBy:_canvasOrigin.y+[_canvas size].height];
-	[tempTransform scaleXBy:1.0f yBy:-1.0f];
+	[tempTransform translateXBy:_canvasOrigin.x yBy:_canvasOrigin.y+[_canvas size].height*_zoom];
+	[tempTransform scaleXBy:_zoom yBy:-1.0f*_zoom];
 	[tempTransform concat];
+	canvasDrawRect = NSIntegralRect(canvasDrawRect);
 	[_canvas drawRect:canvasDrawRect];
 	CGContextRestoreGState(cxt);
 }
@@ -110,8 +121,10 @@
 	
 	NSPoint clickPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 	PressurePoint theMousePoint = (PressurePoint){clickPoint.x, clickPoint.y, [theEvent pressure]};
-	theMousePoint.x -= _canvasOrigin.x;
-	theMousePoint.y = [_canvas size].height-(theMousePoint.y-_canvasOrigin.y);
+	theMousePoint.x = (theMousePoint.x - _canvasOrigin.x);
+	theMousePoint.y = _canvasSize.height-(theMousePoint.y-_canvasOrigin.y);
+	theMousePoint.x /= _zoom;
+	theMousePoint.y /= _zoom;
 	
 	
 	if( _panningMode ) {
@@ -131,16 +144,16 @@
 - (void)boundsCheckCanvas
 {
 	if( [_verticalScroller superview] == self ) {
-		if( _canvasOrigin.y + [_canvas size].height < [self bounds].size.height ) {
-			_canvasOrigin.y = [self bounds].size.height-[_canvas size].height;
+		if( _canvasOrigin.y + [_canvas size].height*_zoom < [self bounds].size.height ) {
+			_canvasOrigin.y = [self bounds].size.height-[_canvas size].height*_zoom;
 		} else if( _canvasOrigin.y > 0.0f ) {
 			_canvasOrigin.y = 0.0f;
 		}
 	}
 	
 	if( [_horizontalScroller superview] == self ) {
-		if( _canvasOrigin.x + [_canvas size].width < [self visibleWidth] )
-			_canvasOrigin.x = [self visibleWidth]-[_canvas size].width;
+		if( _canvasOrigin.x + [_canvas size].width*_zoom < [self visibleWidth] )
+			_canvasOrigin.x = [self visibleWidth]-[_canvas size].width*_zoom;
 		else if( _canvasOrigin.x > 0.0f )
 			_canvasOrigin.x = 0.0f;
 	}
@@ -154,7 +167,9 @@
 	NSPoint newPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 	PressurePoint newPressurePoint = (PressurePoint){ newPoint.x, newPoint.y, [theEvent pressure] };
 	newPressurePoint.x -= _canvasOrigin.x;
-	newPressurePoint.y = [_canvas size].height-(newPressurePoint.y-_canvasOrigin.y);
+	newPressurePoint.y = _canvasSize.height-(newPressurePoint.y-_canvasOrigin.y);
+	newPressurePoint.x /= _zoom;
+	newPressurePoint.y /= _zoom;
 	
 	if( _panningMode ) {
 		if( [_verticalScroller superview] == self )
@@ -261,10 +276,13 @@
 	[_canvas release];
 	_canvas = [newCanvas retain];
 	
+	_canvasSize = [_canvas size];
+	_canvasSize.width *= _zoom;
+	_canvasSize.height *= _zoom;
 	if( _canvas != nil ) {
 		NSSize frameSize = [self frame].size;
-		_canvasOrigin.x = floorf( (frameSize.width - [_canvas size].width)/2.0f);
-		_canvasOrigin.y = floorf( (frameSize.height - [_canvas size].height)/2.0f);
+		_canvasOrigin.x = floorf( (frameSize.width - _canvasSize.width)/2.0f);
+		_canvasOrigin.y = floorf( (frameSize.height - _canvasSize.height)/2.0f);
 	}
 	
 	[self redoScrollers];
@@ -339,18 +357,14 @@
 	//NSSize newSize = [self bounds].size;
 	
 	// first reposition horizontally
-	if( [self visibleWidth] >= [_canvas size].width )
-		_canvasOrigin.x = floorf( ([self visibleWidth] - [_canvas size].width)/2.0f);
+	if( [self visibleWidth] >= [_canvas size].width*_zoom )
+		_canvasOrigin.x = floorf( ([self visibleWidth] - [_canvas size].width*_zoom)/2.0f);
 
 	// then reposition vertically
 	
 	// if the canvas does fit in the view...
-	if( [self visibleHeight] >= [_canvas size].height )
-		_canvasOrigin.y = floorf( ([self visibleHeight] - [_canvas size].height)/2.0f);
-	// if the canvas doesn't fit in the view...
-	else if( [self visibleHeight] < [_canvas size].height ) {
-		//_canvasOrigin.y += newSize.height - oldSize.height;
-	}
+	if( [self visibleHeight] >= [_canvas size].height*_zoom )
+		_canvasOrigin.y = floorf( ([self visibleHeight] - [_canvas size].height*_zoom)/2.0f);
 	
 	[self redoScrollers];
 }
@@ -359,7 +373,7 @@
 
 - (float)visibleHeight
 {
-	if( [_canvas size].width > [self bounds].size.width - (([_canvas size].height > [self bounds].size.height)?[NSScroller scrollerWidth]:0.0f) )
+	if( [_canvas size].width*_zoom > [self bounds].size.width - (([_canvas size].height*_zoom > [self bounds].size.height)?[NSScroller scrollerWidth]:0.0f) )
 		return [self bounds].size.height-[NSScroller scrollerWidth];
 	
 	return [self bounds].size.height;
@@ -367,8 +381,8 @@
 
 - (void)updateVerticalScroller
 {
-	float knobSize = [self visibleHeight]/[_canvas size].height;
-	float position = (-_canvasOrigin.y)/([_canvas size].height-[self visibleHeight]);
+	float knobSize = [self visibleHeight]/([_canvas size].height*_zoom);
+	float position = (-_canvasOrigin.y)/([_canvas size].height*_zoom-[self visibleHeight]);
 	
 	[_verticalScroller setFloatValue:position knobProportion:knobSize];
 }
@@ -378,7 +392,7 @@
 	switch( [sender hitPart] ) {
 		case NSScrollerKnob:
 		case NSScrollerKnobSlot:
-			_canvasOrigin.y = -roundf([sender floatValue]*([_canvas size].height-[self visibleHeight]));
+			_canvasOrigin.y = -roundf([sender floatValue]*([_canvas size].height*_zoom-[self visibleHeight]));
 			break;
 		case NSScrollerDecrementLine:
 			_canvasOrigin.y -= 1.0f;
@@ -396,14 +410,14 @@
 	// we let the scroller handle the bounds checking and then we read the position
 	// back out
 	[self updateVerticalScroller];
-	_canvasOrigin.y = -roundf(([_verticalScroller floatValue])*([_canvas size].height-[self visibleHeight]));
+	_canvasOrigin.y = -roundf(([_verticalScroller floatValue])*([_canvas size].height*_zoom-[self visibleHeight]));
 	
 	[self setNeedsDisplay:YES];
 }
 
 - (float)visibleWidth
 {
-	if( [_canvas size].height > [self bounds].size.height - (([_canvas size].width > [self bounds].size.width)?[NSScroller scrollerWidth]:0.0f) )
+	if( [_canvas size].height*_zoom > [self bounds].size.height - (([_canvas size].width*_zoom > [self bounds].size.width)?[NSScroller scrollerWidth]:0.0f) )
 		return [self bounds].size.width-[NSScroller scrollerWidth];
 	
 	return [self bounds].size.width;
@@ -411,8 +425,8 @@
 
 - (void)updateHorizontalScroller
 {
-	float knobSize = [self visibleWidth]/[_canvas size].width;
-	float position = (-_canvasOrigin.x)/([_canvas size].width-[self visibleWidth]);
+	float knobSize = [self visibleWidth]/([_canvas size].width*_zoom);
+	float position = (-_canvasOrigin.x)/([_canvas size].width*_zoom-[self visibleWidth]);
 
 	[_horizontalScroller setFloatValue:position knobProportion:knobSize]; 
 }
@@ -422,7 +436,7 @@
 	switch( [sender hitPart] ) {
 		case NSScrollerKnob:
 		case NSScrollerKnobSlot:
-			_canvasOrigin.x = -roundf([sender floatValue]*([_canvas size].width-[self visibleWidth]));
+			_canvasOrigin.x = -roundf([sender floatValue]*([_canvas size].width*_zoom-[self visibleWidth]));
 			break;
 		case NSScrollerDecrementLine:
 			_canvasOrigin.x += 1.0f;
@@ -441,7 +455,7 @@
 	// we let the scroller handle the bounds checking and then we read the position
 	// back out
 	[self updateHorizontalScroller];
-	_canvasOrigin.x = -roundf([_horizontalScroller floatValue]*([_canvas size].width-[self visibleWidth]));
+	_canvasOrigin.x = -roundf([_horizontalScroller floatValue]*([_canvas size].width*_zoom-[self visibleWidth]));
 	
 	[self setNeedsDisplay:YES];
 }
@@ -457,6 +471,8 @@
 	}
 	
 	NSSize canvasSize = [_canvas size];
+	canvasSize.width *= _zoom;
+	canvasSize.height *= _zoom;
 	NSSize boundSize = [self bounds].size;
 
 	if( canvasSize.width <= [self visibleWidth] && [_horizontalScroller superview] == self )
@@ -481,14 +497,14 @@
 										 [NSScroller scrollerWidth],[NSScroller scrollerWidth])];
 		[self addSubview:_cornerView];
 
-		if( _canvasOrigin.y + [_canvas size].height < boundSize.height-[NSScroller scrollerWidth] ) {
-			_canvasOrigin.y = boundSize.height-[_canvas size].height;
+		if( _canvasOrigin.y + canvasSize.height < boundSize.height-[NSScroller scrollerWidth] ) {
+			_canvasOrigin.y = boundSize.height-[NSScroller scrollerWidth]-canvasSize.height;
 		} else if( _canvasOrigin.y > 0.0f ) {
 			_canvasOrigin.y = 0.0f;
 		}
 		
-		if( _canvasOrigin.x + [_canvas size].width < boundSize.width-[NSScroller scrollerWidth] )
-			_canvasOrigin.x = boundSize.width-[NSScroller scrollerWidth]-[_canvas size].width;
+		if( _canvasOrigin.x + canvasSize.width < boundSize.width-[NSScroller scrollerWidth] )
+			_canvasOrigin.x = boundSize.width-[NSScroller scrollerWidth]-canvasSize.width;
 		else if( _canvasOrigin.x > 0.0f )
 			_canvasOrigin.x = 0.0f;
 		
@@ -498,8 +514,8 @@
 		[_verticalScroller setFrame:NSMakeRect(boundSize.width-[NSScroller scrollerWidth],0.0f,[NSScroller scrollerWidth],boundSize.height)];
 		[_cornerView removeFromSuperview];
 		
-		if( _canvasOrigin.y + [_canvas size].height < boundSize.height )
-			_canvasOrigin.y = boundSize.height-[_canvas size].height;
+		if( _canvasOrigin.y + canvasSize.height < boundSize.height )
+			_canvasOrigin.y = boundSize.height-canvasSize.height;
 		else if( _canvasOrigin.y > 0.0f )
 			_canvasOrigin.y = 0.0f;
 		[self updateVerticalScroller];
@@ -508,7 +524,7 @@
 		[_cornerView removeFromSuperview];
 		
 		if( _canvasOrigin.x + [_canvas size].width < boundSize.width )
-			_canvasOrigin.x = boundSize.width-[_canvas size].width;
+			_canvasOrigin.x = boundSize.width-canvasSize.width;
 		else if( _canvasOrigin.x > 0.0f )
 			_canvasOrigin.x = 0.0f;
 		[self updateHorizontalScroller];

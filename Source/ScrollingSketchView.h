@@ -18,6 +18,8 @@
 	
 	Canvas *_canvas;
 	NSPoint _canvasOrigin;
+	float _zoom;
+	NSSize _canvasSize;
 	
 	NSCursor *_brushCursor;
 	BOOL _panningMode;
