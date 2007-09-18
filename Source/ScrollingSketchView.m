@@ -338,10 +338,14 @@
 	}
 	
 	float brushSize = [_currentBrush size];
-	NSImage *brushImage = [[NSImage alloc] initWithSize:NSMakeSize(brushSize+2.0f,brushSize+2.0f)];
+	int cursorSize = (int)ceilf(brushSize+2.0f);
+	if( !(cursorSize & 1) )
+		cursorSize++;
+	
+	NSImage *brushImage = [[NSImage alloc] initWithSize:NSMakeSize((float)cursorSize,(float)cursorSize)];
 	[brushImage lockFocus];
 	[[NSColor colorWithCalibratedWhite:0.0f alpha:0.7f] setStroke];
-	NSRect outerRect = NSMakeRect(1.0f, 1.0f, brushSize, brushSize);
+	NSRect outerRect = NSMakeRect((float)((cursorSize-1)/2)+1.0f-brushSize/2.0f, (float)((cursorSize-1)/2)+1.0f-brushSize/2.0f, brushSize, brushSize);
 	NSBezierPath *outerCircle = [NSBezierPath bezierPathWithOvalInRect:outerRect];
 	[outerCircle setLineWidth:1.0f];
 	//float pattern[2] = {2.0f, 2.0f};
@@ -356,7 +360,7 @@
 	[innerCircle stroke];
 	[brushImage unlockFocus];
 	[_brushCursor release];
-	_brushCursor = [[NSCursor alloc] initWithImage:brushImage hotSpot:NSMakePoint(brushSize/2.0f+1.0f,brushSize/2.0f+1.0f)];
+	_brushCursor = [[NSCursor alloc] initWithImage:brushImage hotSpot:NSMakePoint((float)((cursorSize-1)/2)+1.0f,(float)((cursorSize-1)/2)+1.0f)];
 	
 	[self resetCursorRects];
 }
