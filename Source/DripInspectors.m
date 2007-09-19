@@ -33,6 +33,11 @@ static DripInspectors *g_sharedController;
 	[super dealloc];
 }
 
+- (void)awakeFromNib
+{
+	[(NSPanel *)[self window] setBecomesKeyOnlyIfNeeded:YES];
+}
+
 - (void)setDripDocument:(DripDocument *)newDocument
 {
 	if( newDocument == nil ) {
