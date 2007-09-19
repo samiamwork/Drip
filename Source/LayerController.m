@@ -56,6 +56,7 @@
 	[_opacitySlider setEnabled:YES];
 	[_plusButton setEnabled:YES];
 	[_minusButton setEnabled:YES];
+	[_layerBlendModePopUpButton selectItemWithTag:[[_theCanvas currentLayer] blendMode]];
 	
 	[_layerTable reloadData];
 	unsigned int indexToSelect = [[_theCanvas layers] indexOfObject:[_theCanvas currentLayer]];
@@ -242,6 +243,7 @@
 
 	[_theCanvas setCurrentLayer:[layers objectAtIndex:[layers count]-[_layerTable selectedRow]-1]];
 	[_opacitySlider setFloatValue:[[_theCanvas currentLayer] opacity]];
+	[_layerBlendModePopUpButton selectItemWithTag:[[_theCanvas currentLayer] blendMode]];
 }
 
 - (void)tableViewAnimationDone:(AnimatingTableView *)aTableView

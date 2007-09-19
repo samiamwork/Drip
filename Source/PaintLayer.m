@@ -51,6 +51,7 @@
 	[archiver encodeInt32:(int)_height forKey:@"height"];
 	[archiver encodeFloat:_opacity forKey:@"opacity"];
 	[archiver encodeBool:_visible forKey:@"visible"];
+	[archiver encodeInt32:_blendMode forKey:@"blendMode"];
 	[archiver encodeObject:_name forKey:@"name"];
 	NSData *compressedData = [[NSData dataWithBytes:_data length:_width*(_height+1)*4] gzipDeflate];
 	[archiver encodeObject:compressedData forKey:@"data"];
@@ -70,6 +71,7 @@
 		[self setName:[unarchiver decodeObjectForKey:@"name"]];
 		[self setOpacity:[unarchiver decodeFloatForKey:@"opacity"]];
 		[self setVisible:[unarchiver decodeBoolForKey:@"visible"]];
+		[self setBlendMode:[unarchiver decodeIntForKey:@"blendMode"]];
 		
 		_pitch = _width*4;
 		_data = calloc(_width*(_height+1), 4);
@@ -97,6 +99,7 @@
 		_height = height;
 		_opacity = 1.0f;
 		_visible = YES;
+		_blendMode = kCGBlendModeNormal;
 		//HACK: +1 to fix problem with creating image from sub-region of bitmapcontext
 		_data = calloc(_width*(_height+1), 4);
 		if( _data == NULL ) {

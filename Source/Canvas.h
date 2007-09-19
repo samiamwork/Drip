@@ -21,8 +21,7 @@
 #import "NSData+gzip.h"
 
 @interface Canvas : NSObject <NSCoding> {
-	PaintLayer *_topLayer;
-	PaintLayer *_bottomLayer;
+	NSMutableArray *_compositeLayers;
 	PaintLayer *_currentLayer;
 	
 	NSMutableArray *_layers;
