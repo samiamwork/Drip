@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3E1670660C61740F0014705B /* DripDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E1670650C61740F0014705B /* DripDelegate.m */; };
+		3E31448C0CA1ABCF00BF3DB3 /* CenteredTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E31448B0CA1ABCF00BF3DB3 /* CenteredTextCell.m */; };
 		3E39D9380C67B1A300F0D3FD /* Brush.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E39D9370C67B1A300F0D3FD /* Brush.m */; };
 		3E39DA910C6822CA00F0D3FD /* BrushController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E39DA900C6822CA00F0D3FD /* BrushController.m */; };
 		3E39DD1A0C69080500F0D3FD /* BrushEraser.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E39DD190C69080500F0D3FD /* BrushEraser.m */; };
@@ -52,6 +53,8 @@
 		2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		3E1670640C61740F0014705B /* DripDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripDelegate.h; sourceTree = "<group>"; };
 		3E1670650C61740F0014705B /* DripDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DripDelegate.m; sourceTree = "<group>"; };
+		3E31448A0CA1ABCF00BF3DB3 /* CenteredTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CenteredTextCell.h; sourceTree = "<group>"; };
+		3E31448B0CA1ABCF00BF3DB3 /* CenteredTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CenteredTextCell.m; sourceTree = "<group>"; };
 		3E39D9360C67B1A300F0D3FD /* Brush.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Brush.h; sourceTree = "<group>"; };
 		3E39D9370C67B1A300F0D3FD /* Brush.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Brush.m; sourceTree = "<group>"; };
 		3E39DA8F0C6822CA00F0D3FD /* BrushController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BrushController.h; path = Source/BrushController.h; sourceTree = "<group>"; };
@@ -248,6 +251,8 @@
 				3E5849D10C7022850093CD10 /* AnimatingTableView.m */,
 				3E7AB1180C7BD98A004389F6 /* NSData+gzip.h */,
 				3E7AB1190C7BD98A004389F6 /* NSData+gzip.m */,
+				3E31448A0CA1ABCF00BF3DB3 /* CenteredTextCell.h */,
+				3E31448B0CA1ABCF00BF3DB3 /* CenteredTextCell.m */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -406,6 +411,7 @@
 				3E5AE4820C991F4A00BB7C9D /* BrushResat.m in Sources */,
 				3E5AE5380C99B57800BB7C9D /* DripEventStrokeBegin.m in Sources */,
 				3E5AE5420C99B61200BB7C9D /* DripEventStrokeContinue.m in Sources */,
+				3E31448C0CA1ABCF00BF3DB3 /* CenteredTextCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

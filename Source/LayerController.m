@@ -7,6 +7,7 @@
 //
 
 #import "LayerController.h"
+#import "CenteredTextCell.h"
 
 #define LayerTableViewType @"LayerTableViewType"
 @implementation LayerController
@@ -42,6 +43,13 @@
 		
 	[_layerBlendModePopUpButton setMenu:blendMenu];
 	[blendMenu release];
+	
+	CenteredTextCell *textCell = [[CenteredTextCell alloc] init];
+	NSTableColumn *nameColumn = [_layerTable tableColumnWithIdentifier:@"name"];
+	[textCell setEditable:YES];
+	[textCell setLineBreakMode:NSLineBreakByTruncatingTail];
+	[nameColumn setDataCell:textCell];
+	[textCell release];
 }
 
 - (void)setCanvas:(Canvas *)newCanvas
@@ -249,4 +257,5 @@
 - (void)tableViewAnimationDone:(AnimatingTableView *)aTableView
 {
 }
+
 @end
