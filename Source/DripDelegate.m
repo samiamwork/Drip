@@ -40,6 +40,12 @@
 
 #pragma mark Application Delegate Methods
 
+- (BOOL)application:(NSApplication *)theApplication openFile:(NSString *)filename
+{
+	[_newFileWindow orderOut:nil];
+	return NO;
+}
+
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender
 {
 	return NO;
