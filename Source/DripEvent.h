@@ -18,6 +18,7 @@ typedef enum DripEventType {
 	// never sent across network (i.e. not allowed)
 	kDripEventLayerAdd,
 	kDripEventLayerDelete,
+	kDripEventLayerCollapse,
 	kDripEventLayerMove,
 	kDripEventLayerSettings
 } DripEventType;

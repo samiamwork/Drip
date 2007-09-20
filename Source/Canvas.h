@@ -16,6 +16,7 @@
 #import "DripEventLayerChange.h"
 #import "DripEventLayerAdd.h"
 #import "DripEventLayerDelete.h"
+#import "DripEventLayerCollapse.h"
 #import "DripEventLayerMove.h"
 #import "DripEventLayerSettings.h"
 #import "NSData+gzip.h"

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		3E1670660C61740F0014705B /* DripDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E1670650C61740F0014705B /* DripDelegate.m */; };
 		3E31448C0CA1ABCF00BF3DB3 /* CenteredTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E31448B0CA1ABCF00BF3DB3 /* CenteredTextCell.m */; };
+		3E3146410CA23FDF00BF3DB3 /* DripEventLayerCollapse.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E3146400CA23FDF00BF3DB3 /* DripEventLayerCollapse.m */; };
 		3E39D9380C67B1A300F0D3FD /* Brush.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E39D9370C67B1A300F0D3FD /* Brush.m */; };
 		3E39DA910C6822CA00F0D3FD /* BrushController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E39DA900C6822CA00F0D3FD /* BrushController.m */; };
 		3E39DD1A0C69080500F0D3FD /* BrushEraser.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E39DD190C69080500F0D3FD /* BrushEraser.m */; };
@@ -55,6 +56,8 @@
 		3E1670650C61740F0014705B /* DripDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DripDelegate.m; sourceTree = "<group>"; };
 		3E31448A0CA1ABCF00BF3DB3 /* CenteredTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CenteredTextCell.h; sourceTree = "<group>"; };
 		3E31448B0CA1ABCF00BF3DB3 /* CenteredTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CenteredTextCell.m; sourceTree = "<group>"; };
+		3E31463F0CA23FDF00BF3DB3 /* DripEventLayerCollapse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripEventLayerCollapse.h; sourceTree = "<group>"; };
+		3E3146400CA23FDF00BF3DB3 /* DripEventLayerCollapse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DripEventLayerCollapse.m; sourceTree = "<group>"; };
 		3E39D9360C67B1A300F0D3FD /* Brush.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Brush.h; sourceTree = "<group>"; };
 		3E39D9370C67B1A300F0D3FD /* Brush.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Brush.m; sourceTree = "<group>"; };
 		3E39DA8F0C6822CA00F0D3FD /* BrushController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BrushController.h; path = Source/BrushController.h; sourceTree = "<group>"; };
@@ -278,6 +281,8 @@
 				3E8C3A440C90D3400091E8BE /* DripEventLayerSettings.m */,
 				3E8C3AD50C91D74B0091E8BE /* DripEventLayerChange.h */,
 				3E8C3AD60C91D74B0091E8BE /* DripEventLayerChange.m */,
+				3E31463F0CA23FDF00BF3DB3 /* DripEventLayerCollapse.h */,
+				3E3146400CA23FDF00BF3DB3 /* DripEventLayerCollapse.m */,
 			);
 			name = Events;
 			sourceTree = "<group>";
@@ -412,6 +417,7 @@
 				3E5AE5380C99B57800BB7C9D /* DripEventStrokeBegin.m in Sources */,
 				3E5AE5420C99B61200BB7C9D /* DripEventStrokeContinue.m in Sources */,
 				3E31448C0CA1ABCF00BF3DB3 /* CenteredTextCell.m in Sources */,
+				3E3146410CA23FDF00BF3DB3 /* DripEventLayerCollapse.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

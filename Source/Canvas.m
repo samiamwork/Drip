@@ -140,6 +140,9 @@
 	} else if( [theEvent isKindOfClass:[DripEventLayerDelete class]] ) {
 		[self deleteLayer:_currentLayer];
 		return NSMakeRect(0.0f,0.0f,_width,_height);
+	} else if( [theEvent isKindOfClass:[DripEventLayerCollapse class]] ) {
+		[self collapseLayer:_currentLayer];
+		return NSMakeRect(0.0f,0.0f,_width,_height);
 	} else if( [theEvent isKindOfClass:[DripEventLayerMove class]] ) {
 		DripEventLayerMove *layerMove = (DripEventLayerMove *)theEvent;
 		[self insertLayer:[_layers objectAtIndex:[layerMove fromIndex]] AtIndex:[layerMove toIndex]];
@@ -232,6 +235,9 @@
 					break;
 				case kDripEventLayerDelete:
 					newEvent = [DripEventLayerDelete eventWithBytes:&bytes[position] length:[eventData length]-position];
+					break;
+				case kDripEventLayerCollapse:
+					newEvent = [DripEventLayerCollapse eventWithBytes:&bytes[position] length:[eventData length]-position];
 					break;
 				case kDripEventLayerMove:
 					newEvent = [DripEventLayerMove eventWithBytes:&bytes[position] length:[eventData length]-position];
@@ -444,6 +450,9 @@
 	}
 	// EVENT:
 	// merge layer at index "theLayerIndex" and the layer under it and insert in place of the two.
+	if( !_isPlayingBack )
+		[_paintEvents addObject:[[[DripEventLayerCollapse alloc] init] autorelease]];
+	
 	PaintLayer *joinedLayers = [[PaintLayer alloc] initWithContentsOfLayers:_layers inRange:NSMakeRange(theLayerIndex-1,2)];
 	[joinedLayers setName:[[_layers objectAtIndex:theLayerIndex-1] name]];
 	[_layers removeObjectAtIndex:theLayerIndex-1];
