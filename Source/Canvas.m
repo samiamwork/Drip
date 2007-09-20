@@ -70,19 +70,21 @@
 
 - (void)beginPlayback
 {
+	_isPlayingBack = YES;
 	_backupLayers = _layers;
 	
-	_currentLayer = [[PaintLayer alloc] initWithWidth:_width height:_height];
-	[_currentLayer setName:@"Layer 0"];
-	_layers = [[NSMutableArray alloc] initWithObjects:_currentLayer,nil];
-	[_currentLayer release];
+	PaintLayer *aLayer = [[PaintLayer alloc] initWithWidth:_width height:_height];
+	[aLayer setName:@"Layer 0"];
+	_layers = [[NSMutableArray alloc] initWithObjects:aLayer,nil];
+	[aLayer release];
 	[_compositeLayers release];
 	_compositeLayers = nil;
+	_currentLayer = nil;
+	[self setCurrentLayer:aLayer];
 	
 	_currentPlaybackBrush = _playbackBrush = [[Brush alloc] init];
 	_playbackEraser = [[BrushEraser alloc] init];
 	_eventIndex = 0;
-	_isPlayingBack = YES;
 }
 - (void)endPlayback
 {
