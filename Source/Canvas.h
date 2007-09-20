@@ -47,6 +47,7 @@
 - (void)addLayer;
 - (void)deleteLayer:(PaintLayer *)layerToDelete;
 - (void)insertLayer:(PaintLayer *)theLayer AtIndex:(unsigned int)theTargetIndex;
+- (void)collapseLayer:(PaintLayer *)layerToCollapse;
 - (NSArray *)layers;
 - (void)setCurrentLayer:(PaintLayer *)aLayer;
 - (PaintLayer *)currentLayer;

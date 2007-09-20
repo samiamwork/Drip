@@ -43,7 +43,13 @@
         {CLASS = DripPopUpButton; LANGUAGE = ObjC; SUPERCLASS = NSPopUpButton; }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
-            ACTIONS = {addLayer = id; deleteLayer = id; setBlendMode = id; setOpacity = id; }; 
+            ACTIONS = {
+                addLayer = id; 
+                collapseLayer = id; 
+                deleteLayer = id; 
+                setBlendMode = id; 
+                setOpacity = id; 
+            }; 
             CLASS = LayerController; 
             LANGUAGE = ObjC; 
             OUTLETS = {

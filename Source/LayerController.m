@@ -144,6 +144,18 @@
 	[_opacitySlider setFloatValue:[[_theCanvas currentLayer] opacity]];
 }
 
+- (IBAction)collapseLayer:(id)sender
+{
+	NSArray *layers = [_theCanvas layers];
+	int selectedRow = [_layerTable selectedRow];
+	if( selectedRow == -1 || selectedRow == [layers count]-1 )
+		return;
+	
+	[_theCanvas collapseLayer:[layers objectAtIndex:[layers count]-selectedRow-1]];
+	
+	[_layerTable reloadData];
+}
+
 #pragma mark Layer Table Datasource
 
 - (int)numberOfRowsInTableView:(NSTableView *)aTableView

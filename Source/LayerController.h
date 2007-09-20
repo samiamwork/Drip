@@ -28,6 +28,7 @@
 
 - (IBAction)addLayer:(id)sender;
 - (IBAction)deleteLayer:(id)sender;
+- (IBAction)collapseLayer:(id)sender;
 - (IBAction)setOpacity:(id)sender;
 - (IBAction)setBlendMode:(id)sender;
 

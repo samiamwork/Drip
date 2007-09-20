@@ -431,6 +431,28 @@
 	[self rebuildTopAndBottom];
 }
 
+- (void)collapseLayer:(PaintLayer *)layerToCollapse
+{
+	unsigned int theLayerIndex = [_layers indexOfObject:layerToCollapse];
+	if( theLayerIndex == NSNotFound || theLayerIndex == 0 )
+		return;
+	
+	if( _layerSettings != nil ) {
+		[_paintEvents addObject:_layerSettings];
+		[_layerSettings release];
+		_layerSettings = nil;
+	}
+	// EVENT:
+	// merge layer at index "theLayerIndex" and the layer under it and insert in place of the two.
+	PaintLayer *joinedLayers = [[PaintLayer alloc] initWithContentsOfLayers:_layers inRange:NSMakeRange(theLayerIndex-1,2)];
+	[joinedLayers setName:[[_layers objectAtIndex:theLayerIndex-1] name]];
+	[_layers removeObjectAtIndex:theLayerIndex-1];
+	[_layers removeObjectAtIndex:theLayerIndex-1];
+	[_layers insertObject:joinedLayers atIndex:theLayerIndex-1];
+	
+	[self setCurrentLayer:joinedLayers];
+}
+
 - (NSArray *)layers
 {
 	return [NSArray arrayWithArray:_layers];
