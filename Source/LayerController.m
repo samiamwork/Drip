@@ -128,18 +128,27 @@
 - (IBAction)addLayer:(id)sender
 {
 	[_theCanvas addLayer];
-	unsigned int indexToSelect = [[_theCanvas layers] indexOfObject:[_theCanvas currentLayer]];
-	[_layerTable selectRowIndexes:[NSIndexSet indexSetWithIndex:indexToSelect] byExtendingSelection:NO];
+	NSArray *theLayers = [_theCanvas layers];
+	unsigned int indexToSelect = [theLayers indexOfObject:[_theCanvas currentLayer]];
+	[_layerTable selectRowIndexes:[NSIndexSet indexSetWithIndex:[theLayers count]-1-indexToSelect] byExtendingSelection:NO];
 	[_layerTable reloadData];
+	
+	[_layerTable fadeInRow:[theLayers count]-1-indexToSelect];
+	
 	[_sketchView setNeedsDisplay:YES];
 	[_opacitySlider setFloatValue:[[_theCanvas currentLayer] opacity]];
 }
 - (IBAction)deleteLayer:(id)sender
 {
+	_oldLayers = [[_theCanvas layers] retain];
 	[_theCanvas deleteLayer:[_theCanvas currentLayer]];
-	unsigned int indexToSelect = [[_theCanvas layers] indexOfObject:[_theCanvas currentLayer]];
-	[_layerTable selectRowIndexes:[NSIndexSet indexSetWithIndex:indexToSelect] byExtendingSelection:NO];
+	NSArray *theLayers = [_theCanvas layers];
+	unsigned int indexToSelect = [theLayers indexOfObject:[_theCanvas currentLayer]];
+	[_layerTable selectRowIndexes:[NSIndexSet indexSetWithIndex:[theLayers count]-1-indexToSelect] byExtendingSelection:NO];
 	[_layerTable reloadData];
+	
+	[_layerTable fadeOutRow:[theLayers count]-1-indexToSelect];
+	
 	[_sketchView setNeedsDisplay:YES];
 	[_opacitySlider setFloatValue:[[_theCanvas currentLayer] opacity]];
 }
@@ -160,12 +169,20 @@
 
 - (int)numberOfRowsInTableView:(NSTableView *)aTableView
 {
+	if( _oldLayers )
+		return [_oldLayers count];
+	
 	return [[_theCanvas layers] count];
 }
 
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
 {
-	NSArray *layers = [_theCanvas layers];
+	NSArray *layers;
+	if( _oldLayers )
+		layers = _oldLayers;
+	else
+		layers = [_theCanvas layers];
+	
 	//layers are sorted in reverse
 	PaintLayer *theLayer = [layers objectAtIndex:[layers count]-rowIndex-1];
 	
@@ -180,8 +197,13 @@
 // editing
 - (void)tableView:(NSTableView *)aTableView setObjectValue:(id)anObject forTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
 {
+	NSArray *layers;
+	if( _oldLayers )
+		layers = _oldLayers;
+	else
+		layers = [_theCanvas layers];
+	
 	if( [[aTableColumn identifier] isEqualTo:@"visible"] ) {
-		NSArray *layers = [_theCanvas layers];
 		PaintLayer *theLayer = [layers objectAtIndex:[layers count]-rowIndex-1];
 		[theLayer setVisible:[(NSNumber *)anObject boolValue]];
 		if( theLayer != [_theCanvas currentLayer] )
@@ -196,6 +218,10 @@
 
 - (BOOL)tableView:(NSTableView *)tv writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard*)pboard
 {
+	// no dragging while deleting
+	if( _oldLayers )
+		return NO;
+	
 	// I'm only going to allow one row selected at a time
 	NSArray *layers = [_theCanvas layers];
 	PaintLayer *selectedLayer = [[_theCanvas layers] objectAtIndex:[layers count]-1-[rowIndexes firstIndex]];
@@ -268,6 +294,13 @@
 
 - (void)tableViewAnimationDone:(AnimatingTableView *)aTableView
 {
+	printf("done\n");
+	if( !_oldLayers )
+		return;
+	
+	[_oldLayers release];
+	_oldLayers = nil;
+	[_layerTable reloadData];
 }
 
 @end

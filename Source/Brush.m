@@ -459,10 +459,7 @@ void sampleBitmap(unsigned char *bitmap, unsigned int pitch, unsigned int width,
 		CGContextSetRGBFillColor([aLayer cxt],_resatColor[0],_resatColor[1],_resatColor[2],_RGBAColor[3]);
 	
 	brushSizeHalf = brushSize/2.0f;
-	//CGContextSaveGState([aLayer cxt]);
-	//CGContextSetBlendMode([aLayer cxt],_blendMode);
 	CGContextDrawImage([aLayer cxt],CGRectMake(aPoint.x-(brushSize-1.0f)/2.0f,aPoint.y-(brushSize-1.0f)/2.0f,brushSize,brushSize),_dab);
-	//CGContextRestoreGState([aLayer cxt]);
 	//CGContextFillRect([aLayer cxt],CGRectMake(aPoint.x-5.0f,aPoint.y-5.0f,10.0f,10.0f));
 	
 	//I don't really  think this fix is very good but...

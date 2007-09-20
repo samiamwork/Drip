@@ -16,6 +16,8 @@
 
 - (void)slideRowFromIndex:(int)fromIndex toIndex:(int)toIndex
 {
+	_animationState = TableAnimationSlide;
+	
 	_movingRowIndexStart = fromIndex;
 	_movingRowIndexEnd = toIndex;
 	
@@ -25,6 +27,28 @@
 	[_slidingAnimation startAnimation];
 }
 
+- (void)fadeOutRow:(int)rowIndex
+{
+	_animationState = TableAnimationFadeOut;
+	_movingRowIndexStart = rowIndex;
+	
+	_animationTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f/30.0f target:self selector:@selector(animationTick:) userInfo:nil repeats:YES];
+	_slidingAnimation = [[NSAnimation alloc] initWithDuration:0.25 animationCurve:NSAnimationEaseOut];
+	[_slidingAnimation setAnimationBlockingMode:NSAnimationNonblocking];
+	[_slidingAnimation startAnimation];
+}
+
+- (void)fadeInRow:(int)rowIndex
+{
+	_animationState = TableAnimationFadeIn;
+	_movingRowIndexStart = rowIndex;
+	
+	_animationTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f/30.0f target:self selector:@selector(animationTick:) userInfo:nil repeats:YES];
+	_slidingAnimation = [[NSAnimation alloc] initWithDuration:0.25 animationCurve:NSAnimationEaseOut];
+	[_slidingAnimation setAnimationBlockingMode:NSAnimationNonblocking];
+	[_slidingAnimation startAnimation];	
+}
+
 - (NSRect)rectOfRow:(int)rowIndex
 {
 	NSRect originalRect = [super rectOfRow:rowIndex];
@@ -32,6 +56,20 @@
 	if( ![_slidingAnimation isAnimating] )
 		return originalRect;
 	
+	if( _animationState == TableAnimationFadeOut || _animationState == TableAnimationFadeIn ) {
+		if( rowIndex <= _movingRowIndexStart)
+			return originalRect;
+		
+		float animationValue = [_slidingAnimation currentValue];
+		if( _animationState == TableAnimationFadeOut )
+			originalRect.origin.y -= originalRect.size.height*(1.0f-animationValue);
+		else
+			originalRect.origin.y -= originalRect.size.height*animationValue;
+		
+		return originalRect;
+	}
+	
+	// if we're sliding
 	int minRowIndex = MIN(_movingRowIndexStart,_movingRowIndexEnd);
 	int maxRowIndex = MAX(_movingRowIndexStart,_movingRowIndexEnd);
 	
@@ -81,6 +119,8 @@
 	
 	[self setNeedsDisplay:YES];
 }
+
+#pragma mark Not Animation
 
 - (BOOL)acceptsFirstResponder
 {

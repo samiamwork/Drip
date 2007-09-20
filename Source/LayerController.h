@@ -21,6 +21,8 @@
 	ScrollingSketchView *_sketchView;
 	Canvas *_theCanvas;
 	
+	NSArray *_oldLayers;
+	
 	PaintLayer *_draggingLayer;
 }
 

@@ -8,8 +8,16 @@
 
 #import <Cocoa/Cocoa.h>
 
+typedef enum TableAnimationState {
+	TableAnimationNone = 0,
+	TableAnimationSlide,
+	TableAnimationFadeOut,
+	TableAnimationFadeIn
+} TableAnimationState;
 
 @interface AnimatingTableView : NSTableView {
+	TableAnimationState _animationState;
+	
 	int _movingRowIndexStart;
 	int _movingRowIndexEnd;
 	NSTimer *_animationTimer;
@@ -17,4 +25,6 @@
 }
 
 - (void)slideRowFromIndex:(int)fromIndex toIndex:(int)toIndex;
+- (void)fadeOutRow:(int)rowIndex;
+- (void)fadeInRow:(int)rowIndex;
 @end
