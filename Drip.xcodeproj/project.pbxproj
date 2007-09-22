@@ -16,6 +16,7 @@
 		3E39DD1A0C69080500F0D3FD /* BrushEraser.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E39DD190C69080500F0D3FD /* BrushEraser.m */; };
 		3E39DF0D0C696EF600F0D3FD /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E39DF0C0C696EF600F0D3FD /* Carbon.framework */; };
 		3E4A61680CA47AF300C67DFC /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E4A61670CA47AF300C67DFC /* Quartz.framework */; };
+		3E4A63F40CA4EC1900C67DFC /* MovieEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E4A63F30CA4EC1900C67DFC /* MovieEncoder.m */; };
 		3E5488AB0B4C9572005ED4DA /* DripDocumentWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E5488AA0B4C9572005ED4DA /* DripDocumentWindowController.m */; };
 		3E5849D20C7022850093CD10 /* AnimatingTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E5849D10C7022850093CD10 /* AnimatingTableView.m */; };
 		3E5AE4820C991F4A00BB7C9D /* BrushResat.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E5AE4810C991F4A00BB7C9D /* BrushResat.m */; };
@@ -69,6 +70,8 @@
 		3E39DD190C69080500F0D3FD /* BrushEraser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BrushEraser.m; sourceTree = "<group>"; };
 		3E39DF0C0C696EF600F0D3FD /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		3E4A61670CA47AF300C67DFC /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = /System/Library/Frameworks/Quartz.framework; sourceTree = "<absolute>"; };
+		3E4A63F20CA4EC1900C67DFC /* MovieEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MovieEncoder.h; sourceTree = "<group>"; };
+		3E4A63F30CA4EC1900C67DFC /* MovieEncoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MovieEncoder.m; sourceTree = "<group>"; };
 		3E5488A90B4C9572005ED4DA /* DripDocumentWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripDocumentWindowController.h; sourceTree = "<group>"; };
 		3E5488AA0B4C9572005ED4DA /* DripDocumentWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DripDocumentWindowController.m; sourceTree = "<group>"; };
 		3E5849D00C7022850093CD10 /* AnimatingTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimatingTableView.h; sourceTree = "<group>"; };
@@ -272,6 +275,8 @@
 				3E7AB1190C7BD98A004389F6 /* NSData+gzip.m */,
 				3E31448A0CA1ABCF00BF3DB3 /* CenteredTextCell.h */,
 				3E31448B0CA1ABCF00BF3DB3 /* CenteredTextCell.m */,
+				3E4A63F20CA4EC1900C67DFC /* MovieEncoder.h */,
+				3E4A63F30CA4EC1900C67DFC /* MovieEncoder.m */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -434,6 +439,7 @@
 				3E5AE5420C99B61200BB7C9D /* DripEventStrokeContinue.m in Sources */,
 				3E31448C0CA1ABCF00BF3DB3 /* CenteredTextCell.m in Sources */,
 				3E3146410CA23FDF00BF3DB3 /* DripEventLayerCollapse.m in Sources */,
+				3E4A63F40CA4EC1900C67DFC /* MovieEncoder.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
