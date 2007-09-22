@@ -7,6 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import <QuickTime/QuickTime.h>
 #import "ScrollingSketchView.h"
 #import "Canvas.h"
 #import "LayerController.h"

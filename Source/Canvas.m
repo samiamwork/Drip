@@ -68,6 +68,18 @@
 	_paintEvents = newEvents;
 }
 
+- (unsigned int)currentPlaybackEvent
+{
+	if( !_isPlayingBack )
+		return 0;
+	
+	return _eventIndex;
+}
+- (unsigned int)eventCount
+{
+	return [_paintEvents count];
+}
+
 - (void)beginPlayback
 {
 	_isPlayingBack = YES;
@@ -525,16 +537,22 @@
 	//nothing?
 }
 
+- (void)drawRect:(NSRect)aRect inContext:(CGContextRef)context
+{
+	CGContextSetRGBFillColor(context,1.0f,1.0f,1.0f,1.0f);
+	CGContextFillRect(context,*(CGRect *)&aRect);
+	
+	NSEnumerator *layerEnumerator = [_compositeLayers objectEnumerator];
+	PaintLayer *aLayer;
+	while( (aLayer = [layerEnumerator nextObject]) )
+		[aLayer drawRect:aRect inContext:context];
+}
+
 - (void)drawRect:(NSRect)aRect
 {
 	CGContextRef cxt = [[NSGraphicsContext currentContext] graphicsPort];
 	
-	[[NSColor whiteColor] set];
-	NSRectFill(aRect);
-	NSEnumerator *layerEnumerator = [_compositeLayers objectEnumerator];
-	PaintLayer *aLayer;
-	while( (aLayer = [layerEnumerator nextObject]) )
-		[aLayer drawRect:aRect inContext:cxt];
+	[self drawRect:aRect inContext:cxt];
 }
 
 - (void)setDocument:(NSDocument *)newDocument

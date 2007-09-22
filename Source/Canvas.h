@@ -56,6 +56,8 @@
 - (void)rebuildTopAndBottom;
 
 - (void)compactEvents;
+- (unsigned int)currentPlaybackEvent;
+- (unsigned int)eventCount;
 - (void)beginPlayback;
 - (void)endPlayback;
 - (BOOL)isPlayingBack;
@@ -70,6 +72,7 @@
 - (NSRect)continueStrokeAtPoint:(PressurePoint)aPoint withBrush:(Brush *)aBrush;
 - (void)endStroke;
 
+- (void)drawRect:(NSRect)aRect inContext:(CGContextRef)context;
 - (void)drawRect:(NSRect)aRect;
 
 - (void)setDocument:(NSDocument *)newDocument;
