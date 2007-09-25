@@ -36,8 +36,7 @@
 	NSString *filename = [[[[self document] fileURL] path] stringByDeletingPathExtension];
 	filename = [filename stringByAppendingPathExtension:@"mov"];
 	[encoder setPath:filename];
-	[encoder promptForPath];
-	if( ![encoder path] ) {
+	if( ![encoder promptForPath] || ![encoder path] ) {
 		[encoder release];
 		printf("export canceled (no filename chosen)\n");
 		return;

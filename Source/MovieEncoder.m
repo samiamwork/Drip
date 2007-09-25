@@ -85,10 +85,68 @@ static void SourceFrameTrackingCallback(void *sourceTrackingRefCon, ICMSourceTra
 	[super dealloc];
 }
 
-- (void)promptForPath
+void loadCompressionSettings( ComponentInstance component )
+{
+	ComponentResult result;
+	
+	// load settings from defaults
+	NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:@"compressionSettings"];
+	if( data ) {
+		QTAtomContainer container = NewHandle( [data length] );
+		if( container ) {
+			[data getBytes:*container];
+			result = SCSetSettingsFromAtomContainer( component, container);
+			if( result )
+				printf("SCSetSettingsFromAtomContainer() failed with error %d\n", result);
+			QTDisposeAtomContainer(container);
+		}
+	}
+}
+
+void saveCompressionSettings( ComponentInstance component )
+{
+	ComponentResult result;
+	
+	// save settings back to user defaults
+	QTAtomContainer newSettingsContainer;
+	result = SCGetSettingsAsAtomContainer( component , &newSettingsContainer );
+	if( result )
+		printf("SCGetSettingsAsAtomContainer() failed with %d\n", result);
+	else {
+		NSData *data = [NSData dataWithBytes:*newSettingsContainer length:GetHandleSize(newSettingsContainer)];
+		[[NSUserDefaults standardUserDefaults] setObject:data forKey:@"compressionSettings"];
+		QTDisposeAtomContainer( newSettingsContainer );
+	}
+}
+
+NSString *currentCodecName( void )
+{
+	ComponentInstance component = OpenDefaultComponent(StandardCompressionType,StandardCompressionSubType);
+	if( component == NULL ) {
+		printf("Falied to open component.\n");
+		return nil;
+	}
+	
+	loadCompressionSettings( component );
+	SCSpatialSettings spatialSettings;
+	SCGetInfo( component, scSpatialSettingsType, &spatialSettings );
+	CloseComponent( component );
+	
+	CodecInfo codecInfo;
+	GetCodecInfo( &codecInfo, spatialSettings.codecType, 0);
+	void *codecNameCString = calloc( *(unsigned char *)codecInfo.typeName + 1, 1 );
+	memcpy( codecNameCString, (unsigned char *)codecInfo.typeName + 1, *(unsigned char *)codecInfo.typeName);
+	//printf("name = %s\n", newString );
+	NSString *codecName = [NSString stringWithCString:codecNameCString];
+	free(codecNameCString);
+	
+	return codecName;
+}
+
+- (BOOL)promptForPath
 {
 	if( _compressionSession != NULL )
-		return;
+		return NO;
 	
 	NSSavePanel *savePanel = [NSSavePanel savePanel];
 	[savePanel setCanSelectHiddenExtension:YES];
@@ -101,11 +159,45 @@ static void SourceFrameTrackingCallback(void *sourceTrackingRefCon, ICMSourceTra
 		filename = [_path lastPathComponent];
 		directory = [_path stringByDeletingLastPathComponent];
 	}
-		
+	
+	NSView *containerView = [[NSView alloc] initWithFrame:NSMakeRect(0.0f,0.0f,300.0f,75.0f)];
+	[containerView setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
+	
+	NSTextField *settingsLabel = [[NSTextField alloc] initWithFrame:NSMakeRect(16.0f,50.0f-25.0f,150.0f,25.0f)];
+	[settingsLabel setEditable:NO];
+	[settingsLabel setDrawsBackground:NO];
+	[settingsLabel setSelectable:NO];
+	[settingsLabel setBezeled:NO];
+	[settingsLabel setStringValue:@"Compression Settings"];
+	[containerView addSubview:settingsLabel];
+	[settingsLabel release];
+	
+	NSButton *changeButton = [[NSButton alloc] initWithFrame:NSMakeRect(150.0f+16.0f,50.0f-25.0f,75.0f,25.0f)];
+	[changeButton setTitle:@"Change"];
+	[changeButton setBezelStyle:NSRoundedBezelStyle];
+	[containerView addSubview:changeButton];
+	[changeButton release];
+	
+	NSTextField *settingsDescription = [[NSTextField alloc] initWithFrame:NSMakeRect(16.0f,50.0f-45.0f,300.0f,20.0f)];
+	[settingsDescription setEditable:NO];
+	[settingsDescription setDrawsBackground:NO];
+	[settingsDescription setSelectable:NO];
+	[settingsDescription setBezeled:NO];
+	[settingsDescription setStringValue:currentCodecName()];
+	[containerView addSubview:settingsDescription];
+	[settingsDescription release];
+	
+	[savePanel setAccessoryView:containerView];
+	NSRect superBounds = [[containerView superview] bounds];
+	[containerView setFrame:NSMakeRect(0.0f,0.0f,superBounds.size.width-32.0f,75.0f)];
+	[containerView release];
+	
 	if( [savePanel runModalForDirectory:directory file:filename] != NSFileHandlingPanelOKButton )
-		return;
+		return NO;
 	
 	[self setPath:[savePanel filename]];
+	
+	return YES;
 }
 - (NSString *)path
 {
@@ -207,6 +299,7 @@ static void SourceFrameTrackingCallback(void *sourceTrackingRefCon, ICMSourceTra
 	CloseComponent( component );
 	
 	// Create Movie
+	// Use ConvertMovieToFile to make MP4 kQTFileTypeMP4
 	Handle dataRef;
 	OSType dataRefType;
 	result = QTNewDataReferenceFromFullPathCFString((CFStringRef)_path, kQTNativeDefaultPathStyle, 0, &dataRef, &dataRefType);

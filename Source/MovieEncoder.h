@@ -26,7 +26,7 @@
 
 - (id)initWithWidth:(unsigned int)width height:(unsigned int)height;
 
-- (void)promptForPath;
+- (BOOL)promptForPath;
 - (NSString *)path;
 - (void)setPath:(NSString *)newPath;
 
