@@ -132,15 +132,30 @@ NSString *currentCodecName( void )
 	SCGetInfo( component, scSpatialSettingsType, &spatialSettings );
 	CloseComponent( component );
 	
+	NSString *codecQuality = nil;
+	if( spatialSettings.spatialQuality == codecMinQuality )
+		codecQuality = @"Minimum";
+	else if( spatialSettings.spatialQuality == codecLowQuality )
+		codecQuality = @"Low";
+	else if( spatialSettings.spatialQuality == codecNormalQuality )
+		codecQuality = @"Normal";
+	else if( spatialSettings.spatialQuality == codecHighQuality )
+		codecQuality = @"High";
+	else if( spatialSettings.spatialQuality == codecMaxQuality )
+		codecQuality = @"Max";
+	else if( spatialSettings.spatialQuality == codecLosslessQuality )
+		codecQuality = @"Lossless";
+	else
+		codecQuality = [[NSNumber numberWithInt:(int)(((float)spatialSettings.spatialQuality)*100.0f/1024.0f)] stringValue];
+	
 	CodecInfo codecInfo;
 	GetCodecInfo( &codecInfo, spatialSettings.codecType, 0);
 	void *codecNameCString = calloc( *(unsigned char *)codecInfo.typeName + 1, 1 );
 	memcpy( codecNameCString, (unsigned char *)codecInfo.typeName + 1, *(unsigned char *)codecInfo.typeName);
-	//printf("name = %s\n", newString );
 	NSString *codecName = [NSString stringWithCString:codecNameCString];
 	free(codecNameCString);
 	
-	return codecName;
+	return [NSString stringWithFormat:@"%@ (%@ Quality)",codecName,codecQuality];
 }
 
 - (BOOL)promptForPath
