@@ -24,6 +24,7 @@
 	NSString *_path;
 	
 	NSTextField *_codecDescription;
+	NSTextField *_sizeField;
 	NSSlider *_sizeSlider;
 }
 

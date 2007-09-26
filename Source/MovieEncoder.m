@@ -48,6 +48,8 @@ static void SourceFrameTrackingCallback(void *sourceTrackingRefCon, ICMSourceTra
 		return nil;
 		
 		_codecDescription = nil;
+		_sizeField = nil;
+		_sizeSlider = nil;
 	}
 
 	return self;
@@ -69,6 +71,8 @@ static void SourceFrameTrackingCallback(void *sourceTrackingRefCon, ICMSourceTra
 		_dataHandler = NULL;
 		
 		_codecDescription = nil;
+		_sizeField = nil;
+		_sizeSlider = nil;
 	}
 	
 	return self;
@@ -216,23 +220,45 @@ NSString *currentCodecName( void )
 	[_codecDescription setBezeled:NO];
 	[_codecDescription setStringValue:currentCodecName()];
 	[containerView addSubview:_codecDescription];
-	[_codecDescription release];
 	
-	/*
-	NSRect changeButtonFrame = [changeButton frame];
-	_sizeSlider = [[NSSlider alloc] initWithFrame:NSMakeRect(changeButtonFrame.origin.x+changeButtonFrame.size.width+16.0f,75.0f-25.0f,200.0f,25.0f)];
+	NSTextField *sizeDescriptionField = [[NSTextField alloc] initWithFrame:NSMakeRect(16.0f,containerSize.height-[changeButton frame].size.height-32.0f+7.0f,100.0f,17.0f)];
+	[sizeDescriptionField setEditable:NO];
+	[sizeDescriptionField setDrawsBackground:NO];
+	[sizeDescriptionField setSelectable:NO];
+	[sizeDescriptionField setBezeled:NO];
+	[sizeDescriptionField setStringValue:@"Size:"];
+	[containerView addSubview:sizeDescriptionField];
+	
+	_sizeSlider = [[NSSlider alloc] initWithFrame:NSMakeRect(containerSize.width-150.0f-16.0f,containerSize.height-[changeButton frame].size.height-32.0f,150.0f,32.0f)];
 	[_sizeSlider setMinValue:0.0];
 	[_sizeSlider setMaxValue:1.0];
 	[_sizeSlider setDoubleValue:1.0];
+	[_sizeSlider setNumberOfTickMarks:3];
 	[containerView addSubview:_sizeSlider];
-	[_sizeSlider release];
-	*/
+	
+	NSRect sizeFieldFrame = NSMakeRect([sizeDescriptionField frame].origin.x+[sizeDescriptionField frame].size.width + 16.0f,[sizeDescriptionField frame].origin.y,100.0f,17.0f);
+	sizeFieldFrame.size.width = [_sizeSlider frame].origin.x-32.0f-sizeFieldFrame.origin.x;
+	_sizeField = [[NSTextField alloc] initWithFrame:sizeFieldFrame];
+	[_sizeField setEditable:NO];
+	[_sizeField setDrawsBackground:NO];
+	[_sizeField setSelectable:NO];
+	[_sizeField setBezeled:NO];
+	NSString *sizeString = [[NSString alloc] initWithFormat:@"%d x %d",_width,_height];
+	[_sizeField setStringValue:sizeString];
+	[sizeString release];
+	[containerView addSubview:_sizeField];
 	
 	if( [savePanel runModalForDirectory:directory file:filename] != NSFileHandlingPanelOKButton )
 		return NO;
 	
 	[self setPath:[savePanel filename]];
+
+	[_codecDescription release];
 	_codecDescription = nil;
+	[_sizeField release];
+	_sizeField = nil;
+	[_sizeSlider release];
+	_sizeSlider = nil;
 	return YES;
 }
 - (NSString *)path
