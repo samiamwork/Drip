@@ -26,6 +26,7 @@
 	NSTextField *_codecDescription;
 	NSTextField *_sizeField;
 	NSSlider *_sizeSlider;
+	float _scale;
 }
 
 - (id)initWithWidth:(unsigned int)width height:(unsigned int)height;

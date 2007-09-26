@@ -50,6 +50,7 @@ static void SourceFrameTrackingCallback(void *sourceTrackingRefCon, ICMSourceTra
 		_codecDescription = nil;
 		_sizeField = nil;
 		_sizeSlider = nil;
+		_scale = 1.0f;
 	}
 
 	return self;
@@ -73,6 +74,7 @@ static void SourceFrameTrackingCallback(void *sourceTrackingRefCon, ICMSourceTra
 		_codecDescription = nil;
 		_sizeField = nil;
 		_sizeSlider = nil;
+		_scale = 1.0f;
 	}
 	
 	return self;
@@ -234,6 +236,8 @@ NSString *currentCodecName( void )
 	[_sizeSlider setMaxValue:1.0];
 	[_sizeSlider setDoubleValue:1.0];
 	[_sizeSlider setNumberOfTickMarks:3];
+	[_sizeSlider setTarget:self];
+	[_sizeSlider setAction:@selector(setScale:)];
 	[containerView addSubview:_sizeSlider];
 	
 	NSRect sizeFieldFrame = NSMakeRect([sizeDescriptionField frame].origin.x+[sizeDescriptionField frame].size.width + 16.0f,[sizeDescriptionField frame].origin.y,100.0f,17.0f);
@@ -272,6 +276,28 @@ NSString *currentCodecName( void )
 	
 	[_path release];
 	_path = [newPath retain];
+}
+
+- (void)setScale:(id)sender
+{
+	float newScale = [sender floatValue];
+	if( newScale == _scale )
+		return;
+	
+	_scale = newScale;
+	int newWidth;
+	int newHeight;
+	if( _width <= _height ) {
+		newWidth = 176+(int)((float)(_width-176)*_scale);
+		newHeight = (int)((float)_height*(float)newWidth/(float)_width);
+	} else {
+		newHeight = 144+(int)((float)(_height-144)*_scale);
+		newWidth = (int)((float)_width*(float)newHeight/(float)_height);
+	}
+	
+	NSString *sizeString = [[NSString alloc] initWithFormat:@"%d x %d",newWidth,newHeight];
+	[_sizeField setStringValue:sizeString];
+	[sizeString release];
 }
 
 - (void)promptForSettings:(id)sender
