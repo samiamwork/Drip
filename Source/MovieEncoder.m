@@ -181,18 +181,35 @@ NSString *currentCodecName( void )
 	
 	NSView *containerView = [[NSView alloc] initWithFrame:NSMakeRect(0.0f,0.0f,300.0f,75.0f)];
 	[containerView setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
+	[savePanel setAccessoryView:containerView];
+	NSRect superBounds = [[containerView superview] bounds];
+	[containerView setFrame:NSMakeRect(0.0f,0.0f,superBounds.size.width,75.0f)];
+	[containerView release];
+	NSSize containerSize = [containerView bounds].size;
 	
-	NSTextField *settingsLabel = [[NSTextField alloc] initWithFrame:NSMakeRect(16.0f,75.0f-25.0f,150.0f,25.0f)];
+	NSTextField *settingsLabel = [[NSTextField alloc] initWithFrame:NSMakeRect(16.0f,containerSize.height-32.0f+7.0f,100.0f,17.0f)];
 	[settingsLabel setEditable:NO];
 	[settingsLabel setDrawsBackground:NO];
 	[settingsLabel setSelectable:NO];
 	[settingsLabel setBezeled:NO];
-	[settingsLabel setStringValue:@"Compression Type"];
+	[settingsLabel setStringValue:@"Compression:"];
 	// TODO: bold this label
 	[containerView addSubview:settingsLabel];
 	[settingsLabel release];
 	
-	_codecDescription = [[NSTextField alloc] initWithFrame:NSMakeRect(16.0f,75.0f-45.0f,300.0f,20.0f)];
+	NSButton *changeButton = [[NSButton alloc] initWithFrame:NSMakeRect(containerSize.width-16.0f-75.0f,containerSize.height-32.0f,75.0f,32.0f)];
+	[changeButton setTitle:@"Change"];
+	[changeButton setBezelStyle:NSRoundedBezelStyle];
+	[changeButton setTarget:self];
+	[changeButton setAction:@selector(promptForSettings:)];
+	[containerView addSubview:changeButton];
+	[changeButton release];
+	
+	NSRect descriptionFrame = NSMakeRect([settingsLabel frame].origin.x+[settingsLabel frame].size.width+16.0f,
+										 containerSize.height-32.0f+7.0f,
+										 300.0f, 17.0f);
+	descriptionFrame.size.width = [changeButton frame].origin.x-descriptionFrame.origin.x-16.0f;
+	_codecDescription = [[NSTextField alloc] initWithFrame:descriptionFrame];
 	[_codecDescription setEditable:NO];
 	[_codecDescription setDrawsBackground:NO];
 	[_codecDescription setSelectable:NO];
@@ -201,18 +218,15 @@ NSString *currentCodecName( void )
 	[containerView addSubview:_codecDescription];
 	[_codecDescription release];
 	
-	NSButton *changeButton = [[NSButton alloc] initWithFrame:NSMakeRect(150.0f+16.0f,75.0f-25.0f,75.0f,25.0f)];
-	[changeButton setTitle:@"Change"];
-	[changeButton setBezelStyle:NSRoundedBezelStyle];
-	[changeButton setTarget:self];
-	[changeButton setAction:@selector(promptForSettings:)];
-	[containerView addSubview:changeButton];
-	[changeButton release];
-	
-	[savePanel setAccessoryView:containerView];
-	NSRect superBounds = [[containerView superview] bounds];
-	[containerView setFrame:NSMakeRect(0.0f,0.0f,superBounds.size.width-32.0f,75.0f)];
-	[containerView release];
+	/*
+	NSRect changeButtonFrame = [changeButton frame];
+	_sizeSlider = [[NSSlider alloc] initWithFrame:NSMakeRect(changeButtonFrame.origin.x+changeButtonFrame.size.width+16.0f,75.0f-25.0f,200.0f,25.0f)];
+	[_sizeSlider setMinValue:0.0];
+	[_sizeSlider setMaxValue:1.0];
+	[_sizeSlider setDoubleValue:1.0];
+	[containerView addSubview:_sizeSlider];
+	[_sizeSlider release];
+	*/
 	
 	if( [savePanel runModalForDirectory:directory file:filename] != NSFileHandlingPanelOKButton )
 		return NO;
