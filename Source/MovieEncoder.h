@@ -27,6 +27,9 @@
 	NSTextField *_sizeField;
 	NSSlider *_sizeSlider;
 	float _scale;
+	
+	void *_bitmapBytes;
+	CGContextRef _bitmapContext;
 }
 
 - (id)initWithWidth:(unsigned int)width height:(unsigned int)height;
@@ -34,10 +37,12 @@
 - (BOOL)promptForPath;
 - (NSString *)path;
 - (void)setPath:(NSString *)newPath;
+- (CGContextRef)frameContext;
 
 - (void)promptForSettings:(id)sender;
 
 - (void)beginMovie;
 - (void)endMovie;
-- (void)addFrameFromData:(void *)bitmapBytes width:(unsigned int)width height:(unsigned int)height pitch:(unsigned int)pitch;
+- (void)frameReady;
+
 @end

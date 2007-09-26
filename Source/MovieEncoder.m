@@ -51,6 +51,9 @@ static void SourceFrameTrackingCallback(void *sourceTrackingRefCon, ICMSourceTra
 		_sizeField = nil;
 		_sizeSlider = nil;
 		_scale = 1.0f;
+		
+		_bitmapContext = NULL;
+		_bitmapBytes = NULL;
 	}
 
 	return self;
@@ -75,6 +78,9 @@ static void SourceFrameTrackingCallback(void *sourceTrackingRefCon, ICMSourceTra
 		_sizeField = nil;
 		_sizeSlider = nil;
 		_scale = 1.0f;
+		
+		_bitmapContext = NULL;
+		_bitmapBytes = NULL;
 	}
 	
 	return self;
@@ -278,6 +284,11 @@ NSString *currentCodecName( void )
 	_path = [newPath retain];
 }
 
+- (CGContextRef)frameContext
+{
+	return _bitmapContext;
+}
+
 - (void)setScale:(id)sender
 {
 	float newScale = [sender floatValue];
@@ -355,6 +366,26 @@ NSString *currentCodecName( void )
 
 - (void)beginMovie
 {
+	// update the width and height
+	int newWidth;
+	int newHeight;
+	if( _width <= _height ) {
+		newWidth = 176+(int)((float)(_width-176)*_scale);
+		newHeight = (int)((float)_height*(float)newWidth/(float)_width);
+	} else {
+		newHeight = 144+(int)((float)(_height-144)*_scale);
+		newWidth = (int)((float)_width*(float)newHeight/(float)_height);
+	}
+	
+	// create the bitmap context to draw frames into
+	_bitmapBytes = calloc(newWidth*newHeight*4, 1);
+	CGColorSpaceRef colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+	_bitmapContext = CGBitmapContextCreate( _bitmapBytes, newWidth,newHeight, 8, newWidth*4, colorSpace, kCGImageAlphaPremultipliedFirst);
+	CGColorSpaceRelease( colorSpace );
+	CGContextScaleCTM( _bitmapContext,(float)newWidth/(float)_width,(float)newWidth/(float)_width);
+	_width = newWidth;
+	_height = newHeight;
+	
 	ComponentResult result;
 	ComponentInstance component = OpenDefaultComponent(StandardCompressionType,StandardCompressionSubType);
 	if( component == NULL ) {
@@ -478,9 +509,14 @@ NSString *currentCodecName( void )
 	
 	ICMCompressionSessionRelease( _compressionSession );
 	_compressionSession = NULL;
+	
+	CGContextRelease( _bitmapContext );
+	free( _bitmapBytes );
+	_bitmapContext = NULL;
+	_bitmapBytes = NULL;
 }
 
-- (void)addFrameFromData:(void *)bitmapBytes width:(unsigned int)width height:(unsigned int)height pitch:(unsigned int)pitch
+- (void)frameReady
 {
 	if( !_compressionSession )
 		return;
@@ -495,8 +531,8 @@ NSString *currentCodecName( void )
 	size_t bytesPerRow = CVPixelBufferGetBytesPerRow(pixelBuffer);
 	
 	int rowIndex;
-	for( rowIndex = 0; rowIndex < height; rowIndex++ )
-		memcpy( pixelBufferBytes+rowIndex*bytesPerRow, bitmapBytes+rowIndex*pitch,width*4);
+	for( rowIndex = 0; rowIndex < _height; rowIndex++ )
+		memcpy( pixelBufferBytes+rowIndex*bytesPerRow, _bitmapBytes+rowIndex*(_width*4),_width*4);
 
 	CVPixelBufferUnlockBaseAddress( pixelBuffer, 0);
 	ICMSourceTrackingCallbackRecord trackingCallback = { SourceFrameTrackingCallback, &pixelBuffer };

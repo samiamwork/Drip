@@ -45,12 +45,6 @@
 	[encoder beginMovie];
 	[theCanvas beginPlayback];
 	
-	// create bitmap to draw into that we can copy data out of.
-	void *bitmapBytes = calloc(canvasWidth*canvasHeight*4, 1);
-	CGColorSpaceRef colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
-	CGContextRef bitmapContext = CGBitmapContextCreate( bitmapBytes, canvasWidth,canvasHeight, 8, canvasWidth*4, colorSpace, kCGImageAlphaPremultipliedFirst);
-	CGColorSpaceRelease( colorSpace );
-	
 	// TODO:draw the white canvas.
 	// ...draw the frames
 	NSRect invalidCanvasRect;
@@ -61,11 +55,9 @@
 			invalidCanvasRect = NSIntersectionRect( [theCanvas playNextEvent], canvasRect );
 		
 		// we have a frame to compress
-		[theCanvas drawRect:canvasRect inContext:bitmapContext];
-		[encoder addFrameFromData:bitmapBytes width:canvasWidth height:canvasHeight pitch:canvasWidth*4];
+		[theCanvas drawRect:canvasRect inContext:[encoder frameContext]];
+		[encoder frameReady];
 	}
-	CGContextRelease( bitmapContext );
-	free(bitmapBytes);
 	[theCanvas endPlayback];
 	[encoder endMovie];
 	[encoder release];
