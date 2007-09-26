@@ -22,6 +22,8 @@
 	unsigned int _currentFrame;
 	
 	NSString *_path;
+	
+	NSTextField *_codecDescription;
 }
 
 - (id)initWithWidth:(unsigned int)width height:(unsigned int)height;
@@ -30,7 +32,7 @@
 - (NSString *)path;
 - (void)setPath:(NSString *)newPath;
 
-- (void)promptForSettings;
+- (void)promptForSettings:(id)sender;
 
 - (void)beginMovie;
 - (void)endMovie;

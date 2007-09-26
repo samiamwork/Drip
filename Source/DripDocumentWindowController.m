@@ -41,7 +41,7 @@
 		printf("export canceled (no filename chosen)\n");
 		return;
 	}
-	[encoder promptForSettings];
+	//[encoder promptForSettings];
 	[encoder beginMovie];
 	[theCanvas beginPlayback];
 	

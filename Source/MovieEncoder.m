@@ -46,6 +46,8 @@ static void SourceFrameTrackingCallback(void *sourceTrackingRefCon, ICMSourceTra
 	if( (self = [super init]) ) {
 		[self release];
 		return nil;
+		
+		_codecDescription = nil;
 	}
 
 	return self;
@@ -65,6 +67,8 @@ static void SourceFrameTrackingCallback(void *sourceTrackingRefCon, ICMSourceTra
 		_compressionSession = NULL;
 		_movie = NULL;
 		_dataHandler = NULL;
+		
+		_codecDescription = nil;
 	}
 	
 	return self;
@@ -178,29 +182,32 @@ NSString *currentCodecName( void )
 	NSView *containerView = [[NSView alloc] initWithFrame:NSMakeRect(0.0f,0.0f,300.0f,75.0f)];
 	[containerView setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
 	
-	NSTextField *settingsLabel = [[NSTextField alloc] initWithFrame:NSMakeRect(16.0f,50.0f-25.0f,150.0f,25.0f)];
+	NSTextField *settingsLabel = [[NSTextField alloc] initWithFrame:NSMakeRect(16.0f,75.0f-25.0f,150.0f,25.0f)];
 	[settingsLabel setEditable:NO];
 	[settingsLabel setDrawsBackground:NO];
 	[settingsLabel setSelectable:NO];
 	[settingsLabel setBezeled:NO];
-	[settingsLabel setStringValue:@"Compression Settings"];
+	[settingsLabel setStringValue:@"Compression Type"];
+	// TODO: bold this label
 	[containerView addSubview:settingsLabel];
 	[settingsLabel release];
 	
-	NSButton *changeButton = [[NSButton alloc] initWithFrame:NSMakeRect(150.0f+16.0f,50.0f-25.0f,75.0f,25.0f)];
+	_codecDescription = [[NSTextField alloc] initWithFrame:NSMakeRect(16.0f,75.0f-45.0f,300.0f,20.0f)];
+	[_codecDescription setEditable:NO];
+	[_codecDescription setDrawsBackground:NO];
+	[_codecDescription setSelectable:NO];
+	[_codecDescription setBezeled:NO];
+	[_codecDescription setStringValue:currentCodecName()];
+	[containerView addSubview:_codecDescription];
+	[_codecDescription release];
+	
+	NSButton *changeButton = [[NSButton alloc] initWithFrame:NSMakeRect(150.0f+16.0f,75.0f-25.0f,75.0f,25.0f)];
 	[changeButton setTitle:@"Change"];
 	[changeButton setBezelStyle:NSRoundedBezelStyle];
+	[changeButton setTarget:self];
+	[changeButton setAction:@selector(promptForSettings:)];
 	[containerView addSubview:changeButton];
 	[changeButton release];
-	
-	NSTextField *settingsDescription = [[NSTextField alloc] initWithFrame:NSMakeRect(16.0f,50.0f-45.0f,300.0f,20.0f)];
-	[settingsDescription setEditable:NO];
-	[settingsDescription setDrawsBackground:NO];
-	[settingsDescription setSelectable:NO];
-	[settingsDescription setBezeled:NO];
-	[settingsDescription setStringValue:currentCodecName()];
-	[containerView addSubview:settingsDescription];
-	[settingsDescription release];
 	
 	[savePanel setAccessoryView:containerView];
 	NSRect superBounds = [[containerView superview] bounds];
@@ -211,7 +218,7 @@ NSString *currentCodecName( void )
 		return NO;
 	
 	[self setPath:[savePanel filename]];
-	
+	_codecDescription = nil;
 	return YES;
 }
 - (NSString *)path
@@ -227,7 +234,7 @@ NSString *currentCodecName( void )
 	_path = [newPath retain];
 }
 
-- (void)promptForSettings
+- (void)promptForSettings:(id)sender
 {
 	ComponentResult result;
 	ComponentInstance component = OpenDefaultComponent(StandardCompressionType,StandardCompressionSubType);
@@ -273,6 +280,11 @@ NSString *currentCodecName( void )
 	}
 	
 	CloseComponent( component );
+	
+	if( _codecDescription == nil )
+		return;
+	
+	[_codecDescription setStringValue:currentCodecName()];
 }
 
 - (void)beginMovie
@@ -286,18 +298,18 @@ NSString *currentCodecName( void )
 	
 	// load settings from defaults
 	NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:@"compressionSettings"];
-	if( !data ) {
-		[self promptForSettings];
-		data = [[NSUserDefaults standardUserDefaults] objectForKey:@"compressionSettings"];
-	}
+	if( data ) {
+		//[self promptForSettings:nil];
+		//data = [[NSUserDefaults standardUserDefaults] objectForKey:@"compressionSettings"];
 
-	QTAtomContainer container = NewHandle( [data length] );
-	if( container ) {
-		[data getBytes:*container];
-		result = SCSetSettingsFromAtomContainer( component, container);
-		if( result )
-			printf("SCSetSettingsFromAtomContainer() failed with error %d\n", result);
-		QTDisposeAtomContainer(container);
+		QTAtomContainer container = NewHandle( [data length] );
+		if( container ) {
+			[data getBytes:*container];
+			result = SCSetSettingsFromAtomContainer( component, container);
+			if( result )
+				printf("SCSetSettingsFromAtomContainer() failed with error %d\n", result);
+			QTDisposeAtomContainer(container);
+		}
 	}
 	
 	long flags = scAllowEncodingWithCompressionSession;
