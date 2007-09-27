@@ -176,6 +176,16 @@
 	return NSZeroRect;
 }
 
+- (NSRect)playNextVisibleEvent
+{
+	NSRect canvasRect = NSMakeRect(0.0f,0.0f,_width,_height);
+	NSRect invalidCanvasRect = NSIntersectionRect( [self playNextEvent], canvasRect );
+	while( NSIsEmptyRect(invalidCanvasRect) && [self isPlayingBack] )
+		invalidCanvasRect = NSIntersectionRect( [self playNextEvent], canvasRect );
+	
+	return invalidCanvasRect;
+}
+
 - (void)encodeWithCoder:(NSCoder *)encoder
 {
 	if( ![encoder isKindOfClass:[NSKeyedArchiver class]] )

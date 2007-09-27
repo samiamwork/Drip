@@ -27,7 +27,6 @@
 
 - (IBAction)exportPlaybackToQuicktime:(id)sender
 {
-	printf("export\n");
 	Canvas *theCanvas = [(DripDocument*)[self document] canvas];
 	unsigned int canvasWidth = (unsigned int)[theCanvas size].width;
 	unsigned int canvasHeight = (unsigned int)[theCanvas size].height;
@@ -49,12 +48,13 @@
 	// ...draw the frames
 	NSRect invalidCanvasRect;
 	NSRect canvasRect = NSMakeRect(0.0f,0.0f,(float)canvasWidth,(float)canvasHeight);
+	[theCanvas drawRect:canvasRect inContext:[encoder frameContext]];
+	[encoder frameReady];
 	while( [theCanvas isPlayingBack] ) {
-		invalidCanvasRect = NSIntersectionRect( [theCanvas playNextEvent], canvasRect );
-		while( NSIsEmptyRect(invalidCanvasRect) && [theCanvas isPlayingBack] )
-			invalidCanvasRect = NSIntersectionRect( [theCanvas playNextEvent], canvasRect );
+		invalidCanvasRect = [theCanvas playNextVisibleEvent];
 		
 		// we have a frame to compress
+		// TODO fix the problem with using the invalidRect here instead (probably having to do with the NSFillRect in the base layer)
 		[theCanvas drawRect:canvasRect inContext:[encoder frameContext]];
 		[encoder frameReady];
 	}
