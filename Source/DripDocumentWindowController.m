@@ -44,7 +44,6 @@
 	[encoder beginMovie];
 	[theCanvas beginPlayback];
 	
-	// TODO:draw the white canvas.
 	// ...draw the frames
 	NSRect invalidCanvasRect;
 	NSRect canvasRect = NSMakeRect(0.0f,0.0f,(float)canvasWidth,(float)canvasHeight);

@@ -396,9 +396,6 @@ NSString *currentCodecName( void )
 	// load settings from defaults
 	NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:@"compressionSettings"];
 	if( data ) {
-		//[self promptForSettings:nil];
-		//data = [[NSUserDefaults standardUserDefaults] objectForKey:@"compressionSettings"];
-
 		QTAtomContainer container = NewHandle( [data length] );
 		if( container ) {
 			[data getBytes:*container];
@@ -433,6 +430,11 @@ NSString *currentCodecName( void )
 	}
 	result = CreateMovieStorage( dataRef, dataRefType, 'TVOD', smCurrentScript, createMovieFileDeleteCurFile, &_dataHandler, &_movie);
 	if( result ) {
+		CGContextRelease( _bitmapContext );
+		free( _bitmapBytes );
+		_bitmapContext = NULL;
+		_bitmapBytes = NULL;
+		DisposeHandle(dataRef);
 		// TODO:checking for more meaningful errors
 		printf("CreateMovieStorage() failed with %d\n", result);
 		return;
