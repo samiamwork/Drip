@@ -11,13 +11,16 @@
 #import "ScrollingSketchView.h"
 #import "Canvas.h"
 #import "LayerController.h"
+#import "MovieEncoder.h"
 
 @interface DripDocumentWindowController : NSWindowController
 {
 	IBOutlet ScrollingSketchView *_sketchView;
 	IBOutlet NSSlider *_zoomSlider;
+	IBOutlet NSProgressIndicator *_exportProgressBar;
 	
 	NSTimer *_playbackTimer;
+	MovieEncoder *_encoder;
 }
 
 - (IBAction)setZoom:(id)sender;

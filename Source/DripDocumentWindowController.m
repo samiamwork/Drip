@@ -9,7 +9,6 @@
 #import "DripDocumentWindowController.h"
 #import "DripDocument.h"
 #import "DripInspectors.h"
-#import "MovieEncoder.h"
 
 @implementation DripDocumentWindowController
 
@@ -31,37 +30,31 @@
 	unsigned int canvasWidth = (unsigned int)[theCanvas size].width;
 	unsigned int canvasHeight = (unsigned int)[theCanvas size].height;
 	
-	MovieEncoder *encoder = [[MovieEncoder alloc] initWithWidth:canvasWidth height:canvasHeight];
+	_encoder = [[MovieEncoder alloc] initWithWidth:canvasWidth height:canvasHeight];
 	NSString *filename = [[[[self document] fileURL] path] stringByDeletingPathExtension];
 	filename = [filename stringByAppendingPathExtension:@"mov"];
-	[encoder setPath:filename];
-	if( ![encoder promptForPath] || ![encoder path] ) {
-		[encoder release];
+	[_encoder setPath:filename];
+	if( ![_encoder promptForPath] || ![_encoder path] ) {
+		[_encoder release];
+		_encoder = nil;
 		printf("export canceled (no filename chosen)\n");
 		return;
 	}
-	//[encoder promptForSettings];
-	[encoder beginMovie];
+	[_encoder beginMovie];
 	[theCanvas beginPlayback];
 	
 	// ...draw the frames
-	NSRect invalidCanvasRect;
 	NSRect canvasRect = NSMakeRect(0.0f,0.0f,(float)canvasWidth,(float)canvasHeight);
-	[theCanvas drawRect:canvasRect inContext:[encoder frameContext]];
-	[encoder frameReady];
-	while( [theCanvas isPlayingBack] ) {
-		invalidCanvasRect = [theCanvas playNextVisibleEvent];
-		
-		// we have a frame to compress
-		// TODO fix the problem with using the invalidRect here instead (probably having to do with the NSFillRect in the base layer)
-		[theCanvas drawRect:canvasRect inContext:[encoder frameContext]];
-		[encoder frameReady];
-	}
-	[theCanvas endPlayback];
-	[encoder endMovie];
-	[encoder release];
+	[theCanvas drawRect:canvasRect inContext:[_encoder frameContext]];
+	[_encoder frameReady];
 	
-	printf("export done\n");
+	[_exportProgressBar setHidden:NO];
+	[_exportProgressBar setIndeterminate:NO];
+	[_exportProgressBar setMinValue:0.0];
+	[_exportProgressBar setMaxValue:1.0];
+	[_exportProgressBar setDoubleValue:0.0];
+	
+	_playbackTimer = [NSTimer scheduledTimerWithTimeInterval:0.0 target:self selector:@selector(exportTick:) userInfo:nil repeats:YES];
 }
 
 - (IBAction)playBack:(id)sender
@@ -95,6 +88,36 @@
 	
 	Canvas *theCanvas = [(DripDocument*)[self document] canvas];
 	[theCanvas endPlayback];
+}
+
+- (void)exportTick:(NSTimer *)theTimer
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	Canvas *theCanvas = [(DripDocument*)[self document] canvas];
+	NSRect canvasRect = NSMakeRect(0.0f,0.0f,(float)[theCanvas size].width,(float)[theCanvas size].height);
+	
+	NSRect invalidCanvasRect = [theCanvas playNextVisibleEvent];
+	// we have a frame to compress
+	// TODO fix the problem with using the invalidRect here instead (probably having to do with the NSFillRect in the base layer)
+	[theCanvas drawRect:canvasRect inContext:[_encoder frameContext]];
+	[_encoder frameReady];
+
+	double newProgress = (double)[theCanvas currentPlaybackEvent]/(double)[theCanvas eventCount];
+	[_exportProgressBar setDoubleValue:newProgress];
+	if( ![theCanvas isPlayingBack] ) {
+		[theCanvas endPlayback];
+		[_encoder endMovie];
+		[_encoder release];
+		_encoder = nil;
+		
+		[_exportProgressBar setHidden:YES];
+		
+		[_playbackTimer invalidate];
+		_playbackTimer = nil;
+	}
+	// everyone out of the pool!
+	[pool release];
 }
 
 - (void)playbackTick:(NSTimer *)theTimer

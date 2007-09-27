@@ -32,7 +32,11 @@
             ACTIONS = {setZoom = id; }; 
             CLASS = DripDocumentWindowController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {"_sketchView" = ScrollingSketchView; "_zoomSlider" = NSSlider; }; 
+            OUTLETS = {
+                "_exportProgressBar" = NSProgressIndicator; 
+                "_sketchView" = ScrollingSketchView; 
+                "_zoomSlider" = NSSlider; 
+            }; 
             SUPERCLASS = NSWindowController; 
         }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
