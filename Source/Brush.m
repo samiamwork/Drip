@@ -43,6 +43,7 @@
 	free(_brushLookup);
 	if( _dab != NULL )
 		CGImageRelease(_dab);
+	[_workLayer release];
 	
 	[super dealloc];
 }
@@ -148,6 +149,12 @@ float valueWithCosCurve(float t, float crossover)
 	if( _dab == NULL )
 		printf("no mask created\n");
 	CGDataProviderRelease(dataProviderRef);
+}
+
+- (void)setCanvasSize:(NSSize)newCanvasSize
+{
+	[_workLayer release];
+	_workLayer = [[PaintLayer alloc] initWithWidth:(unsigned int)newCanvasSize.width height:(unsigned int)newCanvasSize.height];
 }
 
 - (void)setSize:(float)newSize
@@ -391,29 +398,34 @@ void sampleBitmap(unsigned char *bitmap, unsigned int pitch, unsigned int width,
 		*blue = ((float)*p)/(255.0f*(alpha));
 	}
 }
-- (NSRect)beginStrokeAtPoint:(PressurePoint)aPoint onLayer:(PaintLayer *)aLayer
+- (NSRect)beginStrokeAtPoint:(PressurePoint)aPoint onLayer:(Layer *)aLayer
 {
 	int x = (int)aPoint.x;
 	int y = (int)aPoint.y;
 	
+	void *bitmapData = [[aLayer mainPaintLayer] data];
+	unsigned int bitmapPitch = [[aLayer mainPaintLayer] pitch];
+	unsigned int bitmapWidth = [[aLayer mainPaintLayer] width];
+	unsigned int bitmapHeight = [[aLayer mainPaintLayer] height];
+	
 	float red, green, blue;
-	sampleBitmap( [aLayer data], [aLayer pitch], [aLayer width], [aLayer height], x, y, &red, &green, &blue);
+	sampleBitmap( bitmapData, bitmapPitch, bitmapWidth, bitmapHeight, x, y, &red, &green, &blue);
 	_resatColor[0] = red;
 	_resatColor[1] = green;
 	_resatColor[2] = blue;
-	sampleBitmap( [aLayer data], [aLayer pitch], [aLayer width], [aLayer height], x, y+_intSize/4, &red, &green, &blue);
+	sampleBitmap( bitmapData, bitmapPitch, bitmapWidth, bitmapHeight, x, y+_intSize/4, &red, &green, &blue);
 	_resatColor[0] += red;
 	_resatColor[1] += green;
 	_resatColor[2] += blue;
-	sampleBitmap( [aLayer data], [aLayer pitch], [aLayer width], [aLayer height], x+_intSize/4, y, &red, &green, &blue);
+	sampleBitmap( bitmapData, bitmapPitch, bitmapWidth, bitmapHeight, x+_intSize/4, y, &red, &green, &blue);
 	_resatColor[0] += red;
 	_resatColor[1] += green;
 	_resatColor[2] += blue;
-	sampleBitmap( [aLayer data], [aLayer pitch], [aLayer width], [aLayer height], x, y-_intSize/4, &red, &green, &blue);
+	sampleBitmap( bitmapData, bitmapPitch, bitmapWidth, bitmapHeight, x, y-_intSize/4, &red, &green, &blue);
 	_resatColor[0] += red;
 	_resatColor[1] += green;
 	_resatColor[2] += blue;
-	sampleBitmap( [aLayer data], [aLayer pitch], [aLayer width], [aLayer height], x-_intSize/4, y, &red, &green, &blue);
+	sampleBitmap( bitmapData, bitmapPitch, bitmapWidth, bitmapHeight, x-_intSize/4, y, &red, &green, &blue);
 	_resatColor[0] += red;
 	_resatColor[1] += green;
 	_resatColor[2] += blue;
@@ -424,17 +436,23 @@ void sampleBitmap(unsigned char *bitmap, unsigned int pitch, unsigned int width,
 	_paintingLayer = aLayer;
 	_lastBrushPosition = aPoint;
 	_leftoverDistance = 0.0f;
-	return [self renderPointAt:aPoint onLayer:aLayer];
+	
+	[_paintingLayer attachLayer:_workLayer];
+	
+	_strokeRect = [self renderPointAt:aPoint onLayer:_workLayer];
+	return _strokeRect;
 }
 - (NSRect)continueStrokeAtPoint:(PressurePoint)aPoint
 {
-	NSRect invalidRect = [self renderLineFromPoint:_lastBrushPosition toPoint:&aPoint onLayer:_paintingLayer leftover:&_leftoverDistance];
+	NSRect invalidRect = [self renderLineFromPoint:_lastBrushPosition toPoint:&aPoint onLayer:_workLayer leftover:&_leftoverDistance];
 	_lastBrushPosition = aPoint;
+	
+	_strokeRect = NSUnionRect(_strokeRect,invalidRect);
 	return invalidRect;
 }
 - (void)endStroke
 {
-	//nothing
+	[_paintingLayer commitLayer:_workLayer rect:NSIntegralRect(_strokeRect)];
 }
 
 - (NSRect)renderPointAt:(PressurePoint)aPoint onLayer:(PaintLayer *)aLayer

@@ -184,7 +184,7 @@
 		layers = [_theCanvas layers];
 	
 	//layers are sorted in reverse
-	PaintLayer *theLayer = [layers objectAtIndex:[layers count]-rowIndex-1];
+	Layer *theLayer = [layers objectAtIndex:[layers count]-rowIndex-1];
 	
 	if( [[aTableColumn identifier] isEqualTo:@"name"] )
 		return [theLayer name];
@@ -204,7 +204,7 @@
 		layers = [_theCanvas layers];
 	
 	if( [[aTableColumn identifier] isEqualTo:@"visible"] ) {
-		PaintLayer *theLayer = [layers objectAtIndex:[layers count]-rowIndex-1];
+		Layer *theLayer = [layers objectAtIndex:[layers count]-rowIndex-1];
 		[theLayer setVisible:[(NSNumber *)anObject boolValue]];
 		if( theLayer != [_theCanvas currentLayer] )
 			[_theCanvas rebuildTopAndBottom];
@@ -224,7 +224,7 @@
 	
 	// I'm only going to allow one row selected at a time
 	NSArray *layers = [_theCanvas layers];
-	PaintLayer *selectedLayer = [[_theCanvas layers] objectAtIndex:[layers count]-1-[rowIndexes firstIndex]];
+	Layer *selectedLayer = [[_theCanvas layers] objectAtIndex:[layers count]-1-[rowIndexes firstIndex]];
 	if( selectedLayer == nil )
 		return NO;
 	

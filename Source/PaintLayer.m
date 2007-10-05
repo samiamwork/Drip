@@ -289,6 +289,7 @@
 
 - (void)drawRect:(NSRect)aRect inContext:(CGContextRef)aContext
 {
+	aRect = NSIntersectionRect(aRect,NSMakeRect(0.0f,0.0f,_width,_height));
 	if( !_visible )
 		return;
 	

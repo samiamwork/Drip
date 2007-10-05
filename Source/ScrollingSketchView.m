@@ -199,7 +199,7 @@
 		[self resetCursorRects];
 		return;
 	} else {
-		[_currentBrush endStroke];
+		[_canvas endStrokeWithBrush:_currentBrush];
 		[[_canvas currentLayer] updateThumbnail];
 		[[DripInspectors sharedController] layersUpdated];
 	}

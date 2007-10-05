@@ -23,7 +23,7 @@
 	
 	NSArray *_oldLayers;
 	
-	PaintLayer *_draggingLayer;
+	Layer *_draggingLayer;
 }
 
 - (void)setCanvas:(Canvas *)newCanvas;

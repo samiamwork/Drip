@@ -38,6 +38,7 @@
 		[_canvas setDocument:self];
 		
 		_brush = [[Brush alloc] init];
+		[_brush setCanvasSize:NSMakeSize(width,height)];
 		_eraser = [[BrushEraser alloc] init];
 	}
 	
@@ -110,7 +111,6 @@
 
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
 {
-	printf("read\n");
 	[_canvas release];
     _canvas = [NSKeyedUnarchiver unarchiveObjectWithFile:[absoluteURL path]];
 	[_canvas retain];
@@ -118,6 +118,8 @@
 	_canvasHeight = [_canvas size].height;
 	[_canvas setDocument:self];
 
+	[_brush setCanvasSize:[_canvas size]];
+	[_eraser setCanvasSize:[_canvas size]];
     return YES;
 }
 

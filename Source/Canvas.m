@@ -41,6 +41,8 @@
 	[super dealloc];
 }
 
+#pragma mark Events and Playback
+
 - (void)compactEvents
 {
 	NSMutableArray *newEvents = [[NSMutableArray alloc] init];
@@ -85,7 +87,7 @@
 	_isPlayingBack = YES;
 	_backupLayers = _layers;
 	
-	PaintLayer *aLayer = [[PaintLayer alloc] initWithWidth:_width height:_height];
+	Layer *aLayer = [[Layer alloc] initWithWidth:_width height:_height];
 	[aLayer setName:@"Layer 0"];
 	_layers = [[NSMutableArray alloc] initWithObjects:aLayer,nil];
 	[aLayer release];
@@ -95,7 +97,9 @@
 	[self setCurrentLayer:aLayer];
 	
 	_currentPlaybackBrush = _playbackBrush = [[Brush alloc] init];
+	[_playbackBrush setCanvasSize:NSMakeSize(_width,_height)];
 	_playbackEraser = [[BrushEraser alloc] init];
+	[_playbackEraser setCanvasSize:NSMakeSize(_width,_height)];
 	_eventIndex = 0;
 }
 - (void)endPlayback
@@ -129,17 +133,16 @@
 	
 	if( [theEvent isKindOfClass:[DripEventStrokeBegin class]] ) {
 		DripEventStrokeBegin *brushDown = (DripEventStrokeBegin *)theEvent;
-		_unusedPlaybackDistance = 0.0f;
-		_lastPlaybackPoint = (PressurePoint){[brushDown position].x, [brushDown position].y, [brushDown pressure]};
-		//return [_currentPlaybackBrush renderPointAt:_lastPlaybackPoint onLayer:_currentLayer];
-		return [_currentPlaybackBrush beginStrokeAtPoint:_lastPlaybackPoint onLayer:_currentLayer];
+		PressurePoint aPoint = (PressurePoint){[brushDown position].x, [brushDown position].y, [brushDown pressure]};
+		return [_currentPlaybackBrush beginStrokeAtPoint:aPoint onLayer:_currentLayer];
 	} else if( [theEvent isKindOfClass:[DripEventStrokeContinue class]] ) {
 		DripEventStrokeContinue *brushDrag = (DripEventStrokeContinue *)theEvent;
 		PressurePoint dragPoint = (PressurePoint){[brushDrag position].x, [brushDrag position].y, [brushDrag pressure]};
-		//NSRect affectedRect = [_currentPlaybackBrush renderLineFromPoint:_lastPlaybackPoint toPoint:&dragPoint onLayer:_currentLayer leftover:&_unusedPlaybackDistance];
 		NSRect affectedRect = [_currentPlaybackBrush continueStrokeAtPoint:dragPoint];
-		//_lastPlaybackPoint = dragPoint;
 		return affectedRect;
+	} else if( [theEvent isKindOfClass:[DripEventStrokeEnd class]] ) {
+		[_currentPlaybackBrush endStroke];
+		return NSZeroRect;
 	} else if( [theEvent isKindOfClass:[DripEventBrushSettings class]] ) {
 		DripEventBrushSettings *brushSettings = (DripEventBrushSettings *)theEvent;
 		if( [brushSettings type] == kBrushTypePaint )
@@ -163,8 +166,8 @@
 		return NSMakeRect(0.0f,0.0f,_width,_height);
 	} else if( [theEvent isKindOfClass:[DripEventLayerSettings class]] ) {
 		DripEventLayerSettings *layerSettings = (DripEventLayerSettings *)theEvent;
-		PaintLayer *aLayer = [_layers objectAtIndex:[layerSettings layerIndex]];
-		[aLayer changeSettings:layerSettings];
+		Layer *aLayer = [_layers objectAtIndex:[layerSettings layerIndex]];
+		[[aLayer mainPaintLayer] changeSettings:layerSettings];
 		if( aLayer != _currentLayer )
 			[self rebuildTopAndBottom];
 		return NSMakeRect(0.0f,0.0f,_width,_height);
@@ -289,7 +292,7 @@
 		_height = height;
 		
 		_compositeLayers = nil;
-		PaintLayer *aLayer = [[PaintLayer alloc] initWithWidth:_width height:_height];
+		Layer *aLayer = [[Layer alloc] initWithWidth:_width height:_height];
 		[aLayer setName:@"Layer 0"];
 		_layers = [[NSMutableArray alloc] initWithObjects:aLayer,nil];
 		[aLayer release];
@@ -325,16 +328,15 @@
 		targetBlendMode = [[_layers objectAtIndex:indexOfLastSimilarLayer] blendMode];
 		for( layerIndex = 0; layerIndex < targetIndex; layerIndex++ ) {
 			if( targetBlendMode != [[_layers objectAtIndex:layerIndex] blendMode] ) {
-				[_compositeLayers addObject:[[[PaintLayer alloc] initWithContentsOfLayers:_layers inRange:NSMakeRange(indexOfLastSimilarLayer,layerIndex-indexOfLastSimilarLayer)] autorelease]];
+				[_compositeLayers addObject:[[[Layer alloc] initWithContentsOfLayers:_layers inRange:NSMakeRange(indexOfLastSimilarLayer,layerIndex-indexOfLastSimilarLayer)] autorelease]];
 				[[_compositeLayers lastObject] setBlendMode:targetBlendMode];
 				indexOfLastSimilarLayer = layerIndex;
 				targetBlendMode = [[_layers objectAtIndex:indexOfLastSimilarLayer] blendMode];
 			}
 		}
 		
-		[_compositeLayers addObject:[[[PaintLayer alloc] initWithContentsOfLayers:_layers inRange:NSMakeRange(indexOfLastSimilarLayer,layerIndex-indexOfLastSimilarLayer)] autorelease]];
+		[_compositeLayers addObject:[[[Layer alloc] initWithContentsOfLayers:_layers inRange:NSMakeRange(indexOfLastSimilarLayer,layerIndex-indexOfLastSimilarLayer)] autorelease]];
 		[[_compositeLayers lastObject] setBlendMode:targetBlendMode];
-		//_bottomLayer = [[PaintLayer alloc] initWithContentsOfLayers:_layers inRange:NSMakeRange(0,targetIndex)];
 	}
 	[_compositeLayers addObject:_currentLayer];
 	if( targetIndex < [_layers count]-1 ) {
@@ -342,16 +344,15 @@
 		targetBlendMode = [[_layers objectAtIndex:indexOfLastSimilarLayer] blendMode];
 		for( layerIndex = targetIndex+1; layerIndex < [_layers count]; layerIndex++ ) {
 			if( targetBlendMode != [[_layers objectAtIndex:layerIndex] blendMode] ) {
-				[_compositeLayers addObject:[[[PaintLayer alloc] initWithContentsOfLayers:_layers inRange:NSMakeRange(indexOfLastSimilarLayer,layerIndex-indexOfLastSimilarLayer)] autorelease]];
+				[_compositeLayers addObject:[[[Layer alloc] initWithContentsOfLayers:_layers inRange:NSMakeRange(indexOfLastSimilarLayer,layerIndex-indexOfLastSimilarLayer)] autorelease]];
 				[[_compositeLayers lastObject] setBlendMode:targetBlendMode];
 				indexOfLastSimilarLayer = layerIndex;
 				targetBlendMode = [[_layers objectAtIndex:indexOfLastSimilarLayer] blendMode];
 			}
 		}
 		
-		[_compositeLayers addObject:[[[PaintLayer alloc] initWithContentsOfLayers:_layers inRange:NSMakeRange(indexOfLastSimilarLayer,layerIndex-indexOfLastSimilarLayer)] autorelease]];
+		[_compositeLayers addObject:[[[Layer alloc] initWithContentsOfLayers:_layers inRange:NSMakeRange(indexOfLastSimilarLayer,layerIndex-indexOfLastSimilarLayer)] autorelease]];
 		[[_compositeLayers lastObject] setBlendMode:targetBlendMode];
-		//_topLayer = [[PaintLayer alloc] initWithContentsOfLayers:_layers inRange:NSMakeRange(targetIndex+1,[_layers count]-(targetIndex+1))];
 	}
 	
 }
@@ -381,12 +382,12 @@
 	// add new layer
 	if( !_isPlayingBack )
 		[_paintEvents addObject:[[[DripEventLayerAdd alloc] init] autorelease]];
-	PaintLayer *newLayer = [[PaintLayer alloc] initWithWidth:_width height:_height];
+	Layer *newLayer = [[Layer alloc] initWithWidth:_width height:_height];
 	
 	//rename
 	NSMutableArray *names = [NSMutableArray array];
 	NSEnumerator *layerEnumerator = [_layers objectEnumerator];
-	PaintLayer *aLayer;
+	Layer *aLayer;
 	while( (aLayer = [layerEnumerator nextObject]) )
 		[names addObject:[aLayer name]];
 	unsigned int layerNumber = 0;
@@ -400,7 +401,7 @@
 	[self setCurrentLayer:newLayer];
 }
 
-- (void)deleteLayer:(PaintLayer *)layerToDelete
+- (void)deleteLayer:(Layer *)layerToDelete
 {
 	// can't delete if there's only one layer
 	if( [_layers count] == 1 )
@@ -430,7 +431,7 @@
 	[self setCurrentLayer:[_layers objectAtIndex:deleteIndex]];
 }
 
-- (void)insertLayer:(PaintLayer *)theLayer AtIndex:(unsigned int)theTargetIndex
+- (void)insertLayer:(Layer *)theLayer AtIndex:(unsigned int)theTargetIndex
 {
 	// first see if this is a layer we already have
 	unsigned int theLayerIndex = [_layers indexOfObject:theLayer];
@@ -461,7 +462,7 @@
 	[self rebuildTopAndBottom];
 }
 
-- (void)collapseLayer:(PaintLayer *)layerToCollapse
+- (void)collapseLayer:(Layer *)layerToCollapse
 {
 	unsigned int theLayerIndex = [_layers indexOfObject:layerToCollapse];
 	if( theLayerIndex == NSNotFound || theLayerIndex == 0 )
@@ -477,7 +478,7 @@
 	if( !_isPlayingBack )
 		[_paintEvents addObject:[[[DripEventLayerCollapse alloc] init] autorelease]];
 	
-	PaintLayer *joinedLayers = [[PaintLayer alloc] initWithContentsOfLayers:_layers inRange:NSMakeRange(theLayerIndex-1,2)];
+	Layer *joinedLayers = [[Layer alloc] initWithContentsOfLayers:_layers inRange:NSMakeRange(theLayerIndex-1,2)];
 	[joinedLayers setName:[[_layers objectAtIndex:theLayerIndex-1] name]];
 	[_layers removeObjectAtIndex:theLayerIndex-1];
 	[_layers removeObjectAtIndex:theLayerIndex-1];
@@ -491,7 +492,7 @@
 	return [NSArray arrayWithArray:_layers];
 }
 
-- (void)setCurrentLayer:(PaintLayer *)aLayer
+- (void)setCurrentLayer:(Layer *)aLayer
 {
 	unsigned int layerIndex = [_layers indexOfObject:aLayer];
 	if( aLayer == _currentLayer || layerIndex == NSNotFound )
@@ -512,7 +513,7 @@
 	[self rebuildTopAndBottom];
 }
 
-- (PaintLayer *)currentLayer
+- (Layer *)currentLayer
 {
 	return _currentLayer;
 }
@@ -529,7 +530,6 @@
 		[_layerSettings release];
 		_layerSettings = nil;
 	}
-	_unusedPlaybackDistance = 0.0f;
 	[_paintEvents addObject:[aBrush settings]];
 	[_paintEvents addObject:[[[DripEventStrokeBegin alloc] initWithPosition:NSMakePoint(aPoint.x,aPoint.y) pressure:aPoint.pressure] autorelease]];
 	return [aBrush beginStrokeAtPoint:aPoint onLayer:_currentLayer];
@@ -542,9 +542,15 @@
 	[_paintEvents addObject:[[[DripEventStrokeContinue alloc] initWithPosition:NSMakePoint(aPoint.x,aPoint.y) pressure:aPoint.pressure] autorelease]];
 	return [aBrush continueStrokeAtPoint:aPoint];
 }
-- (void)endStroke
+- (void)endStrokeWithBrush:(Brush *)aBrush;
 {
-	//nothing?
+	// EVENT:
+	// End stroke
+	// TODO: the event needs to support a brush identifier
+	if( !_isPlayingBack )
+		[_paintEvents addObject:[[[DripEventStrokeEnd alloc] init] autorelease]];
+	
+	[aBrush endStroke];
 }
 
 - (void)drawRect:(NSRect)aRect inContext:(CGContextRef)context
@@ -553,7 +559,7 @@
 	CGContextFillRect(context,*(CGRect *)&aRect);
 	
 	NSEnumerator *layerEnumerator = [_compositeLayers objectEnumerator];
-	PaintLayer *aLayer;
+	Layer *aLayer;
 	while( (aLayer = [layerEnumerator nextObject]) )
 		[aLayer drawRect:aRect inContext:context];
 }
@@ -578,7 +584,7 @@
 	return _document;
 }
 
-- (void)settingsChangedForLayer:(PaintLayer *)aLayer;
+- (void)settingsChangedForLayer:(Layer *)aLayer;
 {
 	unsigned int layerIndex = [_layers indexOfObject:aLayer];
 	if( layerIndex == NSNotFound )

@@ -13,6 +13,7 @@
 typedef enum DripEventType {
 	kDripEventStrokeBegin = 1,
 	kDripEventStrokeContinue,
+	kDripEventStrokeEnd,
 	kDripEventBrushSettings,
 	kDripEventLayerChange,
 	// never sent across network (i.e. not allowed)

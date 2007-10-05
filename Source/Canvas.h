@@ -7,11 +7,12 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "PaintLayer.h"
+#import "Layer.h"
 #import "Brush.h"
 #import "BrushEraser.h"
 #import "DripEventStrokeBegin.h"
 #import "DripEventStrokeContinue.h"
+#import "DripEventStrokeEnd.h"
 #import "DripEventBrushSettings.h"
 #import "DripEventLayerChange.h"
 #import "DripEventLayerAdd.h"
@@ -23,7 +24,7 @@
 
 @interface Canvas : NSObject <NSCoding> {
 	NSMutableArray *_compositeLayers;
-	PaintLayer *_currentLayer;
+	Layer *_currentLayer;
 	
 	NSMutableArray *_layers;
 	
@@ -34,7 +35,6 @@
 	BrushEraser *_playbackEraser;
 	Brush *_currentPlaybackBrush;
 	PressurePoint _lastPlaybackPoint;
-	float _unusedPlaybackDistance;
 	NSMutableArray *_paintEvents;
 	DripEventLayerSettings *_layerSettings;
 	
@@ -46,12 +46,12 @@
 
 - (id)initWithWidth:(unsigned int)width height:(unsigned int)height;
 - (void)addLayer;
-- (void)deleteLayer:(PaintLayer *)layerToDelete;
-- (void)insertLayer:(PaintLayer *)theLayer AtIndex:(unsigned int)theTargetIndex;
-- (void)collapseLayer:(PaintLayer *)layerToCollapse;
+- (void)deleteLayer:(Layer *)layerToDelete;
+- (void)insertLayer:(Layer *)theLayer AtIndex:(unsigned int)theTargetIndex;
+- (void)collapseLayer:(Layer *)layerToCollapse;
 - (NSArray *)layers;
-- (void)setCurrentLayer:(PaintLayer *)aLayer;
-- (PaintLayer *)currentLayer;
+- (void)setCurrentLayer:(Layer *)aLayer;
+- (Layer *)currentLayer;
 - (NSSize)size;
 - (void)rebuildTopAndBottom;
 
@@ -66,7 +66,7 @@
 
 - (NSRect)beginStrokeAtPoint:(PressurePoint)aPoint withBrush:(Brush *)aBrush;
 - (NSRect)continueStrokeAtPoint:(PressurePoint)aPoint withBrush:(Brush *)aBrush;
-- (void)endStroke;
+- (void)endStrokeWithBrush:(Brush *)aBrush;
 
 - (void)drawRect:(NSRect)aRect inContext:(CGContextRef)context;
 - (void)drawRect:(NSRect)aRect;
@@ -74,5 +74,5 @@
 - (void)setDocument:(NSDocument *)newDocument;
 - (NSDocument *)document;
 
-- (void)settingsChangedForLayer:(PaintLayer *)aLayer;
+- (void)settingsChangedForLayer:(Layer *)aLayer;
 @end

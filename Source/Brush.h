@@ -9,6 +9,7 @@
 #import <Cocoa/Cocoa.h>
 #import "PaintLayer.h"
 #import "DripEventBrushSettings.h"
+#import "Layer.h"
 
 typedef struct PressurePoint {
 	float x;
@@ -25,7 +26,7 @@ typedef struct PressurePoint {
 	float _resatColor[3];
 	float _leftoverDistance;
 	PressurePoint _lastBrushPosition;
-	PaintLayer *_paintingLayer;
+	Layer *_paintingLayer;
 	
 	float _brushSize;
 	float _intSize;
@@ -35,8 +36,12 @@ typedef struct PressurePoint {
 	BOOL _pressureAffectsSize;
 	unsigned char *_dabData;
 	CGImageRef _dab;
+	
+	PaintLayer *_workLayer;
+	NSRect _strokeRect;
 }
 
+- (void)setCanvasSize:(NSSize)newCanvasSize;
 - (void)setSize:(float)newSize;
 - (float)size;
 - (void)setHardness:(float)newHardness;
@@ -58,7 +63,7 @@ typedef struct PressurePoint {
 
 - (void)drawDabAtPoint:(NSPoint)aPoint;
 
-- (NSRect)beginStrokeAtPoint:(PressurePoint)aPoint onLayer:(PaintLayer *)aLayer;
+- (NSRect)beginStrokeAtPoint:(PressurePoint)aPoint onLayer:(Layer *)aLayer;
 - (NSRect)continueStrokeAtPoint:(PressurePoint)aPoint;
 - (void)endStroke;
 
