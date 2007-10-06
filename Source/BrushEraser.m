@@ -10,7 +10,7 @@
 
 
 @implementation BrushEraser
-
+/*
 static void render_dab(float x, float y, PaintLayer *theLayer, float size, float *dabLookup, unsigned char red, unsigned char green, unsigned char blue, float alpha)
 {
 	int row,col;
@@ -93,24 +93,21 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 		CGContextRelease(_eraserScratchCxt);
 	_eraserScratchCxt = CGBitmapContextCreate(_eraserScratchData,intSize,intSize,8,intSize,NULL,kCGImageAlphaOnly);
 }
+*/
+- (void)setCanvasSize:(NSSize)newCanvasSize
+{
+	[_workLayer release];
+	_workLayer = [[MaskLayer alloc] initWithWidth:(unsigned int)newCanvasSize.width height:(unsigned int)newCanvasSize.height];
+}
 
+// commented out because it's now drawing like a normal brush but to a mask layer instead of paint.
+/*
 - (NSRect)renderPointAt:(PressurePoint)aPoint onLayer:(PaintLayer *)aLayer
 {
 	float brushSize = _brushSize*aPoint.pressure;
 	float brushSizeHalf;
-	/*
-	 if(!pressureAffectsSize)
-	 brushSize = mainSize;
-	 if(pressureAffectsOpacity)
-	 alpha *= aPoint.pressure;
-	 */
 	brushSizeHalf = brushSize/2.0f;
-	
-	/*
-	render_dab(aPoint.x, aPoint.y, aLayer, brushSize,
-			   _brushLookup, red, green, blue, alpha);
-	 */
-	
+		
 	int xi = (int)ceilf(aPoint.x - brushSizeHalf);
 	int yi = (int)ceilf(aPoint.y - brushSizeHalf);
 	int xend = xi+(int)ceilf(brushSize);
@@ -195,6 +192,7 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	//it does work and doesn't cost much.
 	return NSMakeRect(aPoint.x-brushSizeHalf-2, aPoint.y-brushSizeHalf-2, brushSize+4, brushSize+4);
 }
+*/
 
 #pragma mark Settings
 

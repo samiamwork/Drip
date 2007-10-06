@@ -438,7 +438,7 @@ void sampleBitmap(unsigned char *bitmap, unsigned int pitch, unsigned int width,
 	_leftoverDistance = 0.0f;
 	
 	[_paintingLayer attachLayer:_workLayer];
-	
+
 	_strokeRect = [self renderPointAt:aPoint onLayer:_workLayer];
 	return _strokeRect;
 }

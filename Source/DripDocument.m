@@ -40,6 +40,7 @@
 		_brush = [[Brush alloc] init];
 		[_brush setCanvasSize:NSMakeSize(width,height)];
 		_eraser = [[BrushEraser alloc] init];
+		[_eraser setCanvasSize:[_canvas size]];
 	}
 	
 	return self;

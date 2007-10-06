@@ -92,6 +92,28 @@
 	return self;
 }
 
+- (BOOL)createBitmapContext
+{
+	//HACK: +1 to fix problem with creating image from sub-region of bitmapcontext
+	_data = calloc(_width*(_height+1), 4);
+	if( _data == NULL ) {
+		[self release];
+		return NO;
+	}
+	
+	_pitch = _width*4;
+	
+	CGColorSpaceRef colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+	_cxt = CGBitmapContextCreate(_data, _width, _height, 8, _pitch, colorSpace, kCGImageAlphaPremultipliedFirst);
+	if(!_cxt) {
+		[self release];
+		return NO;
+	}
+	CGColorSpaceRelease(colorSpace);
+	
+	return YES;
+}
+
 - (id)initWithWidth:(unsigned int)width height:(unsigned int)height
 {
 	if( (self = [super init]) ) {
@@ -100,22 +122,10 @@
 		_opacity = 1.0f;
 		_visible = YES;
 		_blendMode = kCGBlendModeNormal;
-		//HACK: +1 to fix problem with creating image from sub-region of bitmapcontext
-		_data = calloc(_width*(_height+1), 4);
-		if( _data == NULL ) {
+		if( ![self createBitmapContext] ) {
 			[self release];
 			return nil;
 		}
-		
-		_pitch = _width*4;
-		
-		CGColorSpaceRef colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
-		_cxt = CGBitmapContextCreate(_data, _width, _height, 8, _pitch, colorSpace, kCGImageAlphaPremultipliedFirst);
-		if(!_cxt) {
-			[self release];
-			return nil;
-		}
-		CGColorSpaceRelease(colorSpace);
 		CGContextSetInterpolationQuality(_cxt,kCGInterpolationHigh);
 		
 		_thumbnail = nil;
@@ -136,7 +146,7 @@
 		_height = [sampleLayer height];
 		_opacity = 1.0f;
 		_visible = YES;
-		
+		/*
 		_data = calloc(_width*(_height+1), 4);
 		if( _data == NULL ) {
 			[self release];
@@ -152,6 +162,11 @@
 			return nil;
 		}
 		CGColorSpaceRelease(colorSpace);
+		 */
+		if( ![self createBitmapContext] ) {
+			[self release];
+			return nil;
+		}
 		CGContextSetInterpolationQuality(_cxt,kCGInterpolationHigh);
 		
 		NSRect layerRect = NSMakeRect(0.0f,0.0f,(float)_width,(float)_height);
@@ -287,12 +302,8 @@
 	[_thumbnail unlockFocus];
 }
 
-- (void)drawRect:(NSRect)aRect inContext:(CGContextRef)aContext
+- (CGImageRef)getImageForRect:(NSRect)aRect
 {
-	aRect = NSIntersectionRect(aRect,NSMakeRect(0.0f,0.0f,_width,_height));
-	if( !_visible )
-		return;
-	
 	CGColorSpaceRef colorSpace;
 	CGImageRef cachedImage;
 	CGContextRef cachedCxt;
@@ -301,6 +312,9 @@
 	aRect.origin.y = (int)aRect.origin.y;
 	aRect.size.width = (int)aRect.size.width;
 	aRect.size.height = (int)aRect.size.height;
+	
+	if( NSIsEmptyRect(aRect) )
+		return NULL;
 	
 	colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
 	cachedCxt = CGBitmapContextCreate(_data + (_height-(int)aRect.origin.y-1)*_pitch + (int)aRect.origin.x*4 - ((int)aRect.size.height-1)*_pitch,
@@ -316,23 +330,35 @@
 	if(!cachedCxt) {
 		printf("Could not create bitmap context!\n");
 		// PROBLEM!
+		return NULL;
 	}
-		
-	if((int)aRect.size.width == 0 || (int)aRect.size.height == 0)
-		return;
 	
 	cachedImage = CGBitmapContextCreateImage(cachedCxt);
 	if(!cachedImage) {
 		printf("Could not create cached image!\n");
-		return;
+		return NULL;
 	}
+	
+	CGContextRelease(cachedCxt);
+	
+	return cachedImage;
+}
+- (void)drawRect:(NSRect)aRect inContext:(CGContextRef)aContext
+{
+	aRect = NSIntersectionRect(aRect,NSMakeRect(0.0f,0.0f,_width,_height));
+	if( !_visible )
+		return;
+	
+	CGImageRef cachedImage = [self getImageForRect:aRect];
+	if( !cachedImage )
+		return;
 	
 	CGContextSaveGState(aContext);
 	CGContextSetAlpha(aContext,_opacity);
 	CGContextSetBlendMode(aContext,_blendMode);
 	CGContextDrawImage(aContext, *(CGRect *)&aRect, cachedImage);
 	CGContextRestoreGState(aContext);
+
 	CFRelease(cachedImage);
-	CGContextRelease(cachedCxt);
 }
 @end
