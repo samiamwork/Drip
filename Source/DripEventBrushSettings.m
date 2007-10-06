@@ -31,7 +31,7 @@
 	return self;
 }
 
-- (id)initWithType:(BrushType)theType size:(float)theSize hardness:(float)theHardness spacing:(float)theSpacing resaturation:(float)theResaturation pressureAffectsFlow:(BOOL)willAffectFlow pressureAffectsSize:(BOOL)willAffectSize pressureAffectsResaturation:(BOOL)willAffectResaturation color:(NSColor *)theColor
+- (id)initWithType:(BrushType)theType size:(float)theSize hardness:(float)theHardness spacing:(float)theSpacing resaturation:(float)theResaturation strokeOpacity:(float)theStrokeOpacity pressureAffectsFlow:(BOOL)willAffectFlow pressureAffectsSize:(BOOL)willAffectSize pressureAffectsResaturation:(BOOL)willAffectResaturation color:(NSColor *)theColor;
 {
 	if( (self = [super init]) ) {
 		_type = theType;
@@ -50,7 +50,7 @@
 	return self;
 }
 
-#define EVENT_LENGTH (EVENT_HEADER_LENGTH+1+sizeof(CFSwappedFloat32)*8+1)
+#define EVENT_LENGTH (EVENT_HEADER_LENGTH+1+sizeof(CFSwappedFloat32)*9+1)
 + (id)eventWithBytes:(void *)bytes length:(unsigned int)length
 {
 	unsigned char eventLength = *(unsigned char *)bytes;
@@ -66,6 +66,7 @@
 	float hardness;
 	float spacing;
 	float resaturation;
+	float strokeOpacity;
 	// bit field for pressure expressions
 	unsigned char pressureAffects;
 	
@@ -87,6 +88,8 @@
 	bytes += sizeof(CFSwappedFloat32);
 	resaturation = CFConvertFloat32SwappedToHost( *(CFSwappedFloat32 *)bytes );
 	bytes += sizeof(CFSwappedFloat32);
+	strokeOpacity = CFConvertFloat32SwappedToHost( *(CFSwappedFloat32 *)bytes );
+	bytes += sizeof(CFSwappedFloat32);
 	
 	pressureAffects = *(unsigned char *)bytes;
 	
@@ -95,6 +98,7 @@
 												hardness:hardness
 												 spacing:spacing
 											resaturation:resaturation
+										   strokeOpacity:strokeOpacity
 									 pressureAffectsFlow:(pressureAffects & 1)
 									 pressureAffectsSize:(pressureAffects & 2)
 							 pressureAffectsResaturation:(pressureAffects & 4)
@@ -130,6 +134,8 @@
 	ptr += sizeof(CFSwappedFloat32);
 	*(CFSwappedFloat32 *)ptr = CFConvertFloat32HostToSwapped(_resaturation);
 	ptr += sizeof(CFSwappedFloat32);
+	*(CFSwappedFloat32 *)ptr = CFConvertFloat32HostToSwapped(_strokeOpacity);
+	ptr += sizeof(CFSwappedFloat32);
 	
 	*ptr = (_pressureAffectsSize ? 2:0) | (_pressureAffectsFlow ? 1:0) | (_pressureAffectsResaturation ? 4:0);
 	
@@ -158,6 +164,10 @@
 {
 	return _resaturation;
 }
+- (float)strokeOpacity
+{
+	return _strokeOpacity;
+}
 - (BOOL)pressureAffectsFlow
 {
 	return _pressureAffectsFlow;
@@ -179,7 +189,7 @@
 
 - (unsigned int)hash
 {
-	return (*(UInt32 *)&_size ^ *(UInt32 *)&_hardness ^ *(UInt32 *)&_spacing ^ *(UInt32 *)&_RGBAColor[0] ^
+	return (*(UInt32 *)&_size ^ *(UInt32 *)&_hardness ^ *(UInt32 *)&_spacing ^ *(UInt32 *)&_resaturation ^ *(UInt32 *)&_strokeOpacity ^ *(UInt32 *)&_RGBAColor[0] ^
 			*(UInt32 *)&_RGBAColor[1] ^ *(UInt32 *)&_RGBAColor[2] ^ *(UInt32 *)&_RGBAColor[3] ^ (_pressureAffectsFlow ? 1:0 | _pressureAffectsSize ? 2:0 | _pressureAffectsResaturation ? 4:0) ^
 			_type);
 }
@@ -194,6 +204,8 @@
 		_size == _settings->_size &&
 		_hardness == _settings->_hardness &&
 		_spacing == _settings->_spacing &&
+		_resaturation == _settings->_resaturation &&
+		_strokeOpacity == _settings->_strokeOpacity &&
 		_RGBAColor[0] == _settings->_RGBAColor[0] &&
 		_RGBAColor[1] == _settings->_RGBAColor[1] &&
 		_RGBAColor[2] == _settings->_RGBAColor[2] &&

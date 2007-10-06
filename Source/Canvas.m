@@ -251,6 +251,9 @@
 				case kDripEventStrokeContinue:
 					newEvent = [DripEventStrokeContinue eventWithBytes:&bytes[position] length:[eventData length]-position];
 					break;
+				case kDripEventStrokeEnd:
+					newEvent = [DripEventStrokeEnd eventWithBytes:&bytes[position] length:[eventData length]-position];
+					break;
 				case kDripEventBrushSettings:
 					newEvent = [DripEventBrushSettings eventWithBytes:&bytes[position] length:[eventData length]-position];
 					break;

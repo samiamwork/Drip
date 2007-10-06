@@ -10,6 +10,7 @@
                 changeSize = id; 
                 changeSizeExpression = id; 
                 changeSpacing = id; 
+                changeStrokeOpacity = id; 
                 colorChanged = id; 
                 selectBrush = id; 
             }; 
@@ -25,6 +26,8 @@
                 "_brushSizeText" = NSTextField; 
                 "_brushSpacingSlider" = NSSlider; 
                 "_brushSpacingText" = NSTextField; 
+                "_brushStrokeOpacitySlider" = NSSlider; 
+                "_brushStrokeOpacityText" = NSTextField; 
                 "_brushView" = BrushView; 
                 "_colorWell" = NSColorWell; 
                 "_flowExpressionCheckbox" = NSButton; 

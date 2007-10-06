@@ -303,6 +303,8 @@
 				3E5AE5370C99B57800BB7C9D /* DripEventStrokeBegin.m */,
 				3E5AE5400C99B61200BB7C9D /* DripEventStrokeContinue.h */,
 				3E5AE5410C99B61200BB7C9D /* DripEventStrokeContinue.m */,
+				3E9080DE0CB60FF5001CA43D /* DripEventStrokeEnd.h */,
+				3E9080DF0CB60FF5001CA43D /* DripEventStrokeEnd.m */,
 				3ED06C730C89FE1800BF0669 /* DripEventBrushSettings.h */,
 				3ED06C740C89FE1800BF0669 /* DripEventBrushSettings.m */,
 				3E8C399C0C8F80820091E8BE /* DripEventLayerAdd.h */,
@@ -317,8 +319,6 @@
 				3E8C3AD60C91D74B0091E8BE /* DripEventLayerChange.m */,
 				3E31463F0CA23FDF00BF3DB3 /* DripEventLayerCollapse.h */,
 				3E3146400CA23FDF00BF3DB3 /* DripEventLayerCollapse.m */,
-				3E9080DE0CB60FF5001CA43D /* DripEventStrokeEnd.h */,
-				3E9080DF0CB60FF5001CA43D /* DripEventStrokeEnd.m */,
 			);
 			name = Events;
 			sourceTree = "<group>";

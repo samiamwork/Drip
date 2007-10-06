@@ -23,6 +23,7 @@
 		_hardness = 0.4f;
 		_spacing = 0.25f;
 		_resaturation = 1.0f;
+		_strokeOpacity = 1.0f;
 		_pressureAffectsResaturation = NO;
 		_pressureAffectsFlow = NO;
 		_pressureAffectsSize = YES;
@@ -215,7 +216,7 @@ float valueWithCosCurve(float t, float crossover)
 {
 	return _resaturation;
 }
-/*
+
 - (void)setStrokeOpacity:(float)newStrokeOpacity
 {
 	if( newStrokeOpacity < 0.0f )
@@ -227,12 +228,13 @@ float valueWithCosCurve(float t, float crossover)
 		return;
 	
 	_strokeOpacity = newStrokeOpacity;
+	[_workLayer setOpacity:_strokeOpacity];
 }
 - (float)strokeOpacity
 {
 	return _strokeOpacity;
 }
-*/
+
 - (void)setPressureAffectsFlow:(BOOL)willAffectFlow
 {
 	_pressureAffectsFlow = willAffectFlow;
@@ -564,6 +566,7 @@ void sampleBitmap(unsigned char *bitmap, unsigned int pitch, unsigned int width,
 	[self setHardness:[theSettings hardness]];
 	[self setSpacing:[theSettings spacing]];
 	[self setResaturation:[theSettings resaturation]];
+	[self setStrokeOpacity:[theSettings strokeOpacity]];
 	[self setPressureAffectsFlow:[theSettings pressureAffectsFlow]];
 	[self setPressureAffectsSize:[theSettings pressureAffectsSize]];
 	[self setPressureAffectsResaturation:[theSettings pressureAffectsResaturation]];
@@ -571,6 +574,6 @@ void sampleBitmap(unsigned char *bitmap, unsigned int pitch, unsigned int width,
 }
 - (DripEventBrushSettings *)settings
 {
-	return [[[DripEventBrushSettings alloc] initWithType:kBrushTypePaint size:_brushSize hardness:_hardness spacing:_spacing resaturation:_resaturation pressureAffectsFlow:_pressureAffectsFlow pressureAffectsSize:_pressureAffectsSize pressureAffectsResaturation:_pressureAffectsResaturation color:[NSColor colorWithCalibratedRed:_RGBAColor[0] green:_RGBAColor[1] blue:_RGBAColor[2] alpha:_RGBAColor[3]]] autorelease];
+	return [[[DripEventBrushSettings alloc] initWithType:kBrushTypePaint size:_brushSize hardness:_hardness spacing:_spacing resaturation:_resaturation strokeOpacity:_strokeOpacity pressureAffectsFlow:_pressureAffectsFlow pressureAffectsSize:_pressureAffectsSize pressureAffectsResaturation:_pressureAffectsResaturation color:[NSColor colorWithCalibratedRed:_RGBAColor[0] green:_RGBAColor[1] blue:_RGBAColor[2] alpha:_RGBAColor[3]]] autorelease];
 }
 @end

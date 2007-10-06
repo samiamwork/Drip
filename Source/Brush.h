@@ -32,6 +32,7 @@ typedef struct PressurePoint {
 	float _intSize;
 	float _hardness;
 	float _spacing;
+	float _strokeOpacity;
 	BOOL _pressureAffectsFlow;
 	BOOL _pressureAffectsSize;
 	unsigned char *_dabData;
@@ -50,6 +51,8 @@ typedef struct PressurePoint {
 - (float)spacing;
 - (void)setResaturation:(float)newResaturation;
 - (float)resaturation;
+- (void)setStrokeOpacity:(float)newStrokeOpacity;
+- (float)strokeOpacity;
 - (void)setPressureAffectsFlow:(BOOL)willAffectFlow;
 - (BOOL)pressureAffectsFlow;
 - (void)setPressureAffectsSize:(BOOL)willAffectSize;

@@ -127,10 +127,12 @@
 		CGImageRelease( cachedImage );
 		CGImageRelease( maskedImage );
 		
-		// I don't need to clear the main mask layer since we only draw other mask layers into it
-		// and they have no alpha. Additionally we only work with the immediate area drawn to so we
-		// never see the leftover drawings.
-		// ...but we do need to clear the brush layer.
+		// clear the work layers
+		CGContextSaveGState( [_mainMaskLayer cxt] );
+		CGContextSetRGBFillColor( [_mainMaskLayer cxt], 1.0f,1.0f,1.0f,1.0f);
+		CGContextFillRect([_mainMaskLayer cxt], *(CGRect *)&aRect);
+		CGContextRestoreGState( [_mainMaskLayer cxt] );
+		
 		CGContextSaveGState( [aLayer cxt] );
 		CGContextSetRGBFillColor([aLayer cxt],1.0f,1.0f,1.0f,1.0f);
 		CGContextFillRect([aLayer cxt], *(CGRect *)&aRect);
@@ -165,6 +167,11 @@
 	CGImageRelease( mainLayerImage );
 	CGContextDrawImage( aContext, *(CGRect *)&aRect, newMaskedImage );
 	CGImageRelease( newMaskedImage );
+	
+	CGContextSaveGState( [_mainMaskLayer cxt] );
+	CGContextSetRGBFillColor( [_mainMaskLayer cxt], 1.0f,1.0f,1.0f,1.0f);
+	CGContextFillRect([_mainMaskLayer cxt], *(CGRect *)&aRect);
+	CGContextRestoreGState( [_mainMaskLayer cxt] );
 	
 	layerEnumerator = [_brushPaintLayers objectEnumerator];
 	PaintLayer *aLayer;

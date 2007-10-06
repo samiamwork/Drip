@@ -212,6 +212,6 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 }
 - (DripEventBrushSettings *)settings
 {
-	return [[[DripEventBrushSettings alloc] initWithType:kBrushTypeEraser size:_brushSize hardness:_hardness spacing:_spacing resaturation:_resaturation pressureAffectsFlow:_pressureAffectsFlow pressureAffectsSize:_pressureAffectsSize pressureAffectsResaturation:_pressureAffectsResaturation color:[NSColor colorWithCalibratedRed:_RGBAColor[0] green:_RGBAColor[1] blue:_RGBAColor[2] alpha:_RGBAColor[3]]] autorelease];
+	return [[[DripEventBrushSettings alloc] initWithType:kBrushTypeEraser size:_brushSize hardness:_hardness spacing:_spacing resaturation:_resaturation strokeOpacity:_strokeOpacity pressureAffectsFlow:_pressureAffectsFlow pressureAffectsSize:_pressureAffectsSize pressureAffectsResaturation:_pressureAffectsResaturation color:[NSColor colorWithCalibratedRed:_RGBAColor[0] green:_RGBAColor[1] blue:_RGBAColor[2] alpha:_RGBAColor[3]]] autorelease];
 }
 @end

@@ -98,6 +98,13 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 	[_brushResaturationSlider setFloatValue:[_currentBrush resaturation]];
 }
 
+- (IBAction)changeStrokeOpacity:(id)sender
+{
+	[_currentBrush setStrokeOpacity:[sender floatValue]];
+	[_brushStrokeOpacityText setFloatValue:[_currentBrush strokeOpacity]];
+	[_brushStrokeOpacitySlider setFloatValue:[_currentBrush strokeOpacity]];
+}
+
 // TODO: should set the buttons to reflect this since we won't always be called from the UI
 - (void)setBrush:(Brush*)brush
 {
@@ -119,6 +126,8 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 	[_brushSpacingText setFloatValue:[_currentBrush spacing]];
 	[_brushResaturationSlider setFloatValue:[_currentBrush resaturation]];
 	[_brushResaturationText setFloatValue:[_currentBrush resaturation]];
+	[_brushStrokeOpacityText setFloatValue:[_currentBrush strokeOpacity]];
+	[_brushStrokeOpacitySlider setFloatValue:[_currentBrush strokeOpacity]];
 	
 	[_sizeExpressionCheckbox setState:[_currentBrush pressureAffectsSize]?NSOnState:NSOffState];
 	[_flowExpressionCheckbox setState:[_currentBrush pressureAffectsFlow]?NSOnState:NSOffState];
@@ -155,6 +164,20 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 	[self setBrush:selectedBrush];
 }
 
+- (void)setControlsEnabled:(BOOL)isEnabled
+{
+	[_brushSizeSlider setEnabled:isEnabled];
+	[_brushHardnessSlider setEnabled:isEnabled];
+	[_brushSpacingSlider setEnabled:isEnabled];
+	[_brushResaturationSlider setEnabled:isEnabled];
+	[_brushStrokeOpacitySlider setEnabled:isEnabled];
+	[_sizeExpressionCheckbox setEnabled:isEnabled];
+	[_flowExpressionCheckbox setEnabled:isEnabled];
+	[_resaturationExpressionCheckbox setEnabled:isEnabled];
+	[_brushSelector setEnabled:isEnabled];
+	[_colorWell setEnabled:isEnabled];
+}
+
 - (void)setNewBrush:(Brush *)newBrush eraser:(BrushEraser *)newEraser
 {
 	[_paintBrush release];
@@ -163,15 +186,19 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 	[_eraserBrush release];
 	_eraserBrush = [newEraser retain];
 
+	/*
 	[_brushSizeSlider setEnabled:YES];
 	[_brushHardnessSlider setEnabled:YES];
 	[_brushSpacingSlider setEnabled:YES];
 	[_brushResaturationSlider setEnabled:YES];
+	[_brushStrokeOpacitySlider setEnabled:YES];
 	[_sizeExpressionCheckbox setEnabled:YES];
 	[_flowExpressionCheckbox setEnabled:YES];
 	[_resaturationExpressionCheckbox setEnabled:YES];
 	[_brushSelector setEnabled:YES];
 	[_colorWell setEnabled:YES];
+	*/
+	[self setControlsEnabled:YES];
 	
 	[self setBrush:_paintBrush];
 }
@@ -198,20 +225,26 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 	[_brushSpacingText setFloatValue:0.1f];
 	[_brushResaturationSlider setFloatValue:1.0f];
 	[_brushResaturationText setFloatValue:1.0f];
+	[_brushStrokeOpacitySlider setFloatValue:1.0f];
+	[_brushStrokeOpacityText setFloatValue:1.0f];
 	
 	[_sizeExpressionCheckbox setState:NSOffState];
 	[_flowExpressionCheckbox setState:NSOffState];
 	[_resaturationExpressionCheckbox setState:NSOffState];
 	[_brushView setBrush:nil];
 	
+	/*
 	[_brushSizeSlider setEnabled:NO];
 	[_brushHardnessSlider setEnabled:NO];
 	[_brushSpacingSlider setEnabled:NO];
 	[_brushResaturationSlider setEnabled:NO];
+	[_brushStrokeOpacitySlider setEnabled:NO];
 	[_sizeExpressionCheckbox setEnabled:NO];
 	[_flowExpressionCheckbox setEnabled:NO];
 	[_resaturationExpressionCheckbox setEnabled:NO];
 	[_brushSelector setEnabled:NO];
 	[_colorWell setEnabled:NO];
+	 */
+	[self setControlsEnabled:NO];
 }
 @end
