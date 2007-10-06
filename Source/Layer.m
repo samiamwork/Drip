@@ -30,7 +30,9 @@
 		
 		_brushPaintLayers = [[NSMutableArray alloc] init];
 		_brushMaskLayers = [[NSMutableArray alloc] init];
+		
 		_mainPaintLayer = [[decoder decodeObjectForKey:@"paintLayer"] retain];
+		_mainMaskLayer = [[MaskLayer alloc] initWithWidth:[_mainPaintLayer width] height:[_mainPaintLayer height]];
 	}
 	
 	return self;
@@ -40,6 +42,8 @@
 {
 	if( (self = [super init]) ) {
 		_mainPaintLayer = [[PaintLayer alloc] initWithWidth:width height:height];
+		_mainMaskLayer = [[MaskLayer alloc] initWithWidth:width height:height];
+		
 		_brushPaintLayers = [[NSMutableArray alloc] init];
 		_brushMaskLayers = [[NSMutableArray alloc] init];
 	}
@@ -56,6 +60,8 @@
 			[paintLayers addObject:[[layers objectAtIndex:layerIndex] mainPaintLayer]];
 		
 		_mainPaintLayer = [[PaintLayer alloc] initWithContentsOfLayers:paintLayers inRange:NSMakeRange(0,[paintLayers count])];
+		_mainMaskLayer = [[MaskLayer alloc] initWithWidth:[_mainPaintLayer width] height:[_mainPaintLayer height]];
+		
 		_brushMaskLayers = [[NSMutableArray alloc] init];
 		_brushPaintLayers = [[NSMutableArray alloc] init];
 	}
@@ -66,7 +72,10 @@
 - (void)dealloc
 {
 	[_mainPaintLayer release];
+	[_mainMaskLayer release];
+	
 	[_brushPaintLayers release];
+	[_brushMaskLayers release];
 
 	[super dealloc];
 }
@@ -78,6 +87,8 @@
 	
 	[_mainPaintLayer release];
 	_mainPaintLayer = [newPaintLayer retain];
+	[_mainMaskLayer release];
+	_mainMaskLayer = [[MaskLayer alloc] initWithWidth:[_mainPaintLayer width] height:[_mainPaintLayer height]];
 }
 - (PaintLayer *)mainPaintLayer
 {
@@ -104,7 +115,9 @@
 	aRect = NSIntersectionRect(aRect,NSMakeRect(0.0f,0.0f,(float)[_mainPaintLayer width],(float)[_mainPaintLayer height]));
 	// TODO:behave different if it is a mask
 	if( [aLayer isKindOfClass:[MaskLayer class]] ) {
-		CGImageRef cachedMask = [aLayer getImageForRect:aRect];
+		
+		[aLayer drawRect:aRect inContext:[_mainMaskLayer cxt]];
+		CGImageRef cachedMask = [_mainMaskLayer getImageForRect:aRect];
 		CGImageRef cachedImage = [_mainPaintLayer getImageForRect:aRect];
 		CGImageRef maskedImage = CGImageCreateWithMask(cachedImage,cachedMask);
 		CGContextClearRect( [_mainPaintLayer cxt],*(CGRect *)&aRect );
@@ -114,6 +127,10 @@
 		CGImageRelease( cachedImage );
 		CGImageRelease( maskedImage );
 		
+		// I don't need to clear the main mask layer since we only draw other mask layers into it
+		// and they have no alpha. Additionally we only work with the immediate area drawn to so we
+		// never see the leftover drawings.
+		// ...but we do need to clear the brush layer.
 		CGContextSaveGState( [aLayer cxt] );
 		CGContextSetRGBFillColor([aLayer cxt],1.0f,1.0f,1.0f,1.0f);
 		CGContextFillRect([aLayer cxt], *(CGRect *)&aRect);
@@ -138,16 +155,16 @@
 	CGImageRef mainLayerImage = [_mainPaintLayer getImageForRect:aRect];
 	NSEnumerator *layerEnumerator = [_brushMaskLayers objectEnumerator];
 	MaskLayer *aMaskLayer;
-	while( (aMaskLayer = [layerEnumerator nextObject]) ) {
-		CGImageRef newMaskImage = [aMaskLayer getImageForRect:aRect];
-		CGImageRef newMaskedImage = CGImageCreateWithMask( mainLayerImage, newMaskImage );
-		
-		CGImageRelease( newMaskImage );
-		CGImageRelease( mainLayerImage );
-		mainLayerImage = newMaskedImage;
-	}
-	CGContextDrawImage( aContext, *(CGRect *)&aRect, mainLayerImage );
+	while( (aMaskLayer = [layerEnumerator nextObject]) )
+		[aMaskLayer drawRect:aRect inContext:[_mainMaskLayer cxt]];
+
+	CGImageRef newMaskImage = [_mainMaskLayer getImageForRect:aRect];
+	CGImageRef newMaskedImage = CGImageCreateWithMask( mainLayerImage, newMaskImage );
+	
+	CGImageRelease( newMaskImage );
 	CGImageRelease( mainLayerImage );
+	CGContextDrawImage( aContext, *(CGRect *)&aRect, newMaskedImage );
+	CGImageRelease( newMaskedImage );
 	
 	layerEnumerator = [_brushPaintLayers objectEnumerator];
 	PaintLayer *aLayer;
