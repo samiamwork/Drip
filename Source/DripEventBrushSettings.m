@@ -23,6 +23,7 @@
 		_hardness = 0.8f;
 		_spacing = 0.2f;
 		_resaturation = 1.0f;
+		_strokeOpacity = 1.0f;
 		_pressureAffectsFlow = NO;
 		_pressureAffectsSize = YES;
 		_pressureAffectsResaturation = YES;
@@ -39,6 +40,7 @@
 		_spacing = theSpacing;
 		_hardness = theHardness;
 		_resaturation = theResaturation;
+		_strokeOpacity = theStrokeOpacity;
 		_pressureAffectsFlow = willAffectFlow;
 		_pressureAffectsSize = willAffectSize;
 		_pressureAffectsResaturation = willAffectResaturation;

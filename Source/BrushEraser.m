@@ -205,6 +205,7 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	[self setHardness:[theSettings hardness]];
 	[self setSpacing:[theSettings spacing]];
 	[self setResaturation:[theSettings resaturation]];
+	[self setStrokeOpacity:[theSettings strokeOpacity]];
 	[self setPressureAffectsFlow:[theSettings pressureAffectsFlow]];
 	[self setPressureAffectsSize:[theSettings pressureAffectsSize]];
 	[self setPressureAffectsResaturation:[theSettings pressureAffectsResaturation]];
