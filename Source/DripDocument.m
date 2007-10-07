@@ -24,6 +24,7 @@
 		
 		_brush = [[Brush alloc] init];
 		_eraser = [[BrushEraser alloc] init];
+		_currentBrush = _brush;
     }
     return self;
 }
@@ -41,6 +42,8 @@
 		[_brush setCanvasSize:NSMakeSize(width,height)];
 		_eraser = [[BrushEraser alloc] init];
 		[_eraser setCanvasSize:[_canvas size]];
+		
+		_currentBrush = _brush;
 	}
 	
 	return self;
@@ -75,6 +78,18 @@
 {
 	return _eraser;
 }
+- (void)setCurrentBrush:(Brush *)newBrush
+{
+	if( newBrush != _brush && newBrush != _eraser )
+		return;
+	
+	_currentBrush = newBrush;
+}
+- (Brush *)currentBrush
+{
+	return _currentBrush;
+}
+
 - (ScrollingSketchView *)scrollingSketchView
 {
 	return _sketchView;

@@ -39,17 +39,13 @@ static DripInspectors *g_sharedController;
 }
 
 - (void)setDripDocument:(DripDocument *)newDocument
-{
+{	
+	[_brushController setDripDocument:newDocument];
+
 	if( newDocument == nil ) {
-		[_brushController disable];
 		[_layerController disable];
 		return;
 	}
-	
-	[_brushController setNewBrush:[newDocument brush] eraser:[newDocument eraser]];
-	[_brushController setBrush:[[newDocument scrollingSketchView] brush]];
-	[_brushController setScrollingSketchView:[newDocument scrollingSketchView]];
-	
 	[_layerController setCanvas:[newDocument canvas]];
 	[_layerController setScrollingSketchView:[newDocument scrollingSketchView]];
 	

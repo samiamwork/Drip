@@ -20,6 +20,8 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 		_paintBrush = nil;
 		_eraserBrush = nil;
 		_sketchView = nil;
+		
+		_currentDocument = nil;
 	}
 
 	return self;
@@ -162,6 +164,7 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 	}
 	
 	[self setBrush:selectedBrush];
+	[_currentDocument setCurrentBrush:_currentBrush];
 }
 
 - (void)setControlsEnabled:(BOOL)isEnabled
@@ -176,31 +179,6 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 	[_resaturationExpressionCheckbox setEnabled:isEnabled];
 	[_brushSelector setEnabled:isEnabled];
 	[_colorWell setEnabled:isEnabled];
-}
-
-- (void)setNewBrush:(Brush *)newBrush eraser:(BrushEraser *)newEraser
-{
-	[_paintBrush release];
-	_paintBrush = [newBrush retain];
-	
-	[_eraserBrush release];
-	_eraserBrush = [newEraser retain];
-
-	/*
-	[_brushSizeSlider setEnabled:YES];
-	[_brushHardnessSlider setEnabled:YES];
-	[_brushSpacingSlider setEnabled:YES];
-	[_brushResaturationSlider setEnabled:YES];
-	[_brushStrokeOpacitySlider setEnabled:YES];
-	[_sizeExpressionCheckbox setEnabled:YES];
-	[_flowExpressionCheckbox setEnabled:YES];
-	[_resaturationExpressionCheckbox setEnabled:YES];
-	[_brushSelector setEnabled:YES];
-	[_colorWell setEnabled:YES];
-	*/
-	[self setControlsEnabled:YES];
-	
-	[self setBrush:_paintBrush];
 }
 
 - (void)setScrollingSketchView:(ScrollingSketchView *)newSketchView
@@ -233,18 +211,26 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 	[_resaturationExpressionCheckbox setState:NSOffState];
 	[_brushView setBrush:nil];
 	
-	/*
-	[_brushSizeSlider setEnabled:NO];
-	[_brushHardnessSlider setEnabled:NO];
-	[_brushSpacingSlider setEnabled:NO];
-	[_brushResaturationSlider setEnabled:NO];
-	[_brushStrokeOpacitySlider setEnabled:NO];
-	[_sizeExpressionCheckbox setEnabled:NO];
-	[_flowExpressionCheckbox setEnabled:NO];
-	[_resaturationExpressionCheckbox setEnabled:NO];
-	[_brushSelector setEnabled:NO];
-	[_colorWell setEnabled:NO];
-	 */
 	[self setControlsEnabled:NO];
+}
+
+- (void)setDripDocument:(DripDocument *)newDocument
+{
+	_currentDocument = newDocument;
+	
+	if( !_currentDocument ) {
+		[self disable];
+		return;
+	}
+	
+	[self setScrollingSketchView:[newDocument scrollingSketchView]];
+	
+	[_paintBrush release];
+	_paintBrush = [[_currentDocument brush] retain];
+	[_eraserBrush release];
+	_eraserBrush = [[_currentDocument eraser] retain];
+	
+	[self setBrush:[_currentDocument currentBrush]];
+	[self setControlsEnabled:YES];	
 }
 @end

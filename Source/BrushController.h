@@ -10,6 +10,7 @@
 #import "Brush.h"
 #import "BrushView.h"
 #import "ScrollingSketchView.h"
+#import "DripDocument.h"
 
 extern NSString *const DripPenEnteredNotification;
 
@@ -36,6 +37,8 @@ extern NSString *const DripPenEnteredNotification;
 	
 	Brush *_paintBrush;
 	BrushEraser *_eraserBrush;
+	
+	DripDocument *_currentDocument;
 }
 
 - (IBAction)colorChanged:(id)sender;
@@ -52,7 +55,8 @@ extern NSString *const DripPenEnteredNotification;
 
 - (IBAction)selectBrush:(id)sender;
 
-- (void)setNewBrush:(Brush *)newBrush eraser:(BrushEraser *)newEraser;
 - (void)setScrollingSketchView:(ScrollingSketchView *)newSketchView;
 - (void)disable;
+
+- (void)setDripDocument:(DripDocument *)newDocument;
 @end

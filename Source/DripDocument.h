@@ -22,6 +22,7 @@
 	
 	Brush *_brush;
 	BrushEraser *_eraser;
+	Brush *_currentBrush;
 	ScrollingSketchView *_sketchView;
 	
 	Canvas *_canvas;
@@ -34,6 +35,8 @@
 
 - (Brush *)brush;
 - (BrushEraser *)eraser;
+- (void)setCurrentBrush:(Brush *)newBrush;
+- (Brush *)currentBrush;
 - (ScrollingSketchView *)scrollingSketchView;
 - (void)setScrollingSketchView:(ScrollingSketchView *)newSketchView;
 @end
