@@ -234,12 +234,12 @@
 			children = (
 				3EE088EC0C62F9C400CAE28C /* PaintLayer.h */,
 				3EE088ED0C62F9C400CAE28C /* PaintLayer.m */,
-				3EE089150C6304FB00CAE28C /* Canvas.h */,
-				3EE089160C6304FB00CAE28C /* Canvas.m */,
-				3E79DC3E0CB408AA00B5F4BB /* Layer.h */,
-				3E79DC3F0CB408AA00B5F4BB /* Layer.m */,
 				3E9081070CB6F7DE001CA43D /* MaskLayer.h */,
 				3E9081080CB6F7DE001CA43D /* MaskLayer.m */,
+				3E79DC3E0CB408AA00B5F4BB /* Layer.h */,
+				3E79DC3F0CB408AA00B5F4BB /* Layer.m */,
+				3EE089150C6304FB00CAE28C /* Canvas.h */,
+				3EE089160C6304FB00CAE28C /* Canvas.m */,
 			);
 			name = Canvas;
 			sourceTree = "<group>";

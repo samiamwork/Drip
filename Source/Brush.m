@@ -14,26 +14,22 @@
 - (id)init
 {
 	if( (self = [super init]) ) {
-		_RGBAColor[0] = 0.0f;
-		_RGBAColor[1] = 0.0f;
-		_RGBAColor[2] = 0.0f;
-		_RGBAColor[3] = 1.0f;
+		_dab = NULL;
+		_dabData = NULL;
+		[self setColor:[NSColor blackColor]];
 		
 		_brushSize = 0.0f;
-		_hardness = 0.4f;
-		_spacing = 0.25f;
-		_resaturation = 1.0f;
-		_strokeOpacity = 1.0f;
-		_pressureAffectsResaturation = NO;
-		_pressureAffectsFlow = NO;
-		_pressureAffectsSize = YES;
+		[self setSize:50.0f];
+		[self setHardness:0.4f];
+		[self setSpacing:0.25f];
+		[self setResaturation:1.0f];
+		[self setStrokeOpacity:1.0f];
+		[self setPressureAffectsResaturation:NO];
+		[self setPressureAffectsFlow:NO];
+		[self setPressureAffectsSize:YES];
 
 		_brushLookup = (float *)malloc(1001*sizeof(float));
 		[self createBezierCurveWithCrossover:0.4f];
-		
-		_dab = NULL;
-		_dabData = NULL;
-		[self setSize:50.0f];
 	}
 
 	return self;
@@ -42,8 +38,9 @@
 - (void)dealloc
 {
 	free(_brushLookup);
-	if( _dab != NULL )
-		CGImageRelease(_dab);
+	CGImageRelease(_dab);
+	if( _dabData )
+		free(_dabData );
 	[_workLayer release];
 	
 	[super dealloc];
@@ -160,6 +157,8 @@ float valueWithCosCurve(float t, float crossover)
 
 - (void)setSize:(float)newSize
 {
+	if( newSize < 1.0f )
+		newSize = 1.0f;
 	if( newSize == _brushSize )
 		return;
 	
@@ -170,6 +169,10 @@ float valueWithCosCurve(float t, float crossover)
 - (float)size
 {
 	return _brushSize;
+}
+- (BOOL)usesSize
+{
+	return YES;
 }
 - (void)setHardness:(float)newHardness
 {
@@ -188,6 +191,10 @@ float valueWithCosCurve(float t, float crossover)
 {
 	return _hardness;
 }
+- (BOOL)usesHardness
+{
+	return YES;
+}
 
 - (void)setSpacing:(float)newSpacing
 {
@@ -202,6 +209,10 @@ float valueWithCosCurve(float t, float crossover)
 {
 	return _spacing;
 }
+- (BOOL)usesSpacing
+{
+	return YES;
+}
 
 - (void)setResaturation:(float)newResaturation
 {
@@ -215,6 +226,10 @@ float valueWithCosCurve(float t, float crossover)
 - (float)resaturation
 {
 	return _resaturation;
+}
+- (BOOL)usesResaturation
+{
+	return YES;
 }
 
 - (void)setStrokeOpacity:(float)newStrokeOpacity
@@ -234,6 +249,10 @@ float valueWithCosCurve(float t, float crossover)
 {
 	return _strokeOpacity;
 }
+- (BOOL)usesStrokeOpacity
+{
+	return YES;
+}
 
 - (void)setPressureAffectsFlow:(BOOL)willAffectFlow
 {
@@ -242,6 +261,10 @@ float valueWithCosCurve(float t, float crossover)
 - (BOOL)pressureAffectsFlow
 {
 	return _pressureAffectsFlow;
+}
+- (BOOL)usesPressureAffectsFlow
+{
+	return YES;
 }
 
 - (void)setPressureAffectsSize:(BOOL)willAffectSize
@@ -252,6 +275,10 @@ float valueWithCosCurve(float t, float crossover)
 {
 	return _pressureAffectsSize;
 }
+- (BOOL)usesPressureAffectsSize
+{
+	return [self usesSize];
+}
 
 - (void)setPressureAffectsResaturation:(BOOL)willAffectResaturation
 {
@@ -260,6 +287,10 @@ float valueWithCosCurve(float t, float crossover)
 - (BOOL)pressureAffectsResaturation
 {
 	return _pressureAffectsResaturation;
+}
+- (BOOL)usesPressureAffectsResaturation
+{
+	return [self usesResaturation];
 }
 
 - (void)setColor:(NSColor*)aColor
@@ -270,6 +301,10 @@ float valueWithCosCurve(float t, float crossover)
 - (NSColor*)color
 {
 	return [NSColor colorWithCalibratedRed:_RGBAColor[0] green:_RGBAColor[1] blue:_RGBAColor[2] alpha:_RGBAColor[3]];
+}
+- (BOOL)usesColor
+{
+	return YES;
 }
 
 - (void)createBezierCurveWithCrossover:(float)crossover

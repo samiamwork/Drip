@@ -194,6 +194,47 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 }
 */
 
+- (void)setResaturation:(float)newResaturation
+{
+	_resaturation = 1.0f;
+}
+- (float)resaturation
+{
+	return 1.0f;
+}
+- (BOOL)usesResaturation
+{
+	return NO;
+}
+
+- (void)setColor:(NSColor*)aColor
+{
+	_RGBAColor[0] = 0.0f;
+	_RGBAColor[1] = 0.0f;
+	_RGBAColor[2] = 0.0f;
+	_RGBAColor[3] = 1.0f;
+}
+- (NSColor*)color
+{
+	return [NSColor blackColor];
+}
+- (BOOL)usesColor
+{
+	return NO;
+}
+
+- (NSRect)beginStrokeAtPoint:(PressurePoint)aPoint onLayer:(Layer *)aLayer
+{
+	_paintingLayer = aLayer;
+	_lastBrushPosition = aPoint;
+	_leftoverDistance = 0.0f;
+	
+	[_paintingLayer attachLayer:_workLayer];
+	
+	_strokeRect = [self renderPointAt:aPoint onLayer:_workLayer];
+	return _strokeRect;
+}
+
 #pragma mark Settings
 
 - (void)changeSettings:(DripEventBrushSettings *)theSettings
@@ -201,15 +242,13 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	if( [theSettings type] != kBrushTypeEraser )
 		return;
 	
+	// eraser does not need resaturation or color (always black)
 	[self setSize:[theSettings size]];
 	[self setHardness:[theSettings hardness]];
 	[self setSpacing:[theSettings spacing]];
-	[self setResaturation:[theSettings resaturation]];
 	[self setStrokeOpacity:[theSettings strokeOpacity]];
 	[self setPressureAffectsFlow:[theSettings pressureAffectsFlow]];
 	[self setPressureAffectsSize:[theSettings pressureAffectsSize]];
-	[self setPressureAffectsResaturation:[theSettings pressureAffectsResaturation]];
-	[self setColor:[theSettings color]];
 }
 - (DripEventBrushSettings *)settings
 {

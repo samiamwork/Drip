@@ -45,22 +45,31 @@ typedef struct PressurePoint {
 - (void)setCanvasSize:(NSSize)newCanvasSize;
 - (void)setSize:(float)newSize;
 - (float)size;
+- (BOOL)usesSize;
 - (void)setHardness:(float)newHardness;
 - (float)hardness;
+- (BOOL)usesHardness;
 - (void)setSpacing:(float)newSpacing;
 - (float)spacing;
+- (BOOL)usesSpacing;
 - (void)setResaturation:(float)newResaturation;
 - (float)resaturation;
+- (BOOL)usesResaturation;
 - (void)setStrokeOpacity:(float)newStrokeOpacity;
 - (float)strokeOpacity;
+- (BOOL)usesStrokeOpacity;
 - (void)setPressureAffectsFlow:(BOOL)willAffectFlow;
 - (BOOL)pressureAffectsFlow;
+- (BOOL)usesPressureAffectsFlow;
 - (void)setPressureAffectsSize:(BOOL)willAffectSize;
 - (BOOL)pressureAffectsSize;
+- (BOOL)usesPressureAffectsSize;
 - (void)setPressureAffectsResaturation:(BOOL)willAffectResaturation;
 - (BOOL)pressureAffectsResaturation;
+- (BOOL)usesPressureAffectsResaturation;
 - (void)setColor:(NSColor*)aColor;
 - (NSColor*)color;
+- (BOOL)usesColor;
 
 - (void)createBezierCurveWithCrossover:(float)crossover;
 
