@@ -40,9 +40,15 @@
         {CLASS = CleanColorWell; LANGUAGE = ObjC; SUPERCLASS = NSColorWell; }, 
         {CLASS = ColoredView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {
+            ACTIONS = {toggleAdvanced = id; }; 
             CLASS = DripInspectors; 
             LANGUAGE = ObjC; 
-            OUTLETS = {"_brushController" = BrushController; "_layerController" = LayerController; }; 
+            OUTLETS = {
+                "_advancedView" = NSView; 
+                "_brushController" = BrushController; 
+                "_layerController" = LayerController; 
+                "_layerTable" = NSView; 
+            }; 
             SUPERCLASS = NSWindowController; 
         }, 
         {CLASS = DripPopUpButton; LANGUAGE = ObjC; SUPERCLASS = NSPopUpButton; }, 

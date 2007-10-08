@@ -16,10 +16,16 @@
 @interface DripInspectors : NSWindowController {
 	IBOutlet LayerController *_layerController;
 	IBOutlet BrushController *_brushController;
+	
+	IBOutlet NSView *_layerTable;
+	IBOutlet NSView *_advancedView;
 }
 
 + (DripInspectors *)sharedController;
 
 - (void)setDripDocument:(DripDocument *)newDocument;
 - (void)layersUpdated;
+
+- (IBAction)toggleAdvanced:(id)sender;
+
 @end

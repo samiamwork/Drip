@@ -33,9 +33,29 @@ static DripInspectors *g_sharedController;
 	[super dealloc];
 }
 
+#define ADVANCED_VIEW_HEIGHT 120.0f
+
 - (void)awakeFromNib
 {
 	[(NSPanel *)[self window] setBecomesKeyOnlyIfNeeded:YES];
+	
+	// collapse the advanced view if it's open
+	// TODO: add a pref to control if this was last open or closed.
+	if( ![_advancedView isHidden] ) {
+		unsigned int layerTableAutoresizingMask = [_layerTable autoresizingMask];
+		[_layerTable setAutoresizingMask:layerTableAutoresizingMask ^ NSViewMaxYMargin ^ NSViewHeightSizable];
+		
+		NSRect frameRect = [[self window] frame];
+		[_advancedView setHidden:YES];
+		NSSize minSize = [[self window] minSize];
+		minSize.height -= ADVANCED_VIEW_HEIGHT;
+		[[self window] setMinSize:minSize];
+		frameRect.size.height -= ADVANCED_VIEW_HEIGHT;
+		frameRect.origin.y += ADVANCED_VIEW_HEIGHT;
+		[[self window] setFrame:frameRect display:YES animate:YES];
+		
+		[_layerTable setAutoresizingMask:layerTableAutoresizingMask];
+	}
 }
 
 - (void)setDripDocument:(DripDocument *)newDocument
@@ -56,4 +76,34 @@ static DripInspectors *g_sharedController;
 {
 	[_layerController layersUpdated];
 }
+
+- (IBAction)toggleAdvanced:(id)sender
+{
+	NSRect frameRect = [[self window] frame];
+	NSSize minSize = [[self window] minSize];
+	unsigned int layerTableAutoresizingMask = [_layerTable autoresizingMask];
+	[_layerTable setAutoresizingMask:layerTableAutoresizingMask ^ NSViewMaxYMargin ^ NSViewHeightSizable];
+		
+	if( [_advancedView isHidden] ) {
+		minSize.height += ADVANCED_VIEW_HEIGHT;
+		[[self window] setMinSize:minSize];
+		
+		frameRect.size.height += ADVANCED_VIEW_HEIGHT;
+		frameRect.origin.y -= ADVANCED_VIEW_HEIGHT;
+		[[self window] setFrame:frameRect display:YES animate:YES];
+		
+		[_advancedView setHidden:NO];
+	} else {
+		[_advancedView setHidden:YES];
+		minSize.height -= ADVANCED_VIEW_HEIGHT;
+		[[self window] setMinSize:minSize];
+		
+		frameRect.size.height -= ADVANCED_VIEW_HEIGHT;
+		frameRect.origin.y += ADVANCED_VIEW_HEIGHT;
+		[[self window] setFrame:frameRect display:YES animate:YES];
+	}
+	
+	[_layerTable setAutoresizingMask:layerTableAutoresizingMask];
+}
+
 @end
