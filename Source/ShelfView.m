@@ -26,6 +26,10 @@
 	CGContextMoveToPoint( cxt, 0.0f, bounds.size.height-1.5f );
 	CGContextAddLineToPoint( cxt, bounds.size.width, bounds.size.height-1.5f );
 	CGContextStrokePath( cxt );
+	
+	CGContextMoveToPoint( cxt, 0.0f, 0.5f );
+	CGContextAddLineToPoint( cxt, bounds.size.width, 0.5f );
+	CGContextStrokePath( cxt );
 }
 
 @end
