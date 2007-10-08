@@ -71,7 +71,8 @@
                 "_plusButton" = NSButton; 
             }; 
             SUPERCLASS = NSObject; 
-        }
+        }, 
+        {CLASS = ShelfView; LANGUAGE = ObjC; SUPERCLASS = NSView; }
     ); 
     IBVersion = 1; 
 }
