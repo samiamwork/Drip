@@ -25,6 +25,7 @@
 		3E79DC400CB408AA00B5F4BB /* Layer.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E79DC3F0CB408AA00B5F4BB /* Layer.m */; };
 		3E7AB11A0C7BD98A004389F6 /* NSData+gzip.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E7AB1190C7BD98A004389F6 /* NSData+gzip.m */; };
 		3E856CAB0CB99E5300479845 /* CleanColorWell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E856CAA0CB99E5300479845 /* CleanColorWell.m */; };
+		3E856D2F0CB9EDBE00479845 /* ColoredView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E856D2E0CB9EDBE00479845 /* ColoredView.m */; };
 		3E89C85F0B499F4200134E08 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E89C85C0B499F4200134E08 /* main.m */; };
 		3E89C8600B499F4200134E08 /* DripDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E89C85E0B499F4200134E08 /* DripDocument.m */; };
 		3E8C399E0C8F80820091E8BE /* DripEventLayerAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E8C399D0C8F80820091E8BE /* DripEventLayerAdd.m */; };
@@ -92,6 +93,8 @@
 		3E7AB1190C7BD98A004389F6 /* NSData+gzip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+gzip.m"; sourceTree = "<group>"; };
 		3E856CA90CB99E5300479845 /* CleanColorWell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CleanColorWell.h; sourceTree = "<group>"; };
 		3E856CAA0CB99E5300479845 /* CleanColorWell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CleanColorWell.m; sourceTree = "<group>"; };
+		3E856D2D0CB9EDBE00479845 /* ColoredView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredView.h; sourceTree = "<group>"; };
+		3E856D2E0CB9EDBE00479845 /* ColoredView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredView.m; sourceTree = "<group>"; };
 		3E89C85B0B499F4200134E08 /* Drip_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Drip_Prefix.pch; sourceTree = "<group>"; };
 		3E89C85C0B499F4200134E08 /* main.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		3E89C85D0B499F4200134E08 /* DripDocument.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DripDocument.h; sourceTree = "<group>"; };
@@ -295,6 +298,8 @@
 				3E31448B0CA1ABCF00BF3DB3 /* CenteredTextCell.m */,
 				3E4A63F20CA4EC1900C67DFC /* MovieEncoder.h */,
 				3E4A63F30CA4EC1900C67DFC /* MovieEncoder.m */,
+				3E856D2D0CB9EDBE00479845 /* ColoredView.h */,
+				3E856D2E0CB9EDBE00479845 /* ColoredView.m */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -464,6 +469,7 @@
 				3E9080E00CB60FF5001CA43D /* DripEventStrokeEnd.m in Sources */,
 				3E9081090CB6F7DE001CA43D /* MaskLayer.m in Sources */,
 				3E856CAB0CB99E5300479845 /* CleanColorWell.m in Sources */,
+				3E856D2F0CB9EDBE00479845 /* ColoredView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

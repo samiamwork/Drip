@@ -38,6 +38,7 @@
         }, 
         {CLASS = BrushView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {CLASS = CleanColorWell; LANGUAGE = ObjC; SUPERCLASS = NSColorWell; }, 
+        {CLASS = ColoredView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {
             CLASS = DripInspectors; 
             LANGUAGE = ObjC; 
