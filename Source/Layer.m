@@ -56,7 +56,7 @@
 	if( (self = [super init]) ) {
 		NSMutableArray *paintLayers = [[NSMutableArray alloc] init];
 		unsigned int layerIndex;
-		for( layerIndex = range.location; layerIndex <= range.location+range.length; layerIndex++ )
+		for( layerIndex = range.location; layerIndex < range.location+range.length; layerIndex++ )
 			[paintLayers addObject:[[layers objectAtIndex:layerIndex] mainPaintLayer]];
 		
 		_mainPaintLayer = [[PaintLayer alloc] initWithContentsOfLayers:paintLayers inRange:NSMakeRange(0,[paintLayers count])];
