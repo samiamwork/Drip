@@ -33,7 +33,7 @@ static DripInspectors *g_sharedController;
 	[super dealloc];
 }
 
-#define ADVANCED_VIEW_HEIGHT 120.0f
+#define ADVANCED_VIEW_HEIGHT 112.0f
 
 - (void)awakeFromNib
 {
@@ -44,9 +44,11 @@ static DripInspectors *g_sharedController;
 	if( ![_advancedView isHidden] ) {
 		unsigned int layerTableAutoresizingMask = [_layerTable autoresizingMask];
 		[_layerTable setAutoresizingMask:layerTableAutoresizingMask ^ NSViewMaxYMargin ^ NSViewHeightSizable];
+		unsigned int advancedViewAutoresizingMask = [_advancedView autoresizingMask];
+		[_advancedView setAutoresizingMask:advancedViewAutoresizingMask ^ NSViewMinYMargin ^ NSViewHeightSizable];
 		
 		NSRect frameRect = [[self window] frame];
-		[_advancedView setHidden:YES];
+		//[_advancedView setHidden:YES];
 		NSSize minSize = [[self window] minSize];
 		minSize.height -= ADVANCED_VIEW_HEIGHT;
 		[[self window] setMinSize:minSize];
@@ -55,6 +57,7 @@ static DripInspectors *g_sharedController;
 		[[self window] setFrame:frameRect display:YES animate:YES];
 		
 		[_layerTable setAutoresizingMask:layerTableAutoresizingMask];
+		[_advancedView setAutoresizingMask:advancedViewAutoresizingMask];
 	}
 }
 
@@ -83,8 +86,11 @@ static DripInspectors *g_sharedController;
 	NSSize minSize = [[self window] minSize];
 	unsigned int layerTableAutoresizingMask = [_layerTable autoresizingMask];
 	[_layerTable setAutoresizingMask:layerTableAutoresizingMask ^ NSViewMaxYMargin ^ NSViewHeightSizable];
+	unsigned int advancedViewAutoresizingMask = [_advancedView autoresizingMask];
+	[_advancedView setAutoresizingMask:advancedViewAutoresizingMask ^ NSViewMinYMargin ^ NSViewHeightSizable];
 		
-	if( [_advancedView isHidden] ) {
+	if( [sender state] == NSOnState ) {
+		// expand
 		minSize.height += ADVANCED_VIEW_HEIGHT;
 		[[self window] setMinSize:minSize];
 		
@@ -92,9 +98,9 @@ static DripInspectors *g_sharedController;
 		frameRect.origin.y -= ADVANCED_VIEW_HEIGHT;
 		[[self window] setFrame:frameRect display:YES animate:YES];
 		
-		[_advancedView setHidden:NO];
+		//[_advancedView setHidden:NO];
 	} else {
-		[_advancedView setHidden:YES];
+		//[_advancedView setHidden:YES];
 		minSize.height -= ADVANCED_VIEW_HEIGHT;
 		[[self window] setMinSize:minSize];
 		
@@ -104,6 +110,7 @@ static DripInspectors *g_sharedController;
 	}
 	
 	[_layerTable setAutoresizingMask:layerTableAutoresizingMask];
+	[_advancedView setAutoresizingMask:advancedViewAutoresizingMask];
 }
 
 @end
