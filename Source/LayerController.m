@@ -140,7 +140,16 @@
 }
 - (IBAction)deleteLayer:(id)sender
 {
+	// if this is the last layer don't delete.
 	_oldLayers = [[_theCanvas layers] retain];
+	int selectedRow = [_layerTable selectedRow];
+	if( selectedRow == -1 || selectedRow == [_oldLayers count]-1 ) {
+		[_oldLayers release];
+		_oldLayers = nil;
+		NSBeep();
+		return;
+	}
+	
 	[_theCanvas deleteLayer:[_theCanvas currentLayer]];
 	NSArray *theLayers = [_theCanvas layers];
 	unsigned int indexToSelect = [theLayers indexOfObject:[_theCanvas currentLayer]];
@@ -155,6 +164,7 @@
 
 - (IBAction)collapseLayer:(id)sender
 {
+	//TODO: animate layer collapse (reuse delete)
 	NSArray *layers = [_theCanvas layers];
 	int selectedRow = [_layerTable selectedRow];
 	if( selectedRow == -1 || selectedRow == [layers count]-1 )
@@ -294,7 +304,6 @@
 
 - (void)tableViewAnimationDone:(AnimatingTableView *)aTableView
 {
-	printf("done\n");
 	if( !_oldLayers )
 		return;
 	
