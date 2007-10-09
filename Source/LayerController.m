@@ -170,9 +170,12 @@
 	if( selectedRow == -1 || selectedRow == [layers count]-1 )
 		return;
 	
+	_oldLayers = [layers retain];
 	[_theCanvas collapseLayer:[layers objectAtIndex:[layers count]-selectedRow-1]];
 	
+	[_opacitySlider setFloatValue:[[_theCanvas currentLayer] opacity]];
 	[_layerTable reloadData];
+	[_layerTable fadeOutRow:selectedRow];
 }
 
 #pragma mark Layer Table Datasource
