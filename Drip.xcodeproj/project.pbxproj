@@ -29,6 +29,7 @@
 		3E856E030CBA0DA900479845 /* ShelfView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E856E020CBA0DA900479845 /* ShelfView.m */; };
 		3E89C85F0B499F4200134E08 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E89C85C0B499F4200134E08 /* main.m */; };
 		3E89C8600B499F4200134E08 /* DripDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E89C85E0B499F4200134E08 /* DripDocument.m */; };
+		3E8AF99E0CBB479C0056C32F /* Drip.icns in Resources */ = {isa = PBXBuildFile; fileRef = 3E8AF99D0CBB479C0056C32F /* Drip.icns */; };
 		3E8C399E0C8F80820091E8BE /* DripEventLayerAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E8C399D0C8F80820091E8BE /* DripEventLayerAdd.m */; };
 		3E8C39B70C8F82AD0091E8BE /* DripEventLayerDelete.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E8C39B60C8F82AD0091E8BE /* DripEventLayerDelete.m */; };
 		3E8C39BE0C8F83520091E8BE /* DripEventLayerMove.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E8C39BD0C8F83520091E8BE /* DripEventLayerMove.m */; };
@@ -102,6 +103,7 @@
 		3E89C85C0B499F4200134E08 /* main.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		3E89C85D0B499F4200134E08 /* DripDocument.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DripDocument.h; sourceTree = "<group>"; };
 		3E89C85E0B499F4200134E08 /* DripDocument.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DripDocument.m; sourceTree = "<group>"; };
+		3E8AF99D0CBB479C0056C32F /* Drip.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Drip.icns; sourceTree = "<group>"; };
 		3E8C399C0C8F80820091E8BE /* DripEventLayerAdd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripEventLayerAdd.h; sourceTree = "<group>"; };
 		3E8C399D0C8F80820091E8BE /* DripEventLayerAdd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DripEventLayerAdd.m; sourceTree = "<group>"; };
 		3E8C39B50C8F82AD0091E8BE /* DripEventLayerDelete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripEventLayerDelete.h; sourceTree = "<group>"; };
@@ -195,6 +197,7 @@
 		2A37F4B8FDCFA73011CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				3E8AF99D0CBB479C0056C32F /* Drip.icns */,
 				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
 				2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */,
 				2A37F4B4FDCFA73011CA2CEA /* DripDocument.nib */,
@@ -387,6 +390,7 @@
 				8D15AC2E0486D014006FF6A4 /* DripDocument.nib in Resources */,
 				8D15AC2F0486D014006FF6A4 /* InfoPlist.strings in Resources */,
 				3E8C3BB80C922A0C0091E8BE /* DripInspectors.nib in Resources */,
+				3E8AF99E0CBB479C0056C32F /* Drip.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
