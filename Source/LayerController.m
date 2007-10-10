@@ -116,6 +116,7 @@
 	
 	[_opacitySlider setEnabled:NO];
 	[_layerTable setEnabled:NO];
+	[_layerTable reloadData];
 	[_plusButton setEnabled:NO];
 	[_minusButton setEnabled:NO];
 }
