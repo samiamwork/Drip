@@ -402,6 +402,8 @@
 	[_layers insertObject:newLayer atIndex:currentIndex+1];
 	[newLayer release];
 	[self setCurrentLayer:newLayer];
+	
+	[_document updateChangeCount:NSChangeDone];
 }
 
 - (void)deleteLayer:(Layer *)layerToDelete
@@ -431,6 +433,7 @@
 	if( deleteIndex != 0 )
 		deleteIndex--;
 	
+	[_document updateChangeCount:NSChangeDone];
 	[self setCurrentLayer:[_layers objectAtIndex:deleteIndex]];
 }
 
@@ -486,6 +489,8 @@
 	[_layers removeObjectAtIndex:theLayerIndex-1];
 	[_layers removeObjectAtIndex:theLayerIndex-1];
 	[_layers insertObject:joinedLayers atIndex:theLayerIndex-1];
+	
+	[_document updateChangeCount:NSChangeDone];
 	
 	[self setCurrentLayer:joinedLayers];
 }
