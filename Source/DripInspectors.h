@@ -19,6 +19,7 @@
 	
 	IBOutlet NSView *_layerTable;
 	IBOutlet NSView *_advancedView;
+	IBOutlet NSButton *_advancedViewDisclosure;
 }
 
 + (DripInspectors *)sharedController;

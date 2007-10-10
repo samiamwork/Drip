@@ -45,6 +45,7 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 "_advancedView" = NSView; 
+                "_advancedViewDisclosure" = NSButton; 
                 "_brushController" = BrushController; 
                 "_layerController" = LayerController; 
                 "_layerTable" = NSView; 

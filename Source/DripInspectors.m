@@ -13,6 +13,13 @@ NSString *DripDocumentDeactivateNotification = @"DripDocumentDeactivateNotificat
 static DripInspectors *g_sharedController;
 @implementation DripInspectors
 
++ (void)initialize
+{
+	NSDictionary *defaultPrefs = [[NSDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithBool:NO],@"areAdvancedBrushSettingsShown",nil];
+	[[NSUserDefaults standardUserDefaults] registerDefaults:defaultPrefs];
+	[defaultPrefs release];
+}
+
 + (DripInspectors *)sharedController
 {
 	if( g_sharedController == nil ) {
@@ -39,9 +46,10 @@ static DripInspectors *g_sharedController;
 {
 	[(NSPanel *)[self window] setBecomesKeyOnlyIfNeeded:YES];
 	
-	// collapse the advanced view if it's open
-	// TODO: add a pref to control if this was last open or closed.
-	if( ![_advancedView isHidden] ) {
+	// collapse the advanced view if needed
+	if( ![[NSUserDefaults standardUserDefaults] boolForKey:@"areAdvancedBrushSettingsShown"] ) {
+		[_advancedViewDisclosure setState:NSOffState];
+		
 		unsigned int layerTableAutoresizingMask = [_layerTable autoresizingMask];
 		[_layerTable setAutoresizingMask:layerTableAutoresizingMask ^ NSViewMaxYMargin ^ NSViewHeightSizable];
 		unsigned int advancedViewAutoresizingMask = [_advancedView autoresizingMask];
@@ -98,15 +106,16 @@ static DripInspectors *g_sharedController;
 		frameRect.origin.y -= ADVANCED_VIEW_HEIGHT;
 		[[self window] setFrame:frameRect display:YES animate:YES];
 		
-		//[_advancedView setHidden:NO];
+		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"areAdvancedBrushSettingsShown"];
 	} else {
-		//[_advancedView setHidden:YES];
 		minSize.height -= ADVANCED_VIEW_HEIGHT;
 		[[self window] setMinSize:minSize];
 		
 		frameRect.size.height -= ADVANCED_VIEW_HEIGHT;
 		frameRect.origin.y += ADVANCED_VIEW_HEIGHT;
 		[[self window] setFrame:frameRect display:YES animate:YES];
+		
+		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"areAdvancedBrushSettingsShown"];
 	}
 	
 	[_layerTable setAutoresizingMask:layerTableAutoresizingMask];
