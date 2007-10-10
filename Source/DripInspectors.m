@@ -46,6 +46,9 @@ static DripInspectors *g_sharedController;
 {
 	[(NSPanel *)[self window] setBecomesKeyOnlyIfNeeded:YES];
 	
+	// IB is broken and won't let us set max = min so we do it ourselves.
+	[[self window] setMaxSize:NSMakeSize([[self window] minSize].width,FLT_MAX)];
+	
 	// collapse the advanced view if needed
 	if( ![[NSUserDefaults standardUserDefaults] boolForKey:@"areAdvancedBrushSettingsShown"] ) {
 		[_advancedViewDisclosure setState:NSOffState];
