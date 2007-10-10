@@ -12,7 +12,77 @@
 - (void)tableViewAnimationDone:(AnimatingTableView *)aTableView;
 @end
 
+typedef struct {
+	float red, green, blue, alpha;
+} RGBAColor;
+
+typedef struct {
+	RGBAColor colorOne;
+	RGBAColor colorTwo;
+} TwoColors;
+
+void linearColorBlend( void *info, const float *in, float *out )
+{
+	TwoColors *twoColors = (TwoColors *)info;
+	
+	out[0] = twoColors->colorOne.red*(1.0f - *in) + twoColors->colorTwo.red*(*in);
+	out[1] = twoColors->colorOne.green*(1.0f - *in) + twoColors->colorTwo.green*(*in);
+	out[2] = twoColors->colorOne.blue*(1.0f - *in) + twoColors->colorTwo.blue*(*in);
+	out[3] = twoColors->colorOne.alpha*(1.0f - *in) + twoColors->colorTwo.alpha*(*in);
+}
+
+void linearColorBlendReleaseInfoFunction( void *info )
+{
+	free( info );
+}
+
+static const CGFunctionCallbacks linearFunctionCallbacks = {0, &linearColorBlend, &linearColorBlendReleaseInfoFunction};
+
 @implementation AnimatingTableView
+
+#pragma mark gradient drawing
+
+- (id)_highlightColorForCell:(NSCell *)cell;
+{
+	return nil;
+}
+
+- (void)highlightSelectionInClipRect:(NSRect)aRect
+{
+	NSColor *alternateSelectedControlColor = [NSColor alternateSelectedControlColor];
+	float hue, saturation, brightness, alpha;
+	[[alternateSelectedControlColor colorUsingColorSpaceName:NSDeviceRGBColorSpace] getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha];
+	
+	NSColor *lighterColor = [NSColor colorWithDeviceHue:hue saturation:MAX(0.0f,saturation-0.12f) brightness:MIN(1.0f,brightness+0.3f) alpha:alpha];
+	NSColor *darkerColor = [NSColor colorWithDeviceHue:hue saturation:MIN(1.0f,(saturation > 0.4f)? saturation+0.12f : 0.0f) brightness:MAX(0.0f,brightness-0.045f) alpha:alpha];
+	
+	
+	TwoColors *twoColors = (TwoColors *)malloc( sizeof(TwoColors) );
+	static const float domainAndRange[8] = {0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f};
+	CGFunctionRef linearBlendFunctionRef = CGFunctionCreate( twoColors, 1, domainAndRange, 4, domainAndRange, &linearFunctionCallbacks );
+	
+	[lighterColor getRed:&twoColors->colorOne.red green:&twoColors->colorOne.green blue:&twoColors->colorOne.blue alpha:&twoColors->colorOne.alpha];
+	[darkerColor getRed:&twoColors->colorTwo.red green:&twoColors->colorTwo.green blue:&twoColors->colorTwo.blue alpha:&twoColors->colorTwo.alpha];
+	
+	NSRect rowRect = [self rectOfRow:[self selectedRow]];
+	NSRect topLine;
+	NSRect gradientRect;
+	NSDivideRect( rowRect, &topLine, &gradientRect, 1.0f, NSMinYEdge );
+	[alternateSelectedControlColor setFill];
+	NSRectFill( topLine );
+	
+	CGContextRef cxt = [[NSGraphicsContext currentContext] graphicsPort];
+	CGContextSaveGState( cxt ); {
+		CGContextClipToRect( cxt, *(CGRect *)&rowRect );
+		CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB();
+		CGShadingRef shading = CGShadingCreateAxial( colorspace,CGPointMake(gradientRect.origin.x,gradientRect.origin.y),CGPointMake(gradientRect.origin.x,gradientRect.origin.y+gradientRect.size.height), linearBlendFunctionRef, NO,NO);
+		CGColorSpaceRelease( colorspace );
+		CGContextDrawShading( cxt, shading );
+		CGShadingRelease( shading );
+	} CGContextRestoreGState( cxt );
+	
+	CGFunctionRelease( linearBlendFunctionRef );
+}
 
 - (void)slideRowFromIndex:(int)fromIndex toIndex:(int)toIndex
 {

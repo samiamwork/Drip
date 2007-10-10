@@ -184,6 +184,9 @@
 {
 	if( _oldLayers )
 		return [_oldLayers count];
+
+	if( !_theCanvas )
+		return 0;
 	
 	return [[_theCanvas layers] count];
 }

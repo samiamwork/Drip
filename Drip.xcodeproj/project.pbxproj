@@ -283,6 +283,8 @@
 				3E856CAA0CB99E5300479845 /* CleanColorWell.m */,
 				3E856E010CBA0DA900479845 /* ShelfView.h */,
 				3E856E020CBA0DA900479845 /* ShelfView.m */,
+				3E5849D00C7022850093CD10 /* AnimatingTableView.h */,
+				3E5849D10C7022850093CD10 /* AnimatingTableView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -300,8 +302,6 @@
 				3E89C85C0B499F4200134E08 /* main.m */,
 				3E1670640C61740F0014705B /* DripDelegate.h */,
 				3E1670650C61740F0014705B /* DripDelegate.m */,
-				3E5849D00C7022850093CD10 /* AnimatingTableView.h */,
-				3E5849D10C7022850093CD10 /* AnimatingTableView.m */,
 				3E7AB1180C7BD98A004389F6 /* NSData+gzip.h */,
 				3E7AB1190C7BD98A004389F6 /* NSData+gzip.m */,
 				3E31448A0CA1ABCF00BF3DB3 /* CenteredTextCell.h */,
