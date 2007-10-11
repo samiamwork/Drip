@@ -19,6 +19,11 @@
 
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView
 {
+	if( [self isHighlighted] )
+		[self setTextColor:[NSColor whiteColor]];
+	else
+		[self setTextColor:[NSColor blackColor]];
+
 	[super drawWithFrame:[self centerFrame:cellFrame] inView:controlView];
 }
 
