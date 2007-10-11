@@ -46,6 +46,7 @@
 		3EE088EE0C62F9C400CAE28C /* PaintLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EE088ED0C62F9C400CAE28C /* PaintLayer.m */; };
 		3EE089100C63044000CAE28C /* ScrollingSketchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EE0890F0C63044000CAE28C /* ScrollingSketchView.m */; };
 		3EE089170C6304FB00CAE28C /* Canvas.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EE089160C6304FB00CAE28C /* Canvas.m */; };
+		3EFC11D60CBE051D009F52D1 /* FramedImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EFC11D50CBE051D009F52D1 /* FramedImageCell.m */; };
 		8D15AC2C0486D014006FF6A4 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */; };
 		8D15AC2D0486D014006FF6A4 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */; };
 		8D15AC2E0486D014006FF6A4 /* DripDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B4FDCFA73011CA2CEA /* DripDocument.nib */; };
@@ -135,6 +136,8 @@
 		3EE0890F0C63044000CAE28C /* ScrollingSketchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScrollingSketchView.m; sourceTree = "<group>"; };
 		3EE089150C6304FB00CAE28C /* Canvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Canvas.h; sourceTree = "<group>"; };
 		3EE089160C6304FB00CAE28C /* Canvas.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Canvas.m; sourceTree = "<group>"; };
+		3EFC11D40CBE051D009F52D1 /* FramedImageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FramedImageCell.h; sourceTree = "<group>"; };
+		3EFC11D50CBE051D009F52D1 /* FramedImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FramedImageCell.m; sourceTree = "<group>"; };
 		8D15AC360486D014006FF6A4 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D15AC370486D014006FF6A4 /* Drip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Drip.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -285,6 +288,8 @@
 				3E856E020CBA0DA900479845 /* ShelfView.m */,
 				3E5849D00C7022850093CD10 /* AnimatingTableView.h */,
 				3E5849D10C7022850093CD10 /* AnimatingTableView.m */,
+				3EFC11D40CBE051D009F52D1 /* FramedImageCell.h */,
+				3EFC11D50CBE051D009F52D1 /* FramedImageCell.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -480,6 +485,7 @@
 				3E856CAB0CB99E5300479845 /* CleanColorWell.m in Sources */,
 				3E856D2F0CB9EDBE00479845 /* ColoredView.m in Sources */,
 				3E856E030CBA0DA900479845 /* ShelfView.m in Sources */,
+				3EFC11D60CBE051D009F52D1 /* FramedImageCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

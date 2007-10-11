@@ -8,6 +8,7 @@
 
 #import "LayerController.h"
 #import "CenteredTextCell.h"
+#import "FramedImageCell.h"
 
 #define LayerTableViewType @"LayerTableViewType"
 @implementation LayerController
@@ -50,6 +51,11 @@
 	[textCell setLineBreakMode:NSLineBreakByTruncatingTail];
 	[nameColumn setDataCell:textCell];
 	[textCell release];
+	
+	FramedImageCell *imageCell = [[FramedImageCell alloc] init];
+	NSTableColumn *imageColumn = [_layerTable tableColumnWithIdentifier:@"thumb"];
+	[imageColumn setDataCell:imageCell];
+	[imageCell release];
 }
 
 - (void)setCanvas:(Canvas *)newCanvas
