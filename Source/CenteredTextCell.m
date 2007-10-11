@@ -19,9 +19,6 @@
 
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView
 {
-	NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-	[paragraphStyle setLineBreakMode:NSLineBreakByTruncatingTail];
-	
 	NSShadow *shadow = nil;
 	NSColor *textColor = nil;
 	if( [self isHighlighted] ) {
