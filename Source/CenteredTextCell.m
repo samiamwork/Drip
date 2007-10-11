@@ -19,12 +19,30 @@
 
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView
 {
-	if( [self isHighlighted] )
-		[self setTextColor:[NSColor whiteColor]];
-	else
-		[self setTextColor:[NSColor blackColor]];
-
+	NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+	[paragraphStyle setLineBreakMode:NSLineBreakByTruncatingTail];
+	
+	NSShadow *shadow = nil;
+	NSColor *textColor = nil;
+	if( [self isHighlighted] ) {
+		textColor = [NSColor whiteColor];
+		
+		[NSGraphicsContext saveGraphicsState];
+		shadow = [[NSShadow alloc] init];
+		[shadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0f alpha:1.0f]];
+		[shadow setShadowOffset:NSMakeSize(0.0f,-1.0f)];
+		[shadow setShadowBlurRadius:1.0f];
+		[shadow set];
+	} else
+		textColor = [NSColor blackColor];
+	
+	[self setTextColor:textColor];
 	[super drawWithFrame:[self centerFrame:cellFrame] inView:controlView];
+	
+	if( shadow ) {
+		[shadow release];
+		[NSGraphicsContext restoreGraphicsState];
+	}
 }
 
 - (void)selectWithFrame:(NSRect)aRect inView:(NSView *)controlView editor:(NSText *)textObj delegate:(id)anObject start:(int)selStart length:(int)selLength
