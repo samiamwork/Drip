@@ -165,6 +165,7 @@
 	
 	CGImageRelease( newMaskImage );
 	CGImageRelease( mainLayerImage );
+	CGContextSetAlpha( aContext, [_mainPaintLayer opacity]);
 	CGContextDrawImage( aContext, *(CGRect *)&aRect, newMaskedImage );
 	CGImageRelease( newMaskedImage );
 	
