@@ -11,6 +11,7 @@
 #import "MaskLayer.h"
 
 @interface Layer : NSObject {
+	PaintLayer *_scratchPaintLayer;
 	PaintLayer *_mainPaintLayer;
 	MaskLayer *_mainMaskLayer;
 	

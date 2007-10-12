@@ -33,6 +33,7 @@
 		
 		_mainPaintLayer = [[decoder decodeObjectForKey:@"paintLayer"] retain];
 		_mainMaskLayer = [[MaskLayer alloc] initWithWidth:[_mainPaintLayer width] height:[_mainPaintLayer height]];
+		_scratchPaintLayer = [[PaintLayer alloc] initWithWidth:[_mainPaintLayer width] height:[_mainPaintLayer height]];
 	}
 	
 	return self;
@@ -43,6 +44,7 @@
 	if( (self = [super init]) ) {
 		_mainPaintLayer = [[PaintLayer alloc] initWithWidth:width height:height];
 		_mainMaskLayer = [[MaskLayer alloc] initWithWidth:width height:height];
+		_scratchPaintLayer = [[PaintLayer alloc] initWithWidth:[_mainPaintLayer width] height:[_mainPaintLayer height]];
 		
 		_brushPaintLayers = [[NSMutableArray alloc] init];
 		_brushMaskLayers = [[NSMutableArray alloc] init];
@@ -61,6 +63,7 @@
 		
 		_mainPaintLayer = [[PaintLayer alloc] initWithContentsOfLayers:paintLayers inRange:NSMakeRange(0,[paintLayers count])];
 		_mainMaskLayer = [[MaskLayer alloc] initWithWidth:[_mainPaintLayer width] height:[_mainPaintLayer height]];
+		_scratchPaintLayer = [[PaintLayer alloc] initWithWidth:[_mainPaintLayer width] height:[_mainPaintLayer height]];
 		
 		_brushMaskLayers = [[NSMutableArray alloc] init];
 		_brushPaintLayers = [[NSMutableArray alloc] init];
@@ -71,6 +74,7 @@
 
 - (void)dealloc
 {
+	[_scratchPaintLayer release];
 	[_mainPaintLayer release];
 	[_mainMaskLayer release];
 	
@@ -89,6 +93,8 @@
 	_mainPaintLayer = [newPaintLayer retain];
 	[_mainMaskLayer release];
 	_mainMaskLayer = [[MaskLayer alloc] initWithWidth:[_mainPaintLayer width] height:[_mainPaintLayer height]];
+	[_scratchPaintLayer release];
+	_scratchPaintLayer = [[PaintLayer alloc] initWithWidth:[_mainPaintLayer width] height:[_mainPaintLayer height]];
 }
 - (PaintLayer *)mainPaintLayer
 {
@@ -165,10 +171,11 @@
 	
 	CGImageRelease( newMaskImage );
 	CGImageRelease( mainLayerImage );
-	CGContextSetAlpha( aContext, [_mainPaintLayer opacity]);
-	CGContextDrawImage( aContext, *(CGRect *)&aRect, newMaskedImage );
+	//CGContextSetAlpha( aContext, [_mainPaintLayer opacity]);
+	CGContextDrawImage( [_scratchPaintLayer cxt], *(CGRect *)&aRect, newMaskedImage );
 	CGImageRelease( newMaskedImage );
 	
+	// clear mask layer
 	CGContextSaveGState( [_mainMaskLayer cxt] );
 	CGContextSetRGBFillColor( [_mainMaskLayer cxt], 1.0f,1.0f,1.0f,1.0f);
 	CGContextFillRect([_mainMaskLayer cxt], *(CGRect *)&aRect);
@@ -177,7 +184,11 @@
 	layerEnumerator = [_brushPaintLayers objectEnumerator];
 	PaintLayer *aLayer;
 	while( (aLayer = [layerEnumerator nextObject]) )
-		[aLayer drawRect:aRect inContext:aContext];
+		[aLayer drawRect:aRect inContext:[_scratchPaintLayer cxt]];
+	[_scratchPaintLayer drawRect:aRect inContext:aContext];
+	
+	// clear scratch layer
+	CGContextClearRect( [_scratchPaintLayer cxt], *(CGRect *)&aRect );
 }
 
 #pragma mark convenience methods
@@ -197,6 +208,7 @@
 - (void)setOpacity:(float)newOpacity
 {
 	[_mainPaintLayer setOpacity:newOpacity];
+	[_scratchPaintLayer setOpacity:newOpacity];
 }
 - (BOOL)visible
 {
@@ -205,6 +217,7 @@
 - (void)setVisible:(BOOL)isVisible
 {
 	[_mainPaintLayer setVisible:isVisible];
+	[_scratchPaintLayer setVisible:isVisible];
 }
 - (void)toggleVisible
 {
@@ -213,6 +226,7 @@
 - (void)setBlendMode:(CGBlendMode)newBlendMode
 {
 	[_mainPaintLayer setBlendMode:newBlendMode];
+	[_scratchPaintLayer setBlendMode:newBlendMode];
 }
 - (CGBlendMode)blendMode
 {
