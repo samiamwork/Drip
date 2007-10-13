@@ -8,27 +8,6 @@
 
 #import "Canvas.h"
 
-#define PATTERN_SIZE 20.0f
-void drawCheckerPattern( void *info, CGContextRef cxt )
-{
-	CGContextSetRGBFillColor( cxt, 1.0f, 1.0f, 1.0f, 1.0f );
-	CGRect checkerRect = CGRectMake(0.0f,0.0f,PATTERN_SIZE/2.0f,PATTERN_SIZE/2.0f);
-	CGContextFillRect( cxt, checkerRect );
-	checkerRect.origin.x += PATTERN_SIZE/2.0f;
-	checkerRect.origin.y = checkerRect.origin.x;
-	CGContextFillRect( cxt, checkerRect );
-	
-	checkerRect.origin.y -= PATTERN_SIZE/2.0f;
-	CGContextSetRGBFillColor( cxt, 0.7f,0.7f,0.7f, 1.0f);
-	CGContextFillRect( cxt, checkerRect );
-	
-	checkerRect.origin.x -= PATTERN_SIZE/2.0f;
-	checkerRect.origin.y += PATTERN_SIZE/2.0f;
-	CGContextFillRect( cxt, checkerRect );
-}
-
-static const CGPatternCallbacks patternCallbacks = {0, &drawCheckerPattern, NULL};
-
 @implementation Canvas
 
 - (id)init
@@ -582,22 +561,7 @@ static const CGPatternCallbacks patternCallbacks = {0, &drawCheckerPattern, NULL
 }
 
 - (void)drawRect:(NSRect)aRect inContext:(CGContextRef)context
-{
-	//CGContextSetRGBFillColor(context,1.0f,1.0f,1.0f,1.0f);
-	CGContextSaveGState( context ); {
-		CGPatternRef checkerPattern = CGPatternCreate(NULL, CGRectMake(0.0f,0.0f,PATTERN_SIZE,PATTERN_SIZE), CGAffineTransformMake(1,0,0, 1,0,0), PATTERN_SIZE,PATTERN_SIZE, kCGPatternTilingConstantSpacingMinimalDistortion, true, &patternCallbacks );
-		CGColorSpaceRef checkerColorSpace = CGColorSpaceCreatePattern(NULL);
-		CGContextSetFillColorSpace( context, checkerColorSpace );
-		CGColorSpaceRelease( checkerColorSpace );
-		
-		float alpha = 1.0f;
-		CGContextSetFillPattern( context, checkerPattern, &alpha );
-		CGContextSetPatternPhase( context, CGSizeMake(PATTERN_SIZE,PATTERN_SIZE));
-		CGContextFillRect( context, *(CGRect *)&aRect );
-		CGPatternRelease( checkerPattern );
-	} CGContextRestoreGState( context );
-	//CGContextFillRect(context,*(CGRect *)&aRect);
-	
+{	
 	NSEnumerator *layerEnumerator = [_compositeLayers objectEnumerator];
 	Layer *aLayer;
 	while( (aLayer = [layerEnumerator nextObject]) )
