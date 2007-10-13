@@ -8,27 +8,7 @@
 
 #import "ScrollingSketchView.h"
 #import "DripInspectors.h"
-
-#define PATTERN_SIZE 20.0f
-void drawCheckerPattern( void *info, CGContextRef cxt )
-{
-	CGContextSetRGBFillColor( cxt, 1.0f, 1.0f, 1.0f, 1.0f );
-	CGRect checkerRect = CGRectMake(0.0f,0.0f,PATTERN_SIZE/2.0f,PATTERN_SIZE/2.0f);
-	CGContextFillRect( cxt, checkerRect );
-	checkerRect.origin.x += PATTERN_SIZE/2.0f;
-	checkerRect.origin.y = checkerRect.origin.x;
-	CGContextFillRect( cxt, checkerRect );
-	
-	checkerRect.origin.y -= PATTERN_SIZE/2.0f;
-	CGContextSetRGBFillColor( cxt, 0.7f,0.7f,0.7f, 1.0f);
-	CGContextFillRect( cxt, checkerRect );
-	
-	checkerRect.origin.x -= PATTERN_SIZE/2.0f;
-	checkerRect.origin.y += PATTERN_SIZE/2.0f;
-	CGContextFillRect( cxt, checkerRect );
-}
-
-static const CGPatternCallbacks patternCallbacks = {0, &drawCheckerPattern, NULL};
+#import "CheckerPattern.h"
 
 @implementation ScrollingSketchView
 
@@ -124,19 +104,7 @@ static const CGPatternCallbacks patternCallbacks = {0, &drawCheckerPattern, NULL
 	[tempTransform concat];
 	canvasDrawRect = NSIntegralRect(canvasDrawRect);
 	
-	// draw checkered background
-	CGContextSaveGState( cxt ); {
-		CGPatternRef checkerPattern = CGPatternCreate(NULL, CGRectMake(0.0f,0.0f,PATTERN_SIZE,PATTERN_SIZE), CGAffineTransformMake(1,0,0, 1,0,0), PATTERN_SIZE,PATTERN_SIZE, kCGPatternTilingConstantSpacingMinimalDistortion, true, &patternCallbacks );
-		CGColorSpaceRef checkerColorSpace = CGColorSpaceCreatePattern(NULL);
-		CGContextSetFillColorSpace( cxt, checkerColorSpace );
-		CGColorSpaceRelease( checkerColorSpace );
-		
-		float alpha = 1.0f;
-		CGContextSetFillPattern( cxt, checkerPattern, &alpha );
-		CGContextSetPatternPhase( cxt, CGSizeMake(fmodf(_canvasOrigin.x, PATTERN_SIZE),fmodf( bounds.size.height-(_canvasOrigin.y+canvasRect.size.height), PATTERN_SIZE)));
-		CGContextFillRect( cxt, *(CGRect *)&canvasDrawRect );
-		CGPatternRelease( checkerPattern );
-	} CGContextRestoreGState( cxt );
+	drawCheckerPatternInContextWithPhase( cxt, CGSizeMake(fmodf(_canvasOrigin.x, PATTERN_SIZE),fmodf( bounds.size.height-(_canvasOrigin.y+canvasRect.size.height), PATTERN_SIZE)), *(CGRect *)&canvasDrawRect );
 	
 	[_canvas drawRect:canvasDrawRect];
 	CGContextRestoreGState(cxt);

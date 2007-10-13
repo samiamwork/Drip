@@ -19,6 +19,7 @@
 		3E4A63F40CA4EC1900C67DFC /* MovieEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E4A63F30CA4EC1900C67DFC /* MovieEncoder.m */; };
 		3E5488AB0B4C9572005ED4DA /* DripDocumentWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E5488AA0B4C9572005ED4DA /* DripDocumentWindowController.m */; };
 		3E5849D20C7022850093CD10 /* AnimatingTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E5849D10C7022850093CD10 /* AnimatingTableView.m */; };
+		3E596E690CC09DF6006FA3A2 /* CheckerPattern.c in Sources */ = {isa = PBXBuildFile; fileRef = 3E596E680CC09DF6006FA3A2 /* CheckerPattern.c */; };
 		3E5AE4820C991F4A00BB7C9D /* BrushResat.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E5AE4810C991F4A00BB7C9D /* BrushResat.m */; };
 		3E5AE5380C99B57800BB7C9D /* DripEventStrokeBegin.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E5AE5370C99B57800BB7C9D /* DripEventStrokeBegin.m */; };
 		3E5AE5420C99B61200BB7C9D /* DripEventStrokeContinue.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E5AE5410C99B61200BB7C9D /* DripEventStrokeContinue.m */; };
@@ -84,6 +85,8 @@
 		3E5488AA0B4C9572005ED4DA /* DripDocumentWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DripDocumentWindowController.m; sourceTree = "<group>"; };
 		3E5849D00C7022850093CD10 /* AnimatingTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimatingTableView.h; sourceTree = "<group>"; };
 		3E5849D10C7022850093CD10 /* AnimatingTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnimatingTableView.m; sourceTree = "<group>"; };
+		3E596E670CC09DF6006FA3A2 /* CheckerPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CheckerPattern.h; sourceTree = "<group>"; };
+		3E596E680CC09DF6006FA3A2 /* CheckerPattern.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CheckerPattern.c; sourceTree = "<group>"; };
 		3E5AE4800C991F4A00BB7C9D /* BrushResat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrushResat.h; sourceTree = "<group>"; };
 		3E5AE4810C991F4A00BB7C9D /* BrushResat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BrushResat.m; sourceTree = "<group>"; };
 		3E5AE5360C99B57800BB7C9D /* DripEventStrokeBegin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripEventStrokeBegin.h; sourceTree = "<group>"; };
@@ -313,6 +316,8 @@
 				3E31448B0CA1ABCF00BF3DB3 /* CenteredTextCell.m */,
 				3E4A63F20CA4EC1900C67DFC /* MovieEncoder.h */,
 				3E4A63F30CA4EC1900C67DFC /* MovieEncoder.m */,
+				3E596E670CC09DF6006FA3A2 /* CheckerPattern.h */,
+				3E596E680CC09DF6006FA3A2 /* CheckerPattern.c */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -486,6 +491,7 @@
 				3E856D2F0CB9EDBE00479845 /* ColoredView.m in Sources */,
 				3E856E030CBA0DA900479845 /* ShelfView.m in Sources */,
 				3EFC11D60CBE051D009F52D1 /* FramedImageCell.m in Sources */,
+				3E596E690CC09DF6006FA3A2 /* CheckerPattern.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
