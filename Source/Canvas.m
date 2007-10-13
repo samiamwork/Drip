@@ -296,6 +296,9 @@
 		_compositeLayers = nil;
 		Layer *aLayer = [[Layer alloc] initWithWidth:_width height:_height];
 		[aLayer setName:@"Layer 0"];
+		// fill first layer with white
+		// TODO: make the color a preference/parameter and if nil then leave transparent.
+		[aLayer fillLayerWithColor:[NSColor whiteColor]];
 		_layers = [[NSMutableArray alloc] initWithObjects:aLayer,nil];
 		[aLayer release];
 		[self setCurrentLayer:aLayer];

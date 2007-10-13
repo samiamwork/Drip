@@ -241,4 +241,9 @@
 {
 	[_mainPaintLayer updateThumbnail];
 }
+
+- (void)fillLayerWithColor:(NSColor *)aColor
+{
+	[_mainPaintLayer fillLayerWithColor:aColor];
+}
 @end

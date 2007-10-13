@@ -301,6 +301,14 @@
 	[_thumbnail unlockFocus];
 }
 
+- (void)fillLayerWithColor:(NSColor *)aColor
+{
+	float red, green, blue, alpha;
+	[[aColor colorUsingColorSpaceName:NSCalibratedRGBColorSpace] getRed:&red green:&green blue:&blue alpha:&alpha];
+	CGContextSetRGBFillColor( _cxt, red,green,blue,alpha );
+	CGContextFillRect( _cxt, CGRectMake(0.0f,0.0f,(float)_width,(float)_height));
+}
+
 - (CGImageRef)getImageForRect:(NSRect)aRect
 {
 	CGColorSpaceRef colorSpace;

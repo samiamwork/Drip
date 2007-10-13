@@ -42,4 +42,5 @@
 
 - (NSImage *)thumbnail;
 - (void)updateThumbnail;
+- (void)fillLayerWithColor:(NSColor *)aColor;
 @end
