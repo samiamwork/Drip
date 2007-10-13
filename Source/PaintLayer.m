@@ -290,8 +290,7 @@
 	thumbRect.origin.x = thumbRect.origin.y = 0.0f;
 	
 	CGContextRef thumbContext = [[NSGraphicsContext currentContext] graphicsPort];
-	CGContextSetRGBFillColor(thumbContext,1.0f,1.0f,1.0f,1.0f);
-	CGContextFillRect( thumbContext, thumbRect );
+	drawCheckerPatternInContextWithPhase( thumbContext, CGSizeZero, thumbRect, 5.0f );
 	
 	CGContextSetInterpolationQuality( thumbContext, kCGInterpolationNone );
 	CGContextSaveGState( thumbContext );

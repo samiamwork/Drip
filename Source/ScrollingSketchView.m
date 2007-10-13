@@ -104,7 +104,7 @@
 	[tempTransform concat];
 	canvasDrawRect = NSIntegralRect(canvasDrawRect);
 	
-	drawCheckerPatternInContextWithPhase( cxt, CGSizeMake(fmodf(_canvasOrigin.x, PATTERN_SIZE),fmodf( bounds.size.height-(_canvasOrigin.y+canvasRect.size.height), PATTERN_SIZE)), *(CGRect *)&canvasDrawRect );
+	drawCheckerPatternInContextWithPhase( cxt, CGSizeMake(fmodf(_canvasOrigin.x, 20.0f),fmodf( bounds.size.height-(_canvasOrigin.y+canvasRect.size.height), 20.0f)), *(CGRect *)&canvasDrawRect, 10.0f );
 	
 	[_canvas drawRect:canvasDrawRect];
 	CGContextRestoreGState(cxt);

@@ -9,6 +9,7 @@
 
 #include <Carbon/Carbon.h>
 
-#define PATTERN_SIZE 20.0f
-
-void drawCheckerPatternInContextWithPhase( CGContextRef cxt, CGSize phase, CGRect aRect );
+// I have no clue why, but if the size argument is in second argument
+// the pattern will not draw for paintLayer thumbnails. It works as
+// the last argument. Compiler bug?
+void drawCheckerPatternInContextWithPhase( CGContextRef cxt, CGSize phase, CGRect aRect, float size );
