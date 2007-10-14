@@ -100,6 +100,13 @@
 	_playbackEraser = [[BrushEraser alloc] init];
 	[_playbackEraser setCanvasSize:NSMakeSize(_width,_height)];
 	_eventIndex = 0;
+	
+	// peek at the first event and play it if it's a layer fill event
+	DripEvent *firstEvent = [_paintEvents objectAtIndex:_eventIndex];
+	if( [firstEvent isKindOfClass:[DripEventLayerFill class]] ) {
+		[_currentLayer fillLayerWithColor:[(DripEventLayerFill *)firstEvent color]];
+		_eventIndex++;
+	}
 }
 - (void)endPlayback
 {
