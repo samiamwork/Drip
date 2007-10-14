@@ -276,6 +276,7 @@
 			thumbSize.width = ((float)_width*50.0f)/(float)_height;
 
 		_thumbnail = [[NSImage alloc] initWithSize:thumbSize];
+		[_thumbnail setFlipped:YES];
 		[self updateThumbnail];
 	}
 	
