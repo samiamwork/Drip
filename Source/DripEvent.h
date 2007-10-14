@@ -21,7 +21,8 @@ typedef enum DripEventType {
 	kDripEventLayerDelete,
 	kDripEventLayerCollapse,
 	kDripEventLayerMove,
-	kDripEventLayerSettings
+	kDripEventLayerSettings,
+	kDripEventLayerFill
 } DripEventType;
 
 @interface DripEvent : NSObject {

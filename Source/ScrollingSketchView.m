@@ -71,10 +71,11 @@
 
 	invalidCanvasRect = SCALE_RECT(invalidCanvasRect,_zoom);
 	invalidCanvasRect = NSIntegralRect(invalidCanvasRect);
+	// enlarge rect by one too compensate for any rounding error
 	invalidCanvasRect.origin.x -= 1.0f;
 	invalidCanvasRect.origin.y -= 1.0f;
 	invalidCanvasRect.size.width += 2.0f;
-	invalidCanvasRect.size.width += 2.0f;
+	invalidCanvasRect.size.height += 2.0f;
 	[self setNeedsDisplayInRect:invalidCanvasRect];
 }
 

@@ -20,6 +20,7 @@
 #import "DripEventLayerCollapse.h"
 #import "DripEventLayerMove.h"
 #import "DripEventLayerSettings.h"
+#import "DripEventLayerFill.h"
 #import "NSData+gzip.h"
 
 @interface Canvas : NSObject <NSCoding> {
@@ -67,6 +68,8 @@
 - (NSRect)beginStrokeAtPoint:(PressurePoint)aPoint withBrush:(Brush *)aBrush;
 - (NSRect)continueStrokeAtPoint:(PressurePoint)aPoint withBrush:(Brush *)aBrush;
 - (void)endStrokeWithBrush:(Brush *)aBrush;
+
+- (void)fillCurrentLayerWithColor:(NSColor *)aColor;
 
 - (void)drawRect:(NSRect)aRect inContext:(CGContextRef)context;
 - (void)drawRect:(NSRect)aRect;

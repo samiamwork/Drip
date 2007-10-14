@@ -20,6 +20,7 @@
 		3E5488AB0B4C9572005ED4DA /* DripDocumentWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E5488AA0B4C9572005ED4DA /* DripDocumentWindowController.m */; };
 		3E5849D20C7022850093CD10 /* AnimatingTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E5849D10C7022850093CD10 /* AnimatingTableView.m */; };
 		3E596E690CC09DF6006FA3A2 /* CheckerPattern.c in Sources */ = {isa = PBXBuildFile; fileRef = 3E596E680CC09DF6006FA3A2 /* CheckerPattern.c */; };
+		3E596F6C0CC14F36006FA3A2 /* DripEventLayerFill.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E596F6B0CC14F36006FA3A2 /* DripEventLayerFill.m */; };
 		3E5AE4820C991F4A00BB7C9D /* BrushResat.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E5AE4810C991F4A00BB7C9D /* BrushResat.m */; };
 		3E5AE5380C99B57800BB7C9D /* DripEventStrokeBegin.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E5AE5370C99B57800BB7C9D /* DripEventStrokeBegin.m */; };
 		3E5AE5420C99B61200BB7C9D /* DripEventStrokeContinue.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E5AE5410C99B61200BB7C9D /* DripEventStrokeContinue.m */; };
@@ -87,6 +88,8 @@
 		3E5849D10C7022850093CD10 /* AnimatingTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnimatingTableView.m; sourceTree = "<group>"; };
 		3E596E670CC09DF6006FA3A2 /* CheckerPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CheckerPattern.h; sourceTree = "<group>"; };
 		3E596E680CC09DF6006FA3A2 /* CheckerPattern.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CheckerPattern.c; sourceTree = "<group>"; };
+		3E596F6A0CC14F36006FA3A2 /* DripEventLayerFill.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripEventLayerFill.h; sourceTree = "<group>"; };
+		3E596F6B0CC14F36006FA3A2 /* DripEventLayerFill.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DripEventLayerFill.m; sourceTree = "<group>"; };
 		3E5AE4800C991F4A00BB7C9D /* BrushResat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrushResat.h; sourceTree = "<group>"; };
 		3E5AE4810C991F4A00BB7C9D /* BrushResat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BrushResat.m; sourceTree = "<group>"; };
 		3E5AE5360C99B57800BB7C9D /* DripEventStrokeBegin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripEventStrokeBegin.h; sourceTree = "<group>"; };
@@ -347,6 +350,8 @@
 				3E8C3AD60C91D74B0091E8BE /* DripEventLayerChange.m */,
 				3E31463F0CA23FDF00BF3DB3 /* DripEventLayerCollapse.h */,
 				3E3146400CA23FDF00BF3DB3 /* DripEventLayerCollapse.m */,
+				3E596F6A0CC14F36006FA3A2 /* DripEventLayerFill.h */,
+				3E596F6B0CC14F36006FA3A2 /* DripEventLayerFill.m */,
 			);
 			name = Events;
 			sourceTree = "<group>";
@@ -492,6 +497,7 @@
 				3E856E030CBA0DA900479845 /* ShelfView.m in Sources */,
 				3EFC11D60CBE051D009F52D1 /* FramedImageCell.m in Sources */,
 				3E596E690CC09DF6006FA3A2 /* CheckerPattern.c in Sources */,
+				3E596F6C0CC14F36006FA3A2 /* DripEventLayerFill.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

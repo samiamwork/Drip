@@ -87,6 +87,7 @@
 		}
 		CGColorSpaceRelease(colorSpace);
 		CGContextSetInterpolationQuality(_cxt,kCGInterpolationHigh);
+		
 	}
 	
 	return self;

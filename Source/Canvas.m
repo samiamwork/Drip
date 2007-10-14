@@ -172,7 +172,10 @@
 		return NSMakeRect(0.0f,0.0f,_width,_height);
 	} else if( [theEvent isKindOfClass:[DripEventLayerChange class]] ) {
 		[self setCurrentLayer:[_layers objectAtIndex:[(DripEventLayerChange *)theEvent layerIndex]]];
-	} else {
+	} else if( [theEvent isKindOfClass:[DripEventLayerFill class]] ) {
+		[_currentLayer fillLayerWithColor:[(DripEventLayerFill *)theEvent color]];
+		return NSMakeRect(-1.0f,-1.0f,(float)_width,(float)_height);
+	}else {
 		printf("unknown event!\n");
 	}
 	return NSZeroRect;
@@ -274,6 +277,9 @@
 				case kDripEventLayerSettings:
 					newEvent = [DripEventLayerSettings eventWithBytes:&bytes[position] length:[eventData length]-position];
 					break;
+				case kDripEventLayerFill:
+					newEvent = [DripEventLayerFill eventWithBytes:&bytes[position] length:[eventData length]-position];
+					break;
 				default:
 					printf("unknown event! (%d)\n", bytes[position+1]);
 			}
@@ -296,9 +302,6 @@
 		_compositeLayers = nil;
 		Layer *aLayer = [[Layer alloc] initWithWidth:_width height:_height];
 		[aLayer setName:@"Layer 0"];
-		// fill first layer with white
-		// TODO: make the color a preference/parameter and if nil then leave transparent.
-		[aLayer fillLayerWithColor:[NSColor whiteColor]];
 		_layers = [[NSMutableArray alloc] initWithObjects:aLayer,nil];
 		[aLayer release];
 		[self setCurrentLayer:aLayer];
@@ -306,6 +309,10 @@
 		_paintEvents = [[NSMutableArray alloc] init];
 		_layerSettings = nil;
 		_document = nil;
+		
+		// fill first layer with white
+		// TODO: make the color a preference/parameter and if nil then leave transparent.
+		[self fillCurrentLayerWithColor:[NSColor whiteColor]];
 	}
 	
 	return self;
@@ -561,6 +568,16 @@
 		[_paintEvents addObject:[[[DripEventStrokeEnd alloc] init] autorelease]];
 	
 	[aBrush endStroke];
+}
+
+- (void)fillCurrentLayerWithColor:(NSColor *)aColor
+{
+	//EVENT:
+	// fill currentLayer
+	if( !_isPlayingBack )
+		[_paintEvents addObject:[[[DripEventLayerFill alloc] initWithColor:aColor] autorelease]];
+	
+	[_currentLayer fillLayerWithColor:aColor];
 }
 
 - (void)drawRect:(NSRect)aRect inContext:(CGContextRef)context
