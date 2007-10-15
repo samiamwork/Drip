@@ -40,8 +40,10 @@
 		[circle fill];
 	} CGContextRestoreGState( cxt );
 	[[NSColor colorWithCalibratedWhite:0.6f alpha:1.0f] setStroke];
-	NSRect insetRect = NSInsetRect(bounds,0.5f,0.5f);
-	CGContextStrokeRectWithWidth(cxt, *(CGRect *)&insetRect, 1.0f);
+	CGContextMoveToPoint( cxt, 0.0f,0.5f);
+	CGContextAddLineToPoint( cxt, bounds.size.width,0.5f);
+	CGContextSetLineWidth( cxt, 1.0f );
+	CGContextStrokePath( cxt );
 }
 
 @end

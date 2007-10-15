@@ -102,6 +102,8 @@
 	_eventIndex = 0;
 	
 	// peek at the first event and play it if it's a layer fill event
+	// we do this to eliminate flicker at the start of playback.
+	// layer fill is basically part of layer setup.
 	DripEvent *firstEvent = [_paintEvents objectAtIndex:_eventIndex];
 	if( [firstEvent isKindOfClass:[DripEventLayerFill class]] ) {
 		[_currentLayer fillLayerWithColor:[(DripEventLayerFill *)firstEvent color]];

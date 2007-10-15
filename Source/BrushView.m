@@ -21,8 +21,8 @@
 
 - (void)drawRect:(NSRect)rect {
 	NSRect bounds = [self bounds];
-	[[NSColor whiteColor] set];
-	NSRectFill(bounds);
+	//[[NSColor whiteColor] set];
+	//NSRectFill(bounds);
 	
 	if( _currentBrush == nil )
 		return;
@@ -30,11 +30,12 @@
 	NSPoint center = NSMakePoint(roundf(bounds.origin.x+bounds.size.width/2.0f),roundf(bounds.origin.y+bounds.size.height/2.0f));
 	[[NSColor blackColor] set];
 	[_currentBrush drawDabAtPoint:center];
-	
+	/*
 	CGContextRef cxt = [[NSGraphicsContext currentContext] graphicsPort];
 	CGContextSetRGBStrokeColor( cxt, 0.6f,0.6f,0.6f,1.0f );
 	NSRect insetRect = NSInsetRect(bounds,0.5f,0.5f);
 	CGContextStrokeRectWithWidth(cxt, *(CGRect *)&insetRect, 1.0f);
+	 */
 }
 
 - (Brush *)brush
