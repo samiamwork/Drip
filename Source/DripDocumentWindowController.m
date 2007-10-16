@@ -14,7 +14,6 @@
 
 - (void)awakeFromNib
 {
-	printf("awake from nib\n");
 	_playbackTimer = nil;
 	
 	Canvas *newCanvas = [(DripDocument*)[self document] canvas];
@@ -22,6 +21,42 @@
 	[_sketchView setBrush:[(DripDocument*)[self document] brush]];
 	
 	[(DripDocument*)[self document] setScrollingSketchView:_sketchView];
+	
+	// center window
+	NSRect mainScreenFrame = [[NSScreen mainScreen] visibleFrame];
+	// find out what side the inspector window is on and compensate
+	NSRect inspectorWindowFrame = [[[DripInspectors sharedController] window] frame];
+	if( inspectorWindowFrame.origin.x + inspectorWindowFrame.size.width/2.0f < mainScreenFrame.origin.x + mainScreenFrame.size.width/2.0f ) {
+		mainScreenFrame.origin.x += inspectorWindowFrame.origin.x + inspectorWindowFrame.size.width - mainScreenFrame.origin.x;
+		mainScreenFrame.size.width -= inspectorWindowFrame.origin.x + inspectorWindowFrame.size.width - mainScreenFrame.origin.x;
+	} else {
+		mainScreenFrame.size.width -= mainScreenFrame.origin.x + mainScreenFrame.size.width - inspectorWindowFrame.origin.x;
+	}
+	
+	NSSize canvasSize = [newCanvas size];
+	NSSize windowFrameSize = [[self window] frame].size;
+	NSSize viewSize = [_sketchView bounds].size;
+	
+	NSSize extraWindowSize = NSMakeSize(windowFrameSize.width-viewSize.width, windowFrameSize.height-viewSize.height);
+	NSRect newWindowFrame = NSZeroRect;
+	newWindowFrame.size.width = canvasSize.width+extraWindowSize.width;
+	newWindowFrame.size.height = canvasSize.height+extraWindowSize.height;
+	
+	newWindowFrame.origin.x = roundf(mainScreenFrame.origin.x + (mainScreenFrame.size.width-newWindowFrame.size.width)/2.0f);
+	if( newWindowFrame.origin.x < mainScreenFrame.origin.x ) {
+		newWindowFrame.origin.x = mainScreenFrame.origin.x;
+		// because this implies that our window is too wide we'll need to make it thinner.
+		newWindowFrame.size.width = mainScreenFrame.size.width;
+	}
+	
+	newWindowFrame.origin.y = roundf(mainScreenFrame.origin.y + (mainScreenFrame.size.height-newWindowFrame.size.height)/2.0f);
+	if( newWindowFrame.origin.y < mainScreenFrame.origin.y ) {
+		newWindowFrame.origin.y = mainScreenFrame.origin.y;
+		// because this implies that our window is too tall we need to make it shorter.
+		newWindowFrame.size.height = mainScreenFrame.size.height;
+	}
+	
+	[[self window] setFrame:newWindowFrame display:YES];
 }
 
 - (IBAction)exportPlaybackToQuicktime:(id)sender
