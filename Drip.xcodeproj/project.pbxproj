@@ -21,6 +21,9 @@
 		3E5849D20C7022850093CD10 /* AnimatingTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E5849D10C7022850093CD10 /* AnimatingTableView.m */; };
 		3E596E690CC09DF6006FA3A2 /* CheckerPattern.c in Sources */ = {isa = PBXBuildFile; fileRef = 3E596E680CC09DF6006FA3A2 /* CheckerPattern.c */; };
 		3E596F6C0CC14F36006FA3A2 /* DripEventLayerFill.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E596F6B0CC14F36006FA3A2 /* DripEventLayerFill.m */; };
+		3E59715E0CC544F3006FA3A2 /* ImageExport.nib in Resources */ = {isa = PBXBuildFile; fileRef = 3E59715C0CC544F3006FA3A2 /* ImageExport.nib */; };
+		3E5971630CC5452A006FA3A2 /* ImageExporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E5971620CC5452A006FA3A2 /* ImageExporter.m */; };
+		3E59716D0CC54616006FA3A2 /* CompressionPreview.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E59716C0CC54616006FA3A2 /* CompressionPreview.m */; };
 		3E5AE4820C991F4A00BB7C9D /* BrushResat.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E5AE4810C991F4A00BB7C9D /* BrushResat.m */; };
 		3E5AE5380C99B57800BB7C9D /* DripEventStrokeBegin.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E5AE5370C99B57800BB7C9D /* DripEventStrokeBegin.m */; };
 		3E5AE5420C99B61200BB7C9D /* DripEventStrokeContinue.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E5AE5410C99B61200BB7C9D /* DripEventStrokeContinue.m */; };
@@ -90,6 +93,11 @@
 		3E596E680CC09DF6006FA3A2 /* CheckerPattern.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CheckerPattern.c; sourceTree = "<group>"; };
 		3E596F6A0CC14F36006FA3A2 /* DripEventLayerFill.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripEventLayerFill.h; sourceTree = "<group>"; };
 		3E596F6B0CC14F36006FA3A2 /* DripEventLayerFill.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DripEventLayerFill.m; sourceTree = "<group>"; };
+		3E59715D0CC544F3006FA3A2 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/ImageExport.nib; sourceTree = "<group>"; };
+		3E5971610CC5452A006FA3A2 /* ImageExporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageExporter.h; sourceTree = "<group>"; };
+		3E5971620CC5452A006FA3A2 /* ImageExporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageExporter.m; sourceTree = "<group>"; };
+		3E59716B0CC54616006FA3A2 /* CompressionPreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompressionPreview.h; sourceTree = "<group>"; };
+		3E59716C0CC54616006FA3A2 /* CompressionPreview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CompressionPreview.m; sourceTree = "<group>"; };
 		3E5AE4800C991F4A00BB7C9D /* BrushResat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrushResat.h; sourceTree = "<group>"; };
 		3E5AE4810C991F4A00BB7C9D /* BrushResat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BrushResat.m; sourceTree = "<group>"; };
 		3E5AE5360C99B57800BB7C9D /* DripEventStrokeBegin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripEventStrokeBegin.h; sourceTree = "<group>"; };
@@ -211,6 +219,7 @@
 				2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */,
 				2A37F4B4FDCFA73011CA2CEA /* DripDocument.nib */,
 				3E8C3BB60C922A0C0091E8BE /* DripInspectors.nib */,
+				3E59715C0CC544F3006FA3A2 /* ImageExport.nib */,
 				8D15AC360486D014006FF6A4 /* Info.plist */,
 				089C165FFE840EACC02AAC07 /* InfoPlist.strings */,
 			);
@@ -300,10 +309,22 @@
 			name = Views;
 			sourceTree = "<group>";
 		};
+		3E5971740CC54720006FA3A2 /* Image Exporter */ = {
+			isa = PBXGroup;
+			children = (
+				3E5971610CC5452A006FA3A2 /* ImageExporter.h */,
+				3E5971620CC5452A006FA3A2 /* ImageExporter.m */,
+				3E59716B0CC54616006FA3A2 /* CompressionPreview.h */,
+				3E59716C0CC54616006FA3A2 /* CompressionPreview.m */,
+			);
+			name = "Image Exporter";
+			sourceTree = "<group>";
+		};
 		3E89C85A0B499F4200134E08 /* Source */ = {
 			isa = PBXGroup;
 			children = (
 				3E37E6FB0C95E24400A476D5 /* Inspector */,
+				3E5971740CC54720006FA3A2 /* Image Exporter */,
 				3E39E1360C6BAFE000F0D3FD /* Views */,
 				3E0A59D20C601D1A0094610C /* Brushes */,
 				3E31466C0CA2DBAF00BF3DB3 /* Canvas */,
@@ -406,6 +427,7 @@
 				8D15AC2F0486D014006FF6A4 /* InfoPlist.strings in Resources */,
 				3E8C3BB80C922A0C0091E8BE /* DripInspectors.nib in Resources */,
 				3E8AF99E0CBB479C0056C32F /* Drip.icns in Resources */,
+				3E59715E0CC544F3006FA3A2 /* ImageExport.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -498,6 +520,8 @@
 				3EFC11D60CBE051D009F52D1 /* FramedImageCell.m in Sources */,
 				3E596E690CC09DF6006FA3A2 /* CheckerPattern.c in Sources */,
 				3E596F6C0CC14F36006FA3A2 /* DripEventLayerFill.m in Sources */,
+				3E5971630CC5452A006FA3A2 /* ImageExporter.m in Sources */,
+				3E59716D0CC54616006FA3A2 /* CompressionPreview.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -534,6 +558,14 @@
 				2A37F4BAFDCFA73011CA2CEA /* English */,
 			);
 			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		3E59715C0CC544F3006FA3A2 /* ImageExport.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3E59715D0CC544F3006FA3A2 /* English */,
+			);
+			name = ImageExport.nib;
 			sourceTree = "<group>";
 		};
 		3E8C3BB60C922A0C0091E8BE /* DripInspectors.nib */ = {

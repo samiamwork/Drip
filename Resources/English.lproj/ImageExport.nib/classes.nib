@@ -1,0 +1,17 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {cancel = id; formatChanged = id; ok = id; qualityChanged = id; }; 
+            CLASS = ImageExporter; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                "_formatPopUp" = NSPopUpButton; 
+                "_preview" = NSImageView; 
+                "_qualitySlider" = NSSlider; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

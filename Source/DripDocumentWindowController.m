@@ -9,6 +9,7 @@
 #import "DripDocumentWindowController.h"
 #import "DripDocument.h"
 #import "DripInspectors.h"
+#import "ImageExporter.h"
 
 @implementation DripDocumentWindowController
 
@@ -168,6 +169,15 @@
 	}
 	//TODO: should be more precise
 	[_sketchView invalidateCanvasRect:invalidCanvasRect];
+}
+
+- (IBAction)exportImage:(id)sender
+{
+	Canvas *theCanvas = [(DripDocument*)[self document] canvas];
+	ImageExporter *imageExporter = [ImageExporter sharedController];
+	[imageExporter setBitmapImageRep:[theCanvas bitmapImageRep]];
+	[imageExporter runModal];
+	printf("export done\n");
 }
 
 - (IBAction)setZoom:(id)sender

@@ -78,4 +78,6 @@
 - (NSDocument *)document;
 
 - (void)settingsChangedForLayer:(Layer *)aLayer;
+
+- (NSBitmapImageRep *)bitmapImageRep;
 @end

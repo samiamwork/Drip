@@ -21,7 +21,12 @@
             SUPERCLASS = NSObject; 
         }, 
         {
-            ACTIONS = {exportPlaybackToQuicktime = id; pausePlayback = id; playBack = id; }; 
+            ACTIONS = {
+                exportImage = id; 
+                exportPlaybackToQuicktime = id; 
+                pausePlayback = id; 
+                playBack = id; 
+            }; 
             CLASS = FirstResponder; 
             LANGUAGE = ObjC; 
             SUPERCLASS = NSObject; 

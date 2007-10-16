@@ -634,4 +634,20 @@
 	_layerSettings = [[DripEventLayerSettings alloc] initWithLayerIndex:layerIndex opacity:[aLayer opacity] visible:[aLayer visible] blendMode:[aLayer blendMode]];
 }
 
+- (NSBitmapImageRep *)bitmapImageRep
+{
+	//NSBitmapImageRep *bitmap = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL pixelsWide:_width pixelsHigh:_height bitsPerSample:8 samplesPerPixel:4 hasAlpha:YES isPlanar:NO colorSpaceName:NSCalibratedRGBColorSpace bytesPerRow:_width*4 bitsPerPixel:32];
+	
+	NSImage *newImage = [[NSImage alloc] initWithSize:NSMakeSize(_width,_height)];
+	[newImage lockFocus];
+	
+	[self drawRect:NSMakeRect(0.0f,0.0f,_width,_height)];
+	NSBitmapImageRep *bitmap = [[NSBitmapImageRep alloc] initWithFocusedViewRect:NSMakeRect(0.0f,0.0f,_width,_height)];
+	[bitmap autorelease];
+	
+	[newImage unlockFocus];
+	[newImage release];
+	
+	return bitmap;
+}
 @end
