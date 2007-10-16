@@ -116,6 +116,22 @@ void loadCompressionSettings( ComponentInstance component )
 				printf("SCSetSettingsFromAtomContainer() failed with error %d\n", result);
 			QTDisposeAtomContainer(container);
 		}
+	} else {
+		// set some reasonable defaults ourselves
+		SCSpatialSettings ss;
+		ss.codecType = kDVCNTSCCodecType;
+		ss.codec = NULL;
+		ss.depth = 0;
+		ss.spatialQuality = codecHighQuality;
+		
+		SCSetInfo( component, scSpatialSettingsType, &ss );
+		
+		SCTemporalSettings ts;
+		ts.temporalQuality = 0;
+		ts.frameRate = FixRatio(30,1);
+		ts.keyFrameRate = 0;
+		
+		SCSetInfo( component, scTemporalSettingsType, &ts );
 	}
 }
 
@@ -165,7 +181,9 @@ NSString *currentCodecName( void )
 		codecQuality = [[NSNumber numberWithInt:(int)(((float)spatialSettings.spatialQuality)*100.0f/1024.0f)] stringValue];
 	
 	CodecInfo codecInfo;
-	GetCodecInfo( &codecInfo, spatialSettings.codecType, 0);
+	OSErr result = GetCodecInfo( &codecInfo, spatialSettings.codecType, 0);
+	if( result != noErr )
+		printf("error getting codec name! (%d)\n", result);
 	void *codecNameCString = calloc( *(unsigned char *)codecInfo.typeName + 1, 1 );
 	memcpy( codecNameCString, (unsigned char *)codecInfo.typeName + 1, *(unsigned char *)codecInfo.typeName);
 	NSString *codecName = [NSString stringWithCString:codecNameCString];

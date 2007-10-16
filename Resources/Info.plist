@@ -32,7 +32,7 @@
 	<key>CFBundleIconFile</key>
 	<string>Drip</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.yourcompany.Drip</string>
+	<string>com.theidiotproject.Drip</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
