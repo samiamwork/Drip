@@ -29,13 +29,13 @@
     return self;
 }
 
-- (id)initWithWidth:(unsigned int)width height:(unsigned int)height
+- (id)initWithWidth:(unsigned int)width height:(unsigned int)height backgroundColor:(NSColor *)aColor
 {
 	if( (self = [super init]) ) {
 		_canvasWidth = width;
 		_canvasHeight = height;
 		
-		_canvas = [[Canvas alloc] initWithWidth:_canvasWidth  height:_canvasHeight];
+		_canvas = [[Canvas alloc] initWithWidth:_canvasWidth  height:_canvasHeight backgroundColor:aColor];
 		[_canvas setDocument:self];
 		
 		_brush = [[Brush alloc] init];

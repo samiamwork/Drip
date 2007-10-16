@@ -45,7 +45,7 @@
 	NSDocument *_document;
 }
 
-- (id)initWithWidth:(unsigned int)width height:(unsigned int)height;
+- (id)initWithWidth:(unsigned int)width height:(unsigned int)height backgroundColor:(NSColor *)aColor;
 - (void)addLayer;
 - (void)deleteLayer:(Layer *)layerToDelete;
 - (void)insertLayer:(Layer *)theLayer AtIndex:(unsigned int)theTargetIndex;

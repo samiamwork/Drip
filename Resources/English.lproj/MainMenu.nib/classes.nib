@@ -1,10 +1,19 @@
 {
     IBClasses = (
         {
-            ACTIONS = {cancelNewFile = id; newFile = id; okNewFile = id; }; 
+            ACTIONS = {
+                cancelNewFile = id; 
+                clearBackgroundToggled = id; 
+                colorChanged = id; 
+                newFile = id; 
+                okNewFile = id; 
+                sizeChanged = id; 
+            }; 
             CLASS = DripDelegate; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                "_backgroundColorWell" = NSColorWell; 
+                "_colorRadio" = NSMatrix; 
                 "_heightField" = NSTextField; 
                 "_newFileWindow" = NSWindow; 
                 "_widthField" = NSTextField; 

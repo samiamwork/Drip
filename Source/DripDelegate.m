@@ -11,11 +11,34 @@
 
 @implementation DripDelegate
 
++ (void)initialize
+{
+	NSDictionary *defaultPrefs = [[NSDictionary alloc] initWithObjectsAndKeys:
+		[NSArchiver archivedDataWithRootObject:[NSColor whiteColor]],@"canvasBackgroundColor",
+		[NSNumber numberWithBool:NO],@"isNewCanvasBackgroundClear",
+		[NSNumber numberWithInt:300],@"canvasWidth",
+		[NSNumber numberWithInt:300],@"canvasHeight",
+		nil];
+	
+	[[NSUserDefaults standardUserDefaults] registerDefaults:defaultPrefs];
+	[defaultPrefs release];
+}
+
 - (void)awakeFromNib
 {
 	SetMouseCoalescingEnabled(true,NULL);
 	_inspectors = [DripInspectors sharedController];
 	[_inspectors loadWindow];
+	
+	[_widthField setIntValue:[[[NSUserDefaults standardUserDefaults] objectForKey:@"canvasWidth"] intValue]];
+	[_heightField setIntValue:[[[NSUserDefaults standardUserDefaults] objectForKey:@"canvasHeight"] intValue]];
+	[_backgroundColorWell setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:@"canvasBackgroundColor"]]];
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"isNewCanvasBackgroundClear"] )
+		[_colorRadio selectCellWithTag:1];
+	else
+		[_colorRadio selectCellWithTag:0];
+	
+	[_newFileWindow center];
 }
 
 - (IBAction)newFile:(id)sender
@@ -25,7 +48,7 @@
 
 - (IBAction)okNewFile:(id)sender
 {
-	DripDocument *_newDocument = [[DripDocument alloc] initWithWidth:[_widthField intValue] height:[_heightField intValue]];
+	DripDocument *_newDocument = [[DripDocument alloc] initWithWidth:[_widthField intValue] height:[_heightField intValue] backgroundColor:[[_colorRadio selectedCell] tag] ? nil : [_backgroundColorWell color]];
 	[[NSDocumentController sharedDocumentController] addDocument:_newDocument];
 	[_newDocument makeWindowControllers];
 	[_newDocument showWindows];
@@ -36,6 +59,22 @@
 - (IBAction)cancelNewFile:(id)sender
 {
 	[_newFileWindow orderOut:sender];
+}
+
+- (IBAction)colorChanged:(id)sender
+{
+	[[NSUserDefaults standardUserDefaults] setObject:[NSArchiver archivedDataWithRootObject:[_backgroundColorWell color]] forKey:@"canvasBackgroundColor"];
+}
+
+- (IBAction)sizeChanged:(id)sender
+{
+	[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:[_widthField intValue]] forKey:@"canvasWidth"];
+	[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:[_heightField intValue]] forKey:@"canvasHeight"];
+}
+
+- (IBAction)clearBackgroundToggled:(id)sender
+{
+	[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:[[_colorRadio selectedCell] tag] ? YES : NO] forKey:@"isNewCanvasBackgroundClear"];
 }
 
 #pragma mark Application Delegate Methods

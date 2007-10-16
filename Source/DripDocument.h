@@ -28,7 +28,7 @@
 	Canvas *_canvas;
 }
 
-- (id)initWithWidth:(unsigned int)width height:(unsigned int)height;
+- (id)initWithWidth:(unsigned int)width height:(unsigned int)height backgroundColor:(NSColor *)aColor;
 - (unsigned int)width;
 - (unsigned int)height;
 - (Canvas *)canvas;

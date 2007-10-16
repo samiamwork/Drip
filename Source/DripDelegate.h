@@ -15,10 +15,16 @@
 	IBOutlet NSTextField *_widthField;
 	IBOutlet NSTextField *_heightField;
 	
+	IBOutlet NSColorWell *_backgroundColorWell;
+	IBOutlet NSMatrix *_colorRadio;
+	
 	DripInspectors *_inspectors;
 }
 
 - (IBAction)newFile:(id)sender;
 - (IBAction)okNewFile:(id)sender;
 - (IBAction)cancelNewFile:(id)sender;
+- (IBAction)colorChanged:(id)sender;
+- (IBAction)sizeChanged:(id)sender;
+- (IBAction)clearBackgroundToggled:(id)sender;
 @end

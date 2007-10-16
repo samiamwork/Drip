@@ -302,7 +302,7 @@
 	return self;
 }
 
-- (id)initWithWidth:(unsigned int)width height:(unsigned int)height
+- (id)initWithWidth:(unsigned int)width height:(unsigned int)height backgroundColor:(NSColor *)aColor
 {
 	if( (self =[super init]) ) {
 		_width = width;
@@ -321,7 +321,7 @@
 		
 		// fill first layer with white
 		// TODO: make the color a preference/parameter and if nil then leave transparent.
-		[self fillCurrentLayerWithColor:[NSColor whiteColor]];
+		[self fillCurrentLayerWithColor:aColor];
 	}
 	
 	return self;
@@ -581,11 +581,14 @@
 
 - (void)fillCurrentLayerWithColor:(NSColor *)aColor
 {
+	if( !aColor )
+		return;
+	
 	//EVENT:
 	// fill currentLayer
 	if( !_isPlayingBack )
 		[_paintEvents addObject:[[[DripEventLayerFill alloc] initWithColor:aColor] autorelease]];
-	
+
 	[_currentLayer fillLayerWithColor:aColor];
 }
 
