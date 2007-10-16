@@ -10,7 +10,27 @@
 
 static ImageExporter *g_sharedController;
 
+@interface ImageExporter (private)
+- (void)updatePreview;
+@end
+
 @implementation ImageExporter
+
++ (void)initialize
+{
+	// default prefs
+}
+
+- (id)initWithWindowNibName:(NSString *)nibName
+{
+	if( (self = [super initWithWindowNibName:nibName]) ) {
+		_originalImage = nil;
+		_compressedData = nil;
+		_path = nil;
+	}
+	
+	return self;
+}
 
 + (ImageExporter *)sharedController
 {
@@ -19,6 +39,13 @@ static ImageExporter *g_sharedController;
 	}
 	
 	return g_sharedController;
+}
+
+- (void)awakeFromNib
+{
+	if( _originalImage )
+		[self updatePreview];
+	// initialize controls with defaults
 }
 
 - (void)dealloc
@@ -39,6 +66,9 @@ static ImageExporter *g_sharedController;
 
 - (void)updatePreview
 {
+	if( !_originalImage )
+		return;
+	
 	float quality = [_qualitySlider floatValue];
 	if( quality > 1.0f )
 		quality = 1.0f;
@@ -46,24 +76,14 @@ static ImageExporter *g_sharedController;
 		quality = 0.0f;
 	
 	int format = [_formatPopUp indexOfSelectedItem];
-	
-	if( !_originalImage )
-		printf("original image is nil\n");
-	
 	NSData *previewData = nil;
 	if( format == 0 ) // PNG
 		previewData = [_originalImage representationUsingType:NSPNGFileType properties:nil];
 	else // JPG
 		previewData = [_originalImage representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:quality],NSImageCompressionFactor,nil]];
-	if( !previewData )
-		printf("preview data is nil\n");
 	
 	NSBitmapImageRep *previewRep = [NSBitmapImageRep imageRepWithData:previewData];
-	if( !previewRep )
-		printf("preview rep is nil \n");
 	NSImage *previewImage = [[NSImage alloc] init];
-	if( ! previewImage )
-		printf("preview image is nil \n");
 	[previewImage addRepresentation:previewRep];
 	
 	[_preview setImage:previewImage];
@@ -110,12 +130,33 @@ static ImageExporter *g_sharedController;
 	if( result == NSRunAbortedResponse )
 		return NO;
 	
+	NSSavePanel *savePanel = [NSSavePanel savePanel];
+	[savePanel setCanSelectHiddenExtension:YES];
+	[savePanel setExtensionHidden:YES];
+	[savePanel setCanCreateDirectories:YES];
+	NSString *fileExtension = [_formatPopUp indexOfSelectedItem]==0 ? @"png" : @"jpg";
+	[savePanel setRequiredFileType:fileExtension];
+	if( [savePanel runModalForDirectory:[_path stringByDeletingLastPathComponent] file:[[[_path lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:fileExtension]] != NSOKButton )
+		return NO;
+	
+	NSString *newFileName = [savePanel filename];
+	[_compressedData writeToFile:newFileName atomically:YES];
+	
+	// clean up some potentially large data so it's not sitting around while we're not using it
+	[_compressedData release];
+	_compressedData = nil;
+	[_originalImage release];
+	_originalImage = nil;
+
 	return YES;
 }
 
-- (NSData *)compressedData
+- (void)setPath:(NSString *)aString
 {
-	return _compressedData;
+	if( aString == _path )
+		return;
+	
+	[_path release];
+	_path = [aString retain];
 }
-
 @end

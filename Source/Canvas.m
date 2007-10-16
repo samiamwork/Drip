@@ -636,8 +636,6 @@
 
 - (NSBitmapImageRep *)bitmapImageRep
 {
-	//NSBitmapImageRep *bitmap = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL pixelsWide:_width pixelsHigh:_height bitsPerSample:8 samplesPerPixel:4 hasAlpha:YES isPlanar:NO colorSpaceName:NSCalibratedRGBColorSpace bytesPerRow:_width*4 bitsPerPixel:32];
-	
 	NSImage *newImage = [[NSImage alloc] initWithSize:NSMakeSize(_width,_height)];
 	[newImage lockFocus];
 	

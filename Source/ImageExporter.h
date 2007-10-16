@@ -17,6 +17,7 @@
 	
 	NSBitmapImageRep *_originalImage;
 	NSData *_compressedData;
+	NSString *_path;
 }
 
 + (ImageExporter *)sharedController;
@@ -31,6 +32,6 @@
 
 // if the session is canceled we return false.
 - (BOOL)runModal;
-- (NSData *)compressedData;
+- (void)setPath:(NSString *)aString;
 
 @end

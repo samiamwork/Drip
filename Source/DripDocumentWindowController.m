@@ -133,7 +133,8 @@
 	Canvas *theCanvas = [(DripDocument*)[self document] canvas];
 	NSRect canvasRect = NSMakeRect(0.0f,0.0f,(float)[theCanvas size].width,(float)[theCanvas size].height);
 	
-	NSRect invalidCanvasRect = [theCanvas playNextVisibleEvent];
+	/*NSRect invalidCanvasRect = */
+	[theCanvas playNextVisibleEvent];
 	// we have a frame to compress
 	// TODO fix the problem with using the invalidRect here instead (probably having to do with the NSFillRect in the base layer)
 	[theCanvas drawRect:canvasRect inContext:[_encoder frameContext]];
@@ -176,8 +177,8 @@
 	Canvas *theCanvas = [(DripDocument*)[self document] canvas];
 	ImageExporter *imageExporter = [ImageExporter sharedController];
 	[imageExporter setBitmapImageRep:[theCanvas bitmapImageRep]];
+	[imageExporter setPath:[[[self document] fileURL] path]];
 	[imageExporter runModal];
-	printf("export done\n");
 }
 
 - (IBAction)setZoom:(id)sender
