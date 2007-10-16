@@ -18,7 +18,9 @@ static ImageExporter *g_sharedController;
 
 + (void)initialize
 {
-	// default prefs
+	NSDictionary *defaultPrefs = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:1.0f],@"imageExportQuality",[NSNumber numberWithInt:0],@"imageExportFormat",nil];
+	
+	[[NSUserDefaults standardUserDefaults] registerDefaults:defaultPrefs];
 }
 
 - (id)initWithWindowNibName:(NSString *)nibName
@@ -45,14 +47,17 @@ static ImageExporter *g_sharedController;
 {
 	if( _originalImage )
 		[self updatePreview];
-	// initialize controls with defaults
+	[_formatPopUp selectItemAtIndex:[[NSUserDefaults standardUserDefaults] integerForKey:@"imageExportFormat"]];
+	[_qualitySlider setFloatValue:[[NSUserDefaults standardUserDefaults] floatForKey:@"imageExportQuality"]];
 }
 
 - (void)dealloc
 {
 	[_originalImage release];
+	[_compressedData release];
 
 	[super dealloc];
+	g_sharedController = nil;
 }
 
 - (void)setBitmapImageRep:(NSBitmapImageRep *)anImageRep
@@ -103,13 +108,13 @@ static ImageExporter *g_sharedController;
 		quality = 0.0f;
 	[_qualitySlider setFloatValue:quality];
 	
-	// TODO: set defaults
+	[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithFloat:quality] forKey:@"imageExportQuality"];
 	[self updatePreview];
 }
 
 - (IBAction)formatChanged:(id)sender
 {
-	// TODO: set defaults
+	[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:[_formatPopUp indexOfSelectedItem]] forKey:@"imageExportFormat"];
 	[self updatePreview];
 }
 
@@ -130,6 +135,7 @@ static ImageExporter *g_sharedController;
 	if( result == NSRunAbortedResponse )
 		return NO;
 	
+	// once the user clicks "OK" we prompt them for the filename and save the compressed data.
 	NSSavePanel *savePanel = [NSSavePanel savePanel];
 	[savePanel setCanSelectHiddenExtension:YES];
 	[savePanel setExtensionHidden:YES];
