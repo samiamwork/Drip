@@ -1,5 +1,6 @@
 {
     IBClasses = (
+        {CLASS = CompressionPreview; LANGUAGE = ObjC; SUPERCLASS = NSImageView; }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
             ACTIONS = {cancel = id; formatChanged = id; ok = id; qualityChanged = id; }; 

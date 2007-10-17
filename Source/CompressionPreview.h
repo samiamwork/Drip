@@ -10,7 +10,8 @@
 
 
 @interface CompressionPreview : NSImageView {
-
+	NSPoint _imageOffset;
+	NSPoint _lastMousePosition;
 }
 
 @end
