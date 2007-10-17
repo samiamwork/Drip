@@ -20,12 +20,29 @@
 
 - (void)setImage:(NSImage *)newImage
 {
+	NSImage *oldImage = [self image];
 	[super setImage:newImage];
 	NSSize frameSize = [self frame].size;
 	
-	// center the image
-	_imageOffset.x = roundf( (frameSize.width - [[self image] size].width)/2.0f );
-	_imageOffset.y = roundf( (frameSize.height - [[self image] size].height)/2.0f );
+	if( !oldImage ) {
+		// center the image
+		_imageOffset.x = roundf( (frameSize.width - [[self image] size].width)/2.0f );
+		_imageOffset.y = roundf( (frameSize.height - [[self image] size].height)/2.0f );
+	} else {
+		// since we're not recentering it we need to check and make sure the new image
+		// works with the new offsets.
+		NSSize imageSize = [[self image] size];
+		
+		if( imageSize.width < frameSize.width )
+			_imageOffset.x = roundf( (frameSize.width - imageSize.width)/2.0f );
+		else if( _imageOffset.x+imageSize.width < frameSize.width )
+			_imageOffset.x = frameSize.width-imageSize.width;
+		
+		if( imageSize.height < frameSize.height )
+			_imageOffset.y = roundf( (frameSize.height - imageSize.height)/2.0f );
+		if( _imageOffset.y+imageSize.height < frameSize.height )
+			_imageOffset.y = frameSize.height-imageSize.height;
+	}
 	
 }
 
@@ -50,7 +67,6 @@
 		_imageOffset.x = roundf( (newSize.width - [[self image] size].width)/2.0f );
 	if( [[self image] size].height < newSize.height )
 		_imageOffset.y = roundf( (newSize.height - [[self image] size].height)/2.0f );
-	printf("setFrame offset: %.01f, %.01f\n", _imageOffset.x, _imageOffset.y );
 }
 
 - (void)mouseDown:(NSEvent *)theEvent
@@ -85,13 +101,15 @@
 }
 
 - (void)drawRect:(NSRect)rect {
-	[[NSColor grayColor] setFill];
-	NSRectFill( [self bounds] );
-	
 	CGContextRef cxt = [[NSGraphicsContext currentContext] graphicsPort];
 	CGContextSaveGState( cxt );
-	//CGContextTranslateCTM( cxt, 100.0f,0.0f );
+	CGContextSetRGBFillColor( cxt, 0.6f,0.6f,0.6f,0.2f );
+	CGContextFillRect( cxt, *(CGRect *)&rect );
 	[[self image] drawAtPoint:_imageOffset fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0f];
+	NSRect bounds = [self bounds];
+	bounds = NSInsetRect( bounds, 0.5f,0.5f );
+	CGContextSetRGBFillColor( cxt, 0.6f,0.6f,0.6f,1.0f );
+	CGContextStrokeRectWithWidth(cxt, *(CGRect *)&bounds, 1.0f);
 	CGContextRestoreGState( cxt );
 }
 
