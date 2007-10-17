@@ -48,7 +48,13 @@ static ImageExporter *g_sharedController;
 	if( _originalImage )
 		[self updatePreview];
 	[_formatPopUp selectItemAtIndex:[[NSUserDefaults standardUserDefaults] integerForKey:@"imageExportFormat"]];
-	[_qualitySlider setFloatValue:[[NSUserDefaults standardUserDefaults] floatForKey:@"imageExportQuality"]];
+	if( [_formatPopUp indexOfSelectedItem] == 0 ) { // PNG
+		[_qualitySlider setFloatValue:1.0f];
+		[_qualitySlider setEnabled:NO];
+	} else {
+		[_qualitySlider setFloatValue:[[NSUserDefaults standardUserDefaults] floatForKey:@"imageExportQuality"]];
+		[_qualitySlider setEnabled:YES];
+	}
 }
 
 - (void)dealloc
@@ -125,6 +131,14 @@ static ImageExporter *g_sharedController;
 - (IBAction)formatChanged:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:[_formatPopUp indexOfSelectedItem]] forKey:@"imageExportFormat"];
+	// TODO: if the selection doesn't care about compression then disable the slider. If not, enable it.
+	if( [_formatPopUp indexOfSelectedItem] == 0 ) { // PNG
+		[_qualitySlider setFloatValue:1.0f];
+		[_qualitySlider setEnabled:NO];
+	} else {
+		[_qualitySlider setFloatValue:[[NSUserDefaults standardUserDefaults] floatForKey:@"imageExportQuality"]];
+		[_qualitySlider setEnabled:YES];
+	}
 	[self updatePreview];
 }
 
