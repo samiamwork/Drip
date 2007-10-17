@@ -15,6 +15,7 @@
 	IBOutlet NSSlider *_qualitySlider;
 	IBOutlet NSImageView *_preview;
 	IBOutlet NSTextField *_sizeField;
+	IBOutlet NSView *_auxView;
 	
 	NSBitmapImageRep *_originalImage;
 	NSData *_compressedData;

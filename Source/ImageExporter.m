@@ -38,6 +38,7 @@ static ImageExporter *g_sharedController;
 {
 	if( g_sharedController == nil ) {
 		g_sharedController = [[ImageExporter alloc] initWithWindowNibName:@"ImageExport"];
+		[g_sharedController window];
 	}
 	
 	return g_sharedController;
@@ -47,6 +48,7 @@ static ImageExporter *g_sharedController;
 {
 	if( _originalImage )
 		[self updatePreview];
+
 	[_formatPopUp selectItemAtIndex:[[NSUserDefaults standardUserDefaults] integerForKey:@"imageExportFormat"]];
 	if( [_formatPopUp indexOfSelectedItem] == 0 ) { // PNG
 		[_qualitySlider setFloatValue:1.0f];
@@ -132,12 +134,15 @@ static ImageExporter *g_sharedController;
 {
 	[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:[_formatPopUp indexOfSelectedItem]] forKey:@"imageExportFormat"];
 	// TODO: if the selection doesn't care about compression then disable the slider. If not, enable it.
-	if( [_formatPopUp indexOfSelectedItem] == 0 ) { // PNG
+	int format = [_formatPopUp indexOfSelectedItem];
+	if( format == 0 ) { // PNG
 		[_qualitySlider setFloatValue:1.0f];
 		[_qualitySlider setEnabled:NO];
+		[(NSSavePanel *)[self window] setRequiredFileType:@"png"];
 	} else {
 		[_qualitySlider setFloatValue:[[NSUserDefaults standardUserDefaults] floatForKey:@"imageExportQuality"]];
 		[_qualitySlider setEnabled:YES];
+		[(NSSavePanel *)[self window] setRequiredFileType:@"jpg"];
 	}
 	[self updatePreview];
 }
@@ -153,22 +158,33 @@ static ImageExporter *g_sharedController;
 
 - (BOOL)runModal
 {
-	[[self window] makeKeyAndOrderFront:self];
-	int result = [NSApp runModalForWindow:[self window]];
-	[[self window] orderOut:self];
-	if( result == NSRunAbortedResponse )
-		return NO;
+	[self updatePreview];
 	
-	// once the user clicks "OK" we prompt them for the filename and save the compressed data.
 	NSSavePanel *savePanel = [NSSavePanel savePanel];
 	[savePanel setCanSelectHiddenExtension:YES];
 	[savePanel setExtensionHidden:YES];
 	[savePanel setCanCreateDirectories:YES];
-	NSString *fileExtension = [_formatPopUp indexOfSelectedItem]==0 ? @"png" : @"jpg";
+	int format = [[NSUserDefaults standardUserDefaults] integerForKey:@"imageExportFormat"];
+	NSString *fileExtension = format==0 ? @"png" : @"jpg";
 	[savePanel setRequiredFileType:fileExtension];
-	if( [savePanel runModalForDirectory:[_path stringByDeletingLastPathComponent] file:[[[_path lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:fileExtension]] != NSOKButton )
+	[self setWindow:savePanel];
+	[_auxView setFrame:NSMakeRect(0.0f,0.0f,361.0f,236.0f)];
+	[savePanel setAccessoryView:_auxView];
+	[_auxView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable ];
+	[savePanel setTitle:@"Export Image"];
+	// we don't know exactly how big the aux view space is so we're trying to make
+	// sure  our aux view doesn't get smashed
+	[_auxView setFrame:[[_auxView superview] bounds]];
+	if( [savePanel runModalForDirectory:[_path stringByDeletingLastPathComponent] file:[[[_path lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:fileExtension]] != NSOKButton ) {
+		[savePanel setAccessoryView:nil];
+		[_compressedData release];
+		_compressedData = nil;
+		[_originalImage release];
+		_originalImage = nil;
+		
 		return NO;
-	
+	}
+	[savePanel setAccessoryView:nil];
 	NSString *newFileName = [savePanel filename];
 	[_compressedData writeToFile:newFileName atomically:YES];
 	
