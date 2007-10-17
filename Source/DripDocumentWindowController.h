@@ -17,6 +17,7 @@
 {
 	IBOutlet ScrollingSketchView *_sketchView;
 	IBOutlet NSSlider *_zoomSlider;
+	IBOutlet NSTextField *_zoomText;
 	IBOutlet NSProgressIndicator *_exportProgressBar;
 	
 	NSTimer *_playbackTimer;

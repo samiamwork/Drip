@@ -28,6 +28,7 @@
             SUPERCLASS = NSObject; 
         }, 
         {CLASS = BrushView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {CLASS = ColoredView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {
             ACTIONS = {setZoom = id; }; 
             CLASS = DripDocumentWindowController; 
@@ -36,6 +37,7 @@
                 "_exportProgressBar" = NSProgressIndicator; 
                 "_sketchView" = ScrollingSketchView; 
                 "_zoomSlider" = NSSlider; 
+                "_zoomText" = NSTextField; 
             }; 
             SUPERCLASS = NSWindowController; 
         }, 

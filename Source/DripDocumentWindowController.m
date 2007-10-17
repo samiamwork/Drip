@@ -20,6 +20,9 @@
 	Canvas *newCanvas = [(DripDocument*)[self document] canvas];
 	[_sketchView setCanvas:newCanvas];
 	[_sketchView setBrush:[(DripDocument*)[self document] brush]];
+	// set the zoom slider
+	[_zoomSlider setFloatValue:log10f([_sketchView zoom])];
+	[_zoomText setStringValue:[NSString stringWithFormat:@"%.02f%%",[_sketchView zoom]*100.0f]];
 	
 	[(DripDocument*)[self document] setScrollingSketchView:_sketchView];
 	
@@ -185,6 +188,7 @@
 {
 	[_sketchView setZoom:powf(10.0f,[sender floatValue])];
 	[_zoomSlider setFloatValue:log10f([_sketchView zoom])];
+	[_zoomText setStringValue:[NSString stringWithFormat:@"%.02f%%",[_sketchView zoom]*100.0f]];
 }
 
 - (void)windowDidBecomeMain:(NSNotification *)notification
