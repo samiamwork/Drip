@@ -97,6 +97,16 @@ static ImageExporter *g_sharedController;
 	
 	[_compressedData release];
 	_compressedData = [previewData retain];
+	
+	float fileSize = [_compressedData length];
+	NSArray *sizeExtensions = [NSArray arrayWithObjects:@"B",@"KB",@"MB",@"GB",nil];
+	unsigned int extensionIndex = 0;
+	while( fileSize > 1024.0f && extensionIndex < [sizeExtensions count] ) {
+		fileSize /= 1024.0f;
+		extensionIndex++;
+	}
+	
+	[_sizeField setStringValue:[NSString stringWithFormat:@"%.02f %@",fileSize,[sizeExtensions objectAtIndex:extensionIndex]]];
 }
 
 - (IBAction)qualityChanged:(id)sender

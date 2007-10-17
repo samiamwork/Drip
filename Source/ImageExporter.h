@@ -14,6 +14,7 @@
 	IBOutlet NSPopUpButton *_formatPopUp;
 	IBOutlet NSSlider *_qualitySlider;
 	IBOutlet NSImageView *_preview;
+	IBOutlet NSTextField *_sizeField;
 	
 	NSBitmapImageRep *_originalImage;
 	NSData *_compressedData;

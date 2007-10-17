@@ -10,6 +10,7 @@
                 "_formatPopUp" = NSPopUpButton; 
                 "_preview" = NSImageView; 
                 "_qualitySlider" = NSSlider; 
+                "_sizeField" = NSTextField; 
             }; 
             SUPERCLASS = NSWindowController; 
         }
