@@ -30,7 +30,7 @@
         {CLASS = BrushView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {CLASS = ColoredView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {
-            ACTIONS = {setZoom = id; }; 
+            ACTIONS = {setZoom = id; zoomIn = id; zoomOut = id; }; 
             CLASS = DripDocumentWindowController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
@@ -42,6 +42,7 @@
             SUPERCLASS = NSWindowController; 
         }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = ImageButton; LANGUAGE = ObjC; SUPERCLASS = NSButton; }, 
         {
             ACTIONS = {addLayer = id; deleteLayer = id; setOpacity = id; }; 
             CLASS = LayerController; 
@@ -61,6 +62,7 @@
         }, 
         {CLASS = MyScrollView; LANGUAGE = ObjC; SUPERCLASS = NSScrollView; }, 
         {CLASS = ScrollingSketchView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {CLASS = ShortcutButton; LANGUAGE = ObjC; SUPERCLASS = NSButton; }, 
         {
             ACTIONS = {selectBrush = id; }; 
             CLASS = SketchController; 

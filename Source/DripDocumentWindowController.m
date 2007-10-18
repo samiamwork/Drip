@@ -191,6 +191,48 @@
 	[_zoomText setStringValue:[NSString stringWithFormat:@"%.02f%%",[_sketchView zoom]*100.0f]];
 }
 
+- (IBAction)zoomIn:(id)sender
+{
+	float currentZoom = [_sketchView zoom];
+	if( currentZoom >= 1.0f )
+		currentZoom = floorf( currentZoom ) + 1.0f;
+	else if( currentZoom >= 0.5f )
+		currentZoom = 1.0f;
+	else if( currentZoom >= 0.25f )
+		currentZoom = 0.5f;
+	else if( currentZoom >= 0.2f )
+		currentZoom = 0.25f;
+	else if( currentZoom >= 0.1f )
+		currentZoom = 0.2f;
+	else
+		currentZoom = 0.1f;
+	
+	[_sketchView setZoom:currentZoom];
+	[_zoomSlider setFloatValue:log10f([_sketchView zoom])];
+	[_zoomText setStringValue:[NSString stringWithFormat:@"%.02f%%",[_sketchView zoom]*100.0f]];
+}
+
+- (IBAction)zoomOut:(id)sender
+{
+	float currentZoom = [_sketchView zoom];
+	if( currentZoom > 1.0f )
+		currentZoom = ceilf( currentZoom ) - 1.0f;
+	else if( currentZoom > 0.5f )
+		currentZoom = 0.5f;
+	else if( currentZoom > 0.25f )
+		currentZoom = 0.25f;
+	else if( currentZoom > 0.2f )
+		currentZoom = 0.2f;
+	else if( currentZoom > 0.1f )
+		currentZoom = 0.1f;
+	else
+		currentZoom = 0.1f;
+	
+	[_sketchView setZoom:currentZoom];
+	[_zoomSlider setFloatValue:log10f([_sketchView zoom])];
+	[_zoomText setStringValue:[NSString stringWithFormat:@"%.02f%%",[_sketchView zoom]*100.0f]];
+}
+
 - (void)windowDidBecomeMain:(NSNotification *)notification
 {
 	[[DripInspectors sharedController] setDripDocument:[self document]];
