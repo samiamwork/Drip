@@ -44,6 +44,7 @@ typedef struct PressurePoint {
 	float _hardness;
 	float _spacing;
 	float _strokeOpacity;
+	CGBlendMode _blendMode;
 	BOOL _pressureAffectsFlow;
 	BOOL _pressureAffectsSize;
 	unsigned char *_dabData;
@@ -69,6 +70,9 @@ typedef struct PressurePoint {
 - (void)setStrokeOpacity:(float)newStrokeOpacity;
 - (float)strokeOpacity;
 - (BOOL)usesStrokeOpacity;
+- (void)setBlendMode:(CGBlendMode)newBlendMode;
+- (CGBlendMode)blendMode;
+- (BOOL)usesBlendMode;
 - (void)setPressureAffectsFlow:(BOOL)willAffectFlow;
 - (BOOL)pressureAffectsFlow;
 - (BOOL)usesPressureAffectsFlow;
@@ -82,7 +86,7 @@ typedef struct PressurePoint {
 - (NSColor*)color;
 - (BOOL)usesColor;
 
-- (void)createBezierCurveWithCrossover:(float)crossover;
+//- (void)createBezierCurveWithCrossover:(float)crossover;
 
 - (void)drawDabAtPoint:(NSPoint)aPoint;
 

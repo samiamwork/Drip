@@ -24,6 +24,7 @@
 		_spacing = 0.2f;
 		_resaturation = 1.0f;
 		_strokeOpacity = 1.0f;
+		_blendMode = kCGBlendModeNormal;
 		_pressureAffectsFlow = NO;
 		_pressureAffectsSize = YES;
 		_pressureAffectsResaturation = YES;
@@ -32,7 +33,7 @@
 	return self;
 }
 
-- (id)initWithType:(BrushType)theType size:(float)theSize hardness:(float)theHardness spacing:(float)theSpacing resaturation:(float)theResaturation strokeOpacity:(float)theStrokeOpacity pressureAffectsFlow:(BOOL)willAffectFlow pressureAffectsSize:(BOOL)willAffectSize pressureAffectsResaturation:(BOOL)willAffectResaturation color:(NSColor *)theColor;
+- (id)initWithType:(BrushType)theType size:(float)theSize hardness:(float)theHardness spacing:(float)theSpacing resaturation:(float)theResaturation strokeOpacity:(float)theStrokeOpacity blendMode:(CGBlendMode)blendMode pressureAffectsFlow:(BOOL)willAffectFlow pressureAffectsSize:(BOOL)willAffectSize pressureAffectsResaturation:(BOOL)willAffectResaturation color:(NSColor *)theColor;
 {
 	if( (self = [super init]) ) {
 		_type = theType;
@@ -41,6 +42,7 @@
 		_hardness = theHardness;
 		_resaturation = theResaturation;
 		_strokeOpacity = theStrokeOpacity;
+		_blendMode = blendMode;
 		_pressureAffectsFlow = willAffectFlow;
 		_pressureAffectsSize = willAffectSize;
 		_pressureAffectsResaturation = willAffectResaturation;
@@ -52,7 +54,7 @@
 	return self;
 }
 
-#define EVENT_LENGTH (EVENT_HEADER_LENGTH+1+sizeof(CFSwappedFloat32)*9+1)
+#define EVENT_LENGTH (EVENT_HEADER_LENGTH+1+sizeof(CFSwappedFloat32)*9+sizeof(UInt32)+1)
 + (id)eventWithBytes:(void *)bytes length:(unsigned int)length
 {
 	unsigned char eventLength = *(unsigned char *)bytes;
@@ -92,6 +94,8 @@
 	bytes += sizeof(CFSwappedFloat32);
 	strokeOpacity = CFConvertFloat32SwappedToHost( *(CFSwappedFloat32 *)bytes );
 	bytes += sizeof(CFSwappedFloat32);
+	CGBlendMode blendMode = CFSwapInt32BigToHost( *(UInt32 *)bytes );
+	bytes += sizeof( UInt32 );
 	
 	pressureAffects = *(unsigned char *)bytes;
 	
@@ -101,6 +105,7 @@
 												 spacing:spacing
 											resaturation:resaturation
 										   strokeOpacity:strokeOpacity
+											   blendMode:blendMode
 									 pressureAffectsFlow:(pressureAffects & 1)
 									 pressureAffectsSize:(pressureAffects & 2)
 							 pressureAffectsResaturation:(pressureAffects & 4)
@@ -170,6 +175,10 @@
 {
 	return _strokeOpacity;
 }
+- (CGBlendMode)blendMode
+{
+	return _blendMode;
+}
 - (BOOL)pressureAffectsFlow
 {
 	return _pressureAffectsFlow;
@@ -191,7 +200,7 @@
 
 - (unsigned int)hash
 {
-	return (*(UInt32 *)&_size ^ *(UInt32 *)&_hardness ^ *(UInt32 *)&_spacing ^ *(UInt32 *)&_resaturation ^ *(UInt32 *)&_strokeOpacity ^ *(UInt32 *)&_RGBAColor[0] ^
+	return (*(UInt32 *)&_size ^ *(UInt32 *)&_hardness ^ *(UInt32 *)&_spacing ^ *(UInt32 *)&_resaturation ^ *(UInt32 *)&_strokeOpacity ^ _blendMode ^ *(UInt32 *)&_RGBAColor[0] ^
 			*(UInt32 *)&_RGBAColor[1] ^ *(UInt32 *)&_RGBAColor[2] ^ *(UInt32 *)&_RGBAColor[3] ^ (_pressureAffectsFlow ? 1:0 | _pressureAffectsSize ? 2:0 | _pressureAffectsResaturation ? 4:0) ^
 			_type);
 }
@@ -208,6 +217,7 @@
 		_spacing == _settings->_spacing &&
 		_resaturation == _settings->_resaturation &&
 		_strokeOpacity == _settings->_strokeOpacity &&
+		_blendMode == _settings->_blendMode &&
 		_RGBAColor[0] == _settings->_RGBAColor[0] &&
 		_RGBAColor[1] == _settings->_RGBAColor[1] &&
 		_RGBAColor[2] == _settings->_RGBAColor[2] &&

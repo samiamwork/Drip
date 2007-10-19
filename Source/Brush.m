@@ -14,6 +14,7 @@ NSString *const kPaintBrushHardnessKey = @"paintBrushHardness";
 NSString *const kPaintBrushSpacingKey = @"paintBrushSpacing";
 NSString *const kPaintBrushResaturationKey = @"paintBrushResaturation";
 NSString *const kPaintBrushOpacityKey = @"paintBrushOpacity";
+NSString *const kPaintBrushBlendModeKey = @"paintBrushBlendMode";
 NSString *const kPaintBrushPressureAffectsSizeKey = @"paintBrushPressureAffectsSize";
 NSString *const kPaintBrushPressureAffectsFlowKey = @"paintBrushPressureAffectsFlow";
 NSString *const kPaintBrushPressureAffectsResaturationKey = @"paintBrushPressureAffectsResaturation";
@@ -29,6 +30,7 @@ NSString *const kPaintBrushColorKey = @"paintBrushColor";
 	[defaultPrefs setValue:[NSNumber numberWithFloat:0.2f] forKey:kPaintBrushSpacingKey];
 	[defaultPrefs setValue:[NSNumber numberWithFloat:1.0f] forKey:kPaintBrushResaturationKey];
 	[defaultPrefs setValue:[NSNumber numberWithFloat:1.0f] forKey:kPaintBrushOpacityKey];
+	[defaultPrefs setValue:[NSNumber numberWithInt:kCGBlendModeNormal] forKey:kPaintBrushBlendModeKey];
 	[defaultPrefs setValue:[NSNumber numberWithBool:YES] forKey:kPaintBrushPressureAffectsSizeKey];
 	[defaultPrefs setValue:[NSNumber numberWithBool:NO] forKey:kPaintBrushPressureAffectsFlowKey];
 	[defaultPrefs setValue:[NSNumber numberWithBool:NO] forKey:kPaintBrushPressureAffectsResaturationKey];
@@ -42,6 +44,7 @@ NSString *const kPaintBrushColorKey = @"paintBrushColor";
 	if( (self = [super init]) ) {
 		_dab = NULL;
 		_dabData = NULL;
+		_workLayer = nil;
 		[self setColor:[NSColor blackColor]];
 		
 		_brushSize = 0.0f;
@@ -50,12 +53,13 @@ NSString *const kPaintBrushColorKey = @"paintBrushColor";
 		[self setSpacing:0.25f];
 		[self setResaturation:1.0f];
 		[self setStrokeOpacity:1.0f];
+		[self setBlendMode:kCGBlendModeNormal];
 		[self setPressureAffectsResaturation:NO];
 		[self setPressureAffectsFlow:NO];
 		[self setPressureAffectsSize:YES];
 
-		_brushLookup = (float *)malloc(1001*sizeof(float));
-		[self createBezierCurveWithCrossover:0.4f];
+		//_brushLookup = (float *)malloc(1001*sizeof(float));
+		//[self createBezierCurveWithCrossover:0.4f];
 	}
 
 	return self;
@@ -63,7 +67,7 @@ NSString *const kPaintBrushColorKey = @"paintBrushColor";
 
 - (void)dealloc
 {
-	free(_brushLookup);
+	//free(_brushLookup);
 	CGImageRelease(_dab);
 	if( _dabData )
 		free(_dabData );
@@ -179,6 +183,7 @@ float valueWithCosCurve(float t, float crossover)
 {
 	[_workLayer release];
 	_workLayer = [[PaintLayer alloc] initWithWidth:(unsigned int)newCanvasSize.width height:(unsigned int)newCanvasSize.height];
+	[_workLayer setBlendMode:_blendMode];
 }
 
 - (void)setSize:(float)newSize
@@ -280,6 +285,20 @@ float valueWithCosCurve(float t, float crossover)
 	return YES;
 }
 
+- (void)setBlendMode:(CGBlendMode)newBlendMode
+{
+	_blendMode = newBlendMode;
+	[_workLayer setBlendMode:_blendMode];
+}
+- (CGBlendMode)blendMode
+{
+	return _blendMode;
+}
+- (BOOL)usesBlendMode
+{
+	return YES;
+}
+
 - (void)setPressureAffectsFlow:(BOOL)willAffectFlow
 {
 	_pressureAffectsFlow = willAffectFlow;
@@ -332,7 +351,7 @@ float valueWithCosCurve(float t, float crossover)
 {
 	return YES;
 }
-
+/*
 - (void)createBezierCurveWithCrossover:(float)crossover
 {
 	int i;
@@ -382,7 +401,7 @@ float valueWithCosCurve(float t, float crossover)
 	}
 	
 }
-
+*/
 static void render_dab(float x, float y, PaintLayer *theLayer, float size, float *dabLookup, unsigned char red, unsigned char green, unsigned char blue, float alpha)
 {
 	int row,col;
@@ -628,6 +647,7 @@ void sampleBitmap(unsigned char *bitmap, unsigned int pitch, unsigned int width,
 	[self setSpacing:[theSettings spacing]];
 	[self setResaturation:[theSettings resaturation]];
 	[self setStrokeOpacity:[theSettings strokeOpacity]];
+	[self setBlendMode:[theSettings blendMode]];
 	[self setPressureAffectsFlow:[theSettings pressureAffectsFlow]];
 	[self setPressureAffectsSize:[theSettings pressureAffectsSize]];
 	[self setPressureAffectsResaturation:[theSettings pressureAffectsResaturation]];
@@ -635,7 +655,7 @@ void sampleBitmap(unsigned char *bitmap, unsigned int pitch, unsigned int width,
 }
 - (DripEventBrushSettings *)settings
 {
-	return [[[DripEventBrushSettings alloc] initWithType:kBrushTypePaint size:_brushSize hardness:_hardness spacing:_spacing resaturation:_resaturation strokeOpacity:_strokeOpacity pressureAffectsFlow:_pressureAffectsFlow pressureAffectsSize:_pressureAffectsSize pressureAffectsResaturation:_pressureAffectsResaturation color:[NSColor colorWithCalibratedRed:_RGBAColor[0] green:_RGBAColor[1] blue:_RGBAColor[2] alpha:_RGBAColor[3]]] autorelease];
+	return [[[DripEventBrushSettings alloc] initWithType:kBrushTypePaint size:_brushSize hardness:_hardness spacing:_spacing resaturation:_resaturation strokeOpacity:_strokeOpacity blendMode:_blendMode pressureAffectsFlow:_pressureAffectsFlow pressureAffectsSize:_pressureAffectsSize pressureAffectsResaturation:_pressureAffectsResaturation color:[NSColor colorWithCalibratedRed:_RGBAColor[0] green:_RGBAColor[1] blue:_RGBAColor[2] alpha:_RGBAColor[3]]] autorelease];
 }
 
 - (void)saveSettings
@@ -647,6 +667,7 @@ void sampleBitmap(unsigned char *bitmap, unsigned int pitch, unsigned int width,
 	[standardDefaults setFloat:[self spacing] forKey:kPaintBrushSpacingKey];
 	[standardDefaults setFloat:[self resaturation] forKey:kPaintBrushResaturationKey];
 	[standardDefaults setFloat:[self strokeOpacity] forKey:kPaintBrushOpacityKey];
+	[standardDefaults setInteger:[self blendMode] forKey:kPaintBrushBlendModeKey];
 	[standardDefaults setBool:[self pressureAffectsSize] forKey:kPaintBrushPressureAffectsSizeKey];
 	[standardDefaults setBool:[self pressureAffectsFlow] forKey:kPaintBrushPressureAffectsFlowKey];
 	[standardDefaults setBool:[self pressureAffectsResaturation] forKey:kPaintBrushPressureAffectsResaturationKey];
@@ -662,6 +683,7 @@ void sampleBitmap(unsigned char *bitmap, unsigned int pitch, unsigned int width,
 	[self setSpacing:[standardDefaults floatForKey:kPaintBrushSpacingKey]];
 	[self setResaturation:[standardDefaults floatForKey:kPaintBrushResaturationKey]];
 	[self setStrokeOpacity:[standardDefaults floatForKey:kPaintBrushOpacityKey]];
+	[self setBlendMode:(CGBlendMode)[standardDefaults integerForKey:kPaintBrushBlendModeKey]];
 	[self setPressureAffectsSize:[standardDefaults boolForKey:kPaintBrushPressureAffectsSizeKey]];
 	[self setPressureAffectsFlow:[standardDefaults boolForKey:kPaintBrushPressureAffectsFlowKey]];
 	[self setPressureAffectsResaturation:[standardDefaults boolForKey:kPaintBrushPressureAffectsResaturationKey]];

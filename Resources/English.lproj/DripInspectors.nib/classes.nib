@@ -3,6 +3,7 @@
         {CLASS = AnimatingTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
         {
             ACTIONS = {
+                changeBlendMode = id; 
                 changeFlowExpression = id; 
                 changeHardness = id; 
                 changeResaturation = id; 
@@ -17,6 +18,7 @@
             CLASS = BrushController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                "_blendModePopUp" = NSPopUpButton; 
                 "_brushHardnessSlider" = NSSlider; 
                 "_brushHardnessText" = NSTextField; 
                 "_brushResaturationSlider" = NSSlider; 

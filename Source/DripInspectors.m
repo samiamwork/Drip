@@ -40,7 +40,8 @@ static DripInspectors *g_sharedController;
 	[super dealloc];
 }
 
-#define ADVANCED_VIEW_HEIGHT 112.0f
+//old value: 112.0f (assumes collapsed height of 26
+#define ADVANCED_VIEW_HEIGHT 133.0f
 
 - (void)awakeFromNib
 {

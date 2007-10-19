@@ -28,6 +28,7 @@ extern NSString *const DripPenEnteredNotification;
 	IBOutlet NSButton *_sizeExpressionCheckbox;
 	IBOutlet NSButton *_flowExpressionCheckbox;
 	IBOutlet NSButton *_resaturationExpressionCheckbox;
+	IBOutlet NSPopUpButton *_blendModePopUp;
 	IBOutlet BrushView *_brushView;
 	IBOutlet NSColorWell *_colorWell;
 	IBOutlet NSMatrix *_brushSelector;
@@ -51,6 +52,7 @@ extern NSString *const DripPenEnteredNotification;
 - (IBAction)changeSizeExpression:(id)sender;
 - (IBAction)changeFlowExpression:(id)sender;
 - (IBAction)changeResaturationExpression:(id)sender;
+- (IBAction)changeBlendMode:(id)sender;
 - (void)setBrush:(Brush*)brush;
 
 - (IBAction)selectBrush:(id)sender;

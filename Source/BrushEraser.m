@@ -227,6 +227,19 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	return NO;
 }
 
+- (void)setBlendMode:(CGBlendMode)newBlendMode
+{
+	_blendMode = kCGBlendModeNormal;
+}
+- (CGBlendMode)blendMode
+{
+	return kCGBlendModeNormal;
+}
+- (BOOL)usesBlendMode
+{
+	return NO;
+}
+
 - (void)setColor:(NSColor*)aColor
 {
 	_RGBAColor[0] = 0.0f;
@@ -272,7 +285,7 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 }
 - (DripEventBrushSettings *)settings
 {
-	return [[[DripEventBrushSettings alloc] initWithType:kBrushTypeEraser size:_brushSize hardness:_hardness spacing:_spacing resaturation:_resaturation strokeOpacity:_strokeOpacity pressureAffectsFlow:_pressureAffectsFlow pressureAffectsSize:_pressureAffectsSize pressureAffectsResaturation:_pressureAffectsResaturation color:[NSColor colorWithCalibratedRed:_RGBAColor[0] green:_RGBAColor[1] blue:_RGBAColor[2] alpha:_RGBAColor[3]]] autorelease];
+	return [[[DripEventBrushSettings alloc] initWithType:kBrushTypeEraser size:_brushSize hardness:_hardness spacing:_spacing resaturation:_resaturation strokeOpacity:_strokeOpacity blendMode:_blendMode pressureAffectsFlow:_pressureAffectsFlow pressureAffectsSize:_pressureAffectsSize pressureAffectsResaturation:_pressureAffectsResaturation color:[NSColor colorWithCalibratedRed:_RGBAColor[0] green:_RGBAColor[1] blue:_RGBAColor[2] alpha:_RGBAColor[3]]] autorelease];
 }
 
 - (void)saveSettings
