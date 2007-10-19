@@ -169,20 +169,36 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 	_currentBrush = brush;
 	
 	[_brushSizeSlider setFloatValue:[_currentBrush size]];
+	[_brushSizeSlider setEnabled:[_currentBrush usesSize]];
 	[_brushSizeText setIntValue:(unsigned int)[_currentBrush size]];
+	
 	[_brushHardnessSlider setFloatValue:[_currentBrush hardness]];
+	[_brushHardnessSlider setEnabled:[_currentBrush usesHardness]];
 	[_brushHardnessText setFloatValue:[_currentBrush hardness]];
+	
 	[_brushSpacingSlider setFloatValue:[_currentBrush spacing]];
+	[_brushSpacingSlider setEnabled:[_currentBrush usesSpacing]];
 	[_brushSpacingText setFloatValue:[_currentBrush spacing]];
+	
 	[_brushResaturationSlider setFloatValue:[_currentBrush resaturation]];
+	[_brushResaturationSlider setEnabled:[_currentBrush usesResaturation]];
 	[_brushResaturationText setFloatValue:[_currentBrush resaturation]];
-	[_brushStrokeOpacityText setFloatValue:[_currentBrush strokeOpacity]];
+	
+	[_brushStrokeOpacitySlider setEnabled:[_currentBrush usesStrokeOpacity]];
 	[_brushStrokeOpacitySlider setFloatValue:[_currentBrush strokeOpacity]];
+	[_brushStrokeOpacityText setFloatValue:[_currentBrush strokeOpacity]];
+	
 	[_blendModePopUp selectItemWithTag:[_currentBrush blendMode]];
+	[_blendModePopUp setEnabled:[_currentBrush usesBlendMode]];
 	
 	[_sizeExpressionCheckbox setState:[_currentBrush pressureAffectsSize]?NSOnState:NSOffState];
+	[_sizeExpressionCheckbox setEnabled:[_currentBrush usesPressureAffectsSize]];
+	
 	[_flowExpressionCheckbox setState:[_currentBrush pressureAffectsFlow]?NSOnState:NSOffState];
+	[_flowExpressionCheckbox setEnabled:[_currentBrush usesPressureAffectsFlow]];
+	
 	[_resaturationExpressionCheckbox setState:[_currentBrush pressureAffectsResaturation]?NSOnState:NSOffState];
+	[_resaturationExpressionCheckbox setEnabled:[_currentBrush usesPressureAffectsResaturation]];
 	
 	[_brushView setBrush:_currentBrush];
 	//[_currentBrush setColor:[_colorWell color]];
