@@ -10,7 +10,9 @@
 
 
 @interface ColoredView : NSView {
-
+	NSColor *_color;
 }
 
+- (NSColor *)color;
+- (void)setColor:(NSColor *)aColor;
 @end

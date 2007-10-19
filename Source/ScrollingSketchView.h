@@ -9,11 +9,12 @@
 #import <Cocoa/Cocoa.h>
 #import "Canvas.h"
 #import "Brush.h"
+#import "ColoredView.h"
 
 @interface ScrollingSketchView : NSView {
 	NSScroller *_verticalScroller;
 	NSScroller *_horizontalScroller;
-	NSView *_cornerView;
+	ColoredView *_cornerView;
 	Brush *_currentBrush;
 	
 	Canvas *_canvas;

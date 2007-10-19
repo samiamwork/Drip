@@ -31,7 +31,7 @@
 		[_horizontalScroller setTarget:self];
 		[_horizontalScroller setAction:@selector(horizontalScrollerClicked:)];
 		[_horizontalScroller setEnabled:YES];
-		_cornerView = [[NSView alloc] initWithFrame:NSMakeRect([_verticalScroller frame].origin.x,
+		_cornerView = [[ColoredView alloc] initWithFrame:NSMakeRect([_verticalScroller frame].origin.x,
 															   [_horizontalScroller frame].origin.y,
 															   [NSScroller scrollerWidth],[NSScroller scrollerWidth])];
 		[_cornerView setAutoresizingMask:NSViewMinXMargin|NSViewMaxYMargin];
@@ -109,6 +109,7 @@
 	
 	[_canvas drawRect:canvasDrawRect];
 	CGContextRestoreGState(cxt);
+	
 }
 
 - (BOOL)acceptsFirstMouse:(NSEvent *)theEvent
