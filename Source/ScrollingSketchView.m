@@ -563,7 +563,8 @@
 		else if( _canvasOrigin.x > 0.0f )
 			_canvasOrigin.x = 0.0f;
 		[self updateHorizontalScroller];
-	}
+	} else
+		[_cornerView removeFromSuperview];
 	
 }
 
