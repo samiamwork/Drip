@@ -150,8 +150,8 @@
 - (void)boundsCheckCanvas
 {
 	if( [_verticalScroller superview] == self ) {
-		if( _canvasOrigin.y + [_canvas size].height*_zoom < [self bounds].size.height ) {
-			_canvasOrigin.y = [self bounds].size.height-[_canvas size].height*_zoom;
+		if( _canvasOrigin.y + [_canvas size].height*_zoom < [self visibleHeight] ) {
+			_canvasOrigin.y = [self visibleHeight]-[_canvas size].height*_zoom;
 		} else if( _canvasOrigin.y > 0.0f ) {
 			_canvasOrigin.y = 0.0f;
 		}
