@@ -152,6 +152,8 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 - (IBAction)changeBlendMode:(id)sender
 {
 	[_currentBrush setBlendMode:[[sender selectedItem] tag]];
+	
+	[_currentBrush saveSettings];
 }
 
 - (void)setBrush:(Brush*)brush
