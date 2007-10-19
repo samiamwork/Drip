@@ -120,10 +120,7 @@
 	return YES;
 }
 - (void)mouseDown:(NSEvent *)theEvent
-{
-	if( [_canvas isPlayingBack] )
-		return;
-	
+{	
 	NSPoint clickPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 	PressurePoint theMousePoint = (PressurePoint){clickPoint.x, clickPoint.y, [theEvent pressure]};
 	theMousePoint.x = (theMousePoint.x - _canvasOrigin.x);
@@ -138,7 +135,10 @@
 		[self resetCursorRects];
 		return;
 	}
-	
+
+	if( [_canvas isPlayingBack] )
+		return;
+
 	NSRect drawnRect = [_canvas beginStrokeAtPoint:theMousePoint withBrush:_currentBrush];
 	
 	[[_canvas document] updateChangeCount:NSChangeDone];
@@ -165,10 +165,7 @@
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent
-{
-	if( [_canvas isPlayingBack] )
-		return;
-	
+{	
 	NSPoint newPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 	PressurePoint newPressurePoint = (PressurePoint){ newPoint.x, newPoint.y, [theEvent pressure] };
 	newPressurePoint.x -= _canvasOrigin.x;
@@ -191,6 +188,9 @@
 		[self setNeedsDisplay:YES];
 		return;
 	}
+	
+	if( [_canvas isPlayingBack] )
+		return;
 	
 	NSRect drawnRect = [_canvas continueStrokeAtPoint:newPressurePoint withBrush:_currentBrush];
 	
