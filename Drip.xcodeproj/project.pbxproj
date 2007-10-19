@@ -20,6 +20,9 @@
 		3E39DA910C6822CA00F0D3FD /* BrushController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E39DA900C6822CA00F0D3FD /* BrushController.m */; };
 		3E39DD1A0C69080500F0D3FD /* BrushEraser.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E39DD190C69080500F0D3FD /* BrushEraser.m */; };
 		3E39DF0D0C696EF600F0D3FD /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E39DF0C0C696EF600F0D3FD /* Carbon.framework */; };
+		3E4399A00CC95760008789DF /* minusDark.tif in Resources */ = {isa = PBXBuildFile; fileRef = 3E43999E0CC95760008789DF /* minusDark.tif */; };
+		3E4399A10CC95760008789DF /* plusDark.tif in Resources */ = {isa = PBXBuildFile; fileRef = 3E43999F0CC95760008789DF /* plusDark.tif */; };
+		3E4399A90CC96070008789DF /* collapse.tif in Resources */ = {isa = PBXBuildFile; fileRef = 3E4399A80CC96070008789DF /* collapse.tif */; };
 		3E4A61680CA47AF300C67DFC /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E4A61670CA47AF300C67DFC /* Quartz.framework */; };
 		3E4A63F40CA4EC1900C67DFC /* MovieEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E4A63F30CA4EC1900C67DFC /* MovieEncoder.m */; };
 		3E5488AB0B4C9572005ED4DA /* DripDocumentWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E5488AA0B4C9572005ED4DA /* DripDocumentWindowController.m */; };
@@ -93,6 +96,9 @@
 		3E39DD180C69080500F0D3FD /* BrushEraser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrushEraser.h; sourceTree = "<group>"; };
 		3E39DD190C69080500F0D3FD /* BrushEraser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BrushEraser.m; sourceTree = "<group>"; };
 		3E39DF0C0C696EF600F0D3FD /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		3E43999E0CC95760008789DF /* minusDark.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = minusDark.tif; sourceTree = "<group>"; };
+		3E43999F0CC95760008789DF /* plusDark.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = plusDark.tif; sourceTree = "<group>"; };
+		3E4399A80CC96070008789DF /* collapse.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = collapse.tif; sourceTree = "<group>"; };
 		3E4A61670CA47AF300C67DFC /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = /System/Library/Frameworks/Quartz.framework; sourceTree = "<absolute>"; };
 		3E4A63F20CA4EC1900C67DFC /* MovieEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MovieEncoder.h; sourceTree = "<group>"; };
 		3E4A63F30CA4EC1900C67DFC /* MovieEncoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MovieEncoder.m; sourceTree = "<group>"; };
@@ -225,6 +231,9 @@
 		2A37F4B8FDCFA73011CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				3E4399A80CC96070008789DF /* collapse.tif */,
+				3E43999E0CC95760008789DF /* minusDark.tif */,
+				3E43999F0CC95760008789DF /* plusDark.tif */,
 				3E0FA5920CC70183002D9247 /* minus.tif */,
 				3E0FA5930CC70183002D9247 /* minusPressed.tif */,
 				3E0FA5820CC6F821002D9247 /* plusPressed.tif */,
@@ -449,6 +458,9 @@
 				3E0FA5830CC6F821002D9247 /* plusPressed.tif in Resources */,
 				3E0FA5940CC70183002D9247 /* minus.tif in Resources */,
 				3E0FA5950CC70183002D9247 /* minusPressed.tif in Resources */,
+				3E4399A00CC95760008789DF /* minusDark.tif in Resources */,
+				3E4399A10CC95760008789DF /* plusDark.tif in Resources */,
+				3E4399A90CC96070008789DF /* collapse.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
