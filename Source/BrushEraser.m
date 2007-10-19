@@ -8,8 +8,28 @@
 
 #import "BrushEraser.h"
 
+NSString *const kEraserBrushSizeKey = @"eraserBrushSize";
+NSString *const kEraserBrushHardnessKey = @"eraserBrushHardness";
+NSString *const kEraserBrushSpacingKey = @"eraserBrushSpacing";
+NSString *const kEraserBrushOpacityKey = @"eraserBrushOpacity";
+NSString *const kEraserBrushPressureAffectsSizeKey = @"eraserBrushPressureAffectsSize";
+NSString *const kEraserBrushPressureAffectsFlowKey = @"eraserBrushPressureAffectsFlow";
 
 @implementation BrushEraser
+
++ (void)initialize
+{
+	NSMutableDictionary *defaultPrefs = [NSMutableDictionary dictionary];
+	
+	[defaultPrefs setValue:[NSNumber numberWithFloat:20.0f] forKey:kEraserBrushSizeKey];
+	[defaultPrefs setValue:[NSNumber numberWithFloat:0.8f] forKey:kEraserBrushHardnessKey];
+	[defaultPrefs setValue:[NSNumber numberWithFloat:0.2f] forKey:kEraserBrushSpacingKey];
+	[defaultPrefs setValue:[NSNumber numberWithFloat:1.0f] forKey:kEraserBrushOpacityKey];
+	[defaultPrefs setValue:[NSNumber numberWithBool:YES] forKey:kEraserBrushPressureAffectsSizeKey];
+	[defaultPrefs setValue:[NSNumber numberWithBool:NO] forKey:kEraserBrushPressureAffectsFlowKey];
+	
+	[[NSUserDefaults standardUserDefaults] registerDefaults:defaultPrefs];
+}
 /*
 static void render_dab(float x, float y, PaintLayer *theLayer, float size, float *dabLookup, unsigned char red, unsigned char green, unsigned char blue, float alpha)
 {
@@ -254,4 +274,29 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 {
 	return [[[DripEventBrushSettings alloc] initWithType:kBrushTypeEraser size:_brushSize hardness:_hardness spacing:_spacing resaturation:_resaturation strokeOpacity:_strokeOpacity pressureAffectsFlow:_pressureAffectsFlow pressureAffectsSize:_pressureAffectsSize pressureAffectsResaturation:_pressureAffectsResaturation color:[NSColor colorWithCalibratedRed:_RGBAColor[0] green:_RGBAColor[1] blue:_RGBAColor[2] alpha:_RGBAColor[3]]] autorelease];
 }
+
+- (void)saveSettings
+{
+	NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+	
+	[standardDefaults setFloat:[self size] forKey:kEraserBrushSizeKey];
+	[standardDefaults setFloat:[self hardness] forKey:kEraserBrushHardnessKey];
+	[standardDefaults setFloat:[self spacing] forKey:kEraserBrushSpacingKey];
+	[standardDefaults setFloat:[self strokeOpacity] forKey:kEraserBrushOpacityKey];
+	[standardDefaults setBool:[self pressureAffectsSize] forKey:kEraserBrushPressureAffectsSizeKey];
+	[standardDefaults setBool:[self pressureAffectsFlow] forKey:kEraserBrushPressureAffectsFlowKey];
+}
+
+- (void)loadSettings
+{
+	NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+	
+	[self setSize:[standardDefaults floatForKey:kEraserBrushSizeKey]];
+	[self setHardness:[standardDefaults floatForKey:kEraserBrushHardnessKey]];
+	[self setSpacing:[standardDefaults floatForKey:kEraserBrushSpacingKey]];
+	[self setStrokeOpacity:[standardDefaults floatForKey:kEraserBrushOpacityKey]];
+	[self setPressureAffectsSize:[standardDefaults boolForKey:kEraserBrushPressureAffectsSizeKey]];
+	[self setPressureAffectsFlow:[standardDefaults boolForKey:kEraserBrushPressureAffectsFlowKey]];
+}
+
 @end

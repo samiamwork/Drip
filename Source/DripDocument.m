@@ -23,7 +23,11 @@
 		_canvas = nil;
 		
 		_brush = [[Brush alloc] init];
+		[_brush loadSettings];
+		
 		_eraser = [[BrushEraser alloc] init];
+		[_eraser loadSettings];
+		
 		_currentBrush = _brush;
     }
     return self;
@@ -31,19 +35,15 @@
 
 - (id)initWithWidth:(unsigned int)width height:(unsigned int)height backgroundColor:(NSColor *)aColor
 {
-	if( (self = [super init]) ) {
+	if( (self = [self init]) ) {
 		_canvasWidth = width;
 		_canvasHeight = height;
 		
 		_canvas = [[Canvas alloc] initWithWidth:_canvasWidth  height:_canvasHeight backgroundColor:aColor];
 		[_canvas setDocument:self];
 		
-		_brush = [[Brush alloc] init];
 		[_brush setCanvasSize:NSMakeSize(width,height)];
-		_eraser = [[BrushEraser alloc] init];
 		[_eraser setCanvasSize:[_canvas size]];
-		
-		_currentBrush = _brush;
 	}
 	
 	return self;

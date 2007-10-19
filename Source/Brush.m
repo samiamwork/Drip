@@ -9,7 +9,33 @@
 #import "Brush.h"
 
 
+NSString *const kPaintBrushSizeKey = @"paintBrushSize";
+NSString *const kPaintBrushHardnessKey = @"paintBrushHardness";
+NSString *const kPaintBrushSpacingKey = @"paintBrushSpacing";
+NSString *const kPaintBrushResaturationKey = @"paintBrushResaturation";
+NSString *const kPaintBrushOpacityKey = @"paintBrushOpacity";
+NSString *const kPaintBrushPressureAffectsSizeKey = @"paintBrushPressureAffectsSize";
+NSString *const kPaintBrushPressureAffectsFlowKey = @"paintBrushPressureAffectsFlow";
+NSString *const kPaintBrushPressureAffectsResaturationKey = @"paintBrushPressureAffectsResaturation";
+NSString *const kPaintBrushColorKey = @"paintBrushColor";
+
 @implementation Brush
+
++ (void)initialize
+{
+	NSMutableDictionary *defaultPrefs = [NSMutableDictionary dictionary];
+	[defaultPrefs setValue:[NSNumber numberWithFloat:20.0f] forKey:kPaintBrushSizeKey];
+	[defaultPrefs setValue:[NSNumber numberWithFloat:0.8f] forKey:kPaintBrushHardnessKey];
+	[defaultPrefs setValue:[NSNumber numberWithFloat:0.2f] forKey:kPaintBrushSpacingKey];
+	[defaultPrefs setValue:[NSNumber numberWithFloat:1.0f] forKey:kPaintBrushResaturationKey];
+	[defaultPrefs setValue:[NSNumber numberWithFloat:1.0f] forKey:kPaintBrushOpacityKey];
+	[defaultPrefs setValue:[NSNumber numberWithBool:YES] forKey:kPaintBrushPressureAffectsSizeKey];
+	[defaultPrefs setValue:[NSNumber numberWithBool:NO] forKey:kPaintBrushPressureAffectsFlowKey];
+	[defaultPrefs setValue:[NSNumber numberWithBool:NO] forKey:kPaintBrushPressureAffectsResaturationKey];
+	[defaultPrefs setValue:[NSArchiver archivedDataWithRootObject:[NSColor blackColor]] forKey:kPaintBrushColorKey];
+	
+	[[NSUserDefaults standardUserDefaults] registerDefaults:defaultPrefs];
+}
 
 - (id)init
 {
@@ -610,5 +636,35 @@ void sampleBitmap(unsigned char *bitmap, unsigned int pitch, unsigned int width,
 - (DripEventBrushSettings *)settings
 {
 	return [[[DripEventBrushSettings alloc] initWithType:kBrushTypePaint size:_brushSize hardness:_hardness spacing:_spacing resaturation:_resaturation strokeOpacity:_strokeOpacity pressureAffectsFlow:_pressureAffectsFlow pressureAffectsSize:_pressureAffectsSize pressureAffectsResaturation:_pressureAffectsResaturation color:[NSColor colorWithCalibratedRed:_RGBAColor[0] green:_RGBAColor[1] blue:_RGBAColor[2] alpha:_RGBAColor[3]]] autorelease];
+}
+
+- (void)saveSettings
+{
+	NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+	
+	[standardDefaults setFloat:[self size] forKey:kPaintBrushSizeKey];
+	[standardDefaults setFloat:[self hardness] forKey:kPaintBrushHardnessKey];
+	[standardDefaults setFloat:[self spacing] forKey:kPaintBrushSpacingKey];
+	[standardDefaults setFloat:[self resaturation] forKey:kPaintBrushResaturationKey];
+	[standardDefaults setFloat:[self strokeOpacity] forKey:kPaintBrushOpacityKey];
+	[standardDefaults setBool:[self pressureAffectsSize] forKey:kPaintBrushPressureAffectsSizeKey];
+	[standardDefaults setBool:[self pressureAffectsFlow] forKey:kPaintBrushPressureAffectsFlowKey];
+	[standardDefaults setBool:[self pressureAffectsResaturation] forKey:kPaintBrushPressureAffectsResaturationKey];
+	[standardDefaults setObject:[NSArchiver archivedDataWithRootObject:[self color]] forKey:kPaintBrushColorKey];
+}
+
+- (void)loadSettings
+{
+	NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+	
+	[self setSize:[standardDefaults floatForKey:kPaintBrushSizeKey]];
+	[self setHardness:[standardDefaults floatForKey:kPaintBrushHardnessKey]];
+	[self setSpacing:[standardDefaults floatForKey:kPaintBrushSpacingKey]];
+	[self setResaturation:[standardDefaults floatForKey:kPaintBrushResaturationKey]];
+	[self setStrokeOpacity:[standardDefaults floatForKey:kPaintBrushOpacityKey]];
+	[self setPressureAffectsSize:[standardDefaults boolForKey:kPaintBrushPressureAffectsSizeKey]];
+	[self setPressureAffectsFlow:[standardDefaults boolForKey:kPaintBrushPressureAffectsFlowKey]];
+	[self setPressureAffectsResaturation:[standardDefaults boolForKey:kPaintBrushPressureAffectsResaturationKey]];
+	[self setColor:[NSUnarchiver unarchiveObjectWithData:[standardDefaults dataForKey:kPaintBrushColorKey]]];
 }
 @end

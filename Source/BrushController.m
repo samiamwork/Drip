@@ -59,16 +59,22 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 - (IBAction)changeSizeExpression:(id)sender
 {
 	[_currentBrush setPressureAffectsSize:[sender state]==NSOnState?YES:NO];
+	
+	[_currentBrush saveSettings];
 }
 
 - (IBAction)changeFlowExpression:(id)sender
 {
 	[_currentBrush setPressureAffectsFlow:[sender state]==NSOnState?YES:NO];
+	
+	[_currentBrush saveSettings];
 }
 
 - (IBAction)changeResaturationExpression:(id)sender
 {
 	[_currentBrush setPressureAffectsResaturation:[sender state]==NSOnState?YES:NO];
+	
+	[_currentBrush saveSettings];
 }
 
 - (IBAction)changeSize:(id)sender
@@ -77,6 +83,8 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 	[_brushSizeText setIntValue:[sender intValue]];
 	[_brushView setNeedsDisplay:YES];
 	[_sketchView rebuildBrushCursor];
+	
+	[_currentBrush saveSettings];
 }
 
 - (IBAction)changeHardness:(id)sender
@@ -84,6 +92,8 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 	[_currentBrush setHardness:[sender floatValue]];
 	[_brushHardnessText setFloatValue:[_currentBrush hardness]];
 	[_brushView setNeedsDisplay:YES];
+	
+	[_currentBrush saveSettings];
 }
 
 - (IBAction)changeSpacing:(id)sender
@@ -91,6 +101,8 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 	[_currentBrush setSpacing:[sender floatValue]];
 	[_brushSpacingText setFloatValue:[_currentBrush spacing]];
 	[_brushSpacingSlider setFloatValue:[_currentBrush spacing]];
+	
+	[_currentBrush saveSettings];
 }
 
 - (IBAction)changeResaturation:(id)sender
@@ -98,6 +110,8 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 	[_currentBrush setResaturation:[sender floatValue]];
 	[_brushResaturationText setFloatValue:[_currentBrush resaturation]];
 	[_brushResaturationSlider setFloatValue:[_currentBrush resaturation]];
+	
+	[_currentBrush saveSettings];
 }
 
 - (IBAction)changeStrokeOpacity:(id)sender
@@ -105,6 +119,8 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 	[_currentBrush setStrokeOpacity:[sender floatValue]];
 	[_brushStrokeOpacityText setFloatValue:[_currentBrush strokeOpacity]];
 	[_brushStrokeOpacitySlider setFloatValue:[_currentBrush strokeOpacity]];
+	
+	[_currentBrush saveSettings];
 }
 
 // TODO: should set the buttons to reflect this since we won't always be called from the UI
@@ -118,6 +134,8 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 	if( brush == _currentBrush )
 		return;
 	
+	//save the settings on the old brush before setting the new one
+	[_currentBrush saveSettings];
 	_currentBrush = brush;
 	
 	[_brushSizeSlider setFloatValue:[_currentBrush size]];
@@ -137,8 +155,11 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 	
 	[_brushView setBrush:_currentBrush];
 	//[_currentBrush setColor:[_colorWell color]];
-	if( [brush isMemberOfClass:[Brush class]] )
+	if( [brush isMemberOfClass:[Brush class]] ) {
+		[_colorWell setEnabled:YES];
 		[_colorWell setColor:[brush color]];
+	} else
+		[_colorWell setEnabled:NO];
 	
 	[_sketchView setBrush:_currentBrush];
 }
@@ -146,6 +167,7 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 - (IBAction)colorChanged:(id)sender
 {
 	[_currentBrush setColor:[sender color]];
+	[_currentBrush saveSettings];
 }
 
 - (IBAction)selectBrush:(id)sender

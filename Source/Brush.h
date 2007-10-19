@@ -11,6 +11,17 @@
 #import "DripEventBrushSettings.h"
 #import "Layer.h"
 
+extern NSString *const kPaintBrushSizeKey;
+extern NSString *const kPaintBrushHardnessKey;
+extern NSString *const kPaintBrushSpacingKey;
+extern NSString *const kPaintBrushResaturationKey;
+extern NSString *const kPaintBrushOpacityKey;
+extern NSString *const kPaintBrushPressureAffectsSizeKey;
+extern NSString *const kPaintBrushPressureAffectsFlowKey;
+extern NSString *const kPaintBrushPressureAffectsResaturationKey;
+extern NSString *const kPaintBrushColorKey;
+
+
 typedef struct PressurePoint {
 	float x;
 	float y;
@@ -84,4 +95,6 @@ typedef struct PressurePoint {
 
 - (void)changeSettings:(DripEventBrushSettings *)theSettings;
 - (DripEventBrushSettings *)settings;
+- (void)saveSettings;
+- (void)loadSettings;
 @end

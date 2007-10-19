@@ -7,6 +7,7 @@
 //
 
 #import "CleanColorWell.h"
+#import "CheckerPattern.h"
 
 @implementation CleanColorWell
 
@@ -17,6 +18,9 @@
 	NSRectFill( bounds );
 	CGContextRef cxt = [[NSGraphicsContext currentContext] graphicsPort];
 
+	if( ![self isEnabled] )
+		drawStripePatternInContextWithPhase( cxt, CGSizeZero, *(CGRect *)&bounds, 20.0f );
+	
 	CGContextSaveGState( cxt ); {
 		NSRect tinyRect = NSMakeRect(5.0f,5.0f,5.0f,5.0f);
 		NSBezierPath *circle = [NSBezierPath bezierPathWithOvalInRect:tinyRect];
@@ -39,6 +43,7 @@
 		[[NSColor blueColor] setFill];
 		[circle fill];
 	} CGContextRestoreGState( cxt );
+	
 	[[NSColor colorWithCalibratedWhite:0.6f alpha:1.0f] setStroke];
 	CGContextMoveToPoint( cxt, 0.0f,0.5f);
 	CGContextAddLineToPoint( cxt, bounds.size.width,0.5f);
