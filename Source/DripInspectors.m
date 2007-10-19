@@ -45,7 +45,9 @@ static DripInspectors *g_sharedController;
 
 - (void)awakeFromNib
 {
+	[self setShouldCascadeWindows:NO];
 	[(NSPanel *)[self window] setBecomesKeyOnlyIfNeeded:YES];
+	[[self window] setFrameAutosaveName:@"ToolsInspector"];
 	
 	// IB is broken and won't let us set max = min so we do it ourselves.
 	[[self window] setMaxSize:NSMakeSize([[self window] minSize].width,FLT_MAX)];
