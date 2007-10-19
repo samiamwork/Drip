@@ -15,10 +15,19 @@
 {
 	[[self image] setFlipped:YES];
 	[[self alternateImage] setFlipped:YES];
+	
+	NSImage *theImage = nil;
 	if( [[self cell] isHighlighted] )
-		[[self alternateImage] drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0f];
+		theImage = [self alternateImage];
 	else
-		[[self image] drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0f];
+		theImage = [self image];
+	
+	if( !theImage )
+		return;
+	
+	NSSize imageSize = [theImage size];
+	NSRect bounds = [self bounds];
+	[theImage drawAtPoint:NSMakePoint(floorf((bounds.size.width-imageSize.width)/2.0f), floorf((bounds.size.height-imageSize.height)/2.0f)) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0f];
 }
 
 @end
