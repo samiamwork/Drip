@@ -8,8 +8,6 @@
 
 #import "BrushController.h"
 
-NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
-
 @implementation BrushController
 
 - (id)init
@@ -17,8 +15,9 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 	if( (self = [super init]) ) {
 		_currentBrush = nil;
 		
-		_paintBrush = nil;
-		_eraserBrush = nil;
+		//_paintBrush = nil;
+		//_eraserBrush = nil;
+		_artist = nil;
 		_sketchView = nil;
 		
 		_currentDocument = nil;
@@ -29,8 +28,9 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 
 - (void)dealloc
 {
-	[_paintBrush release];
-	[_eraserBrush release];
+	//[_paintBrush release];
+	//[_eraserBrush release];
+	[_artist release];
 	[_sketchView release];
 
 	[super dealloc];
@@ -70,16 +70,23 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 - (void)penEntered:(NSNotification *)theNotification
 {
 	NSEvent *penEnteredEvent = [[theNotification userInfo] objectForKey:@"event"];
+	if( ![penEnteredEvent isEnteringProximity] ) {
+		[_artist setUsingPenTip:YES];
+		[self setBrush:[_artist currentBrush]];
+		return;
+	}
+	
 	switch( [penEnteredEvent pointingDeviceType] ) {
 		case NSEraserPointingDevice:
-			[self setBrush:_eraserBrush];
+			[_artist setUsingPenTip:NO];
 			break;
 		case NSPenPointingDevice:
 		default:
-			[self setBrush:_paintBrush];
+			[_artist setUsingPenTip:YES];
 			break;
 	}
 	
+	[self setBrush:[_artist currentBrush]];
 }
 
 - (IBAction)changeSizeExpression:(id)sender
@@ -158,7 +165,7 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 
 - (void)setBrush:(Brush*)brush
 {
-	if( brush == _paintBrush )
+	if( brush == [_artist paintBrush] )
 		[_brushSelector selectCellWithTag:1];
 	else
 		[_brushSelector selectCellWithTag:2];
@@ -210,32 +217,27 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 	} else
 		[_colorWell setEnabled:NO];
 	
-	[_sketchView setBrush:_currentBrush];
+	[_sketchView rebuildBrushCursor];
 }
 
 - (IBAction)colorChanged:(id)sender
 {
-	[_currentBrush setColor:[sender color]];
+	[_artist setColor:[sender color]];
 	[_currentBrush saveSettings];
 }
 
 - (IBAction)selectBrush:(id)sender
-{
-	Brush *selectedBrush = nil;
-	
+{	
 	switch( [[sender selectedCell] tag] ) {
-		case 1:
-			selectedBrush = _paintBrush;
-			break;
 		case 2:
-			selectedBrush = _eraserBrush;
+			[_artist selectEraser];
 			break;
+		case 1:
 		default:
-			selectedBrush = _paintBrush;
+			[_artist selectPaintBrush];
 	}
 	
-	[self setBrush:selectedBrush];
-	[_currentDocument setCurrentBrush:_currentBrush];
+	[self setBrush:[_artist currentBrush]];
 }
 
 - (void)setControlsEnabled:(BOOL)isEnabled
@@ -296,12 +298,15 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 	
 	[self setScrollingSketchView:[newDocument scrollingSketchView]];
 	
+	[_artist release];
+	_artist = [[_currentDocument artist] retain];
+	/*
 	[_paintBrush release];
 	_paintBrush = [[_currentDocument brush] retain];
 	[_eraserBrush release];
 	_eraserBrush = [[_currentDocument eraser] retain];
-	
-	[self setBrush:[_currentDocument currentBrush]];
-	[self setControlsEnabled:YES];	
+	*/
+	[self setBrush:[_artist currentBrush]];
+	[self setControlsEnabled:YES];
 }
 @end

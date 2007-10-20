@@ -12,8 +12,6 @@
 #import "ScrollingSketchView.h"
 #import "DripDocument.h"
 
-extern NSString *const DripPenEnteredNotification;
-
 @interface BrushController : NSObject {
 	IBOutlet NSSlider *_brushSizeSlider;
 	IBOutlet NSTextField *_brushSizeText;
@@ -36,8 +34,9 @@ extern NSString *const DripPenEnteredNotification;
 	ScrollingSketchView *_sketchView;
 	Brush *_currentBrush;
 	
-	Brush *_paintBrush;
-	BrushEraser *_eraserBrush;
+	//Brush *_paintBrush;
+	//BrushEraser *_eraserBrush;
+	Artist *_artist;
 	
 	DripDocument *_currentDocument;
 }

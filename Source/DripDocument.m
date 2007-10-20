@@ -22,13 +22,16 @@
 		_canvasHeight = 300;
 		_canvas = nil;
 		
+		/*
 		_brush = [[Brush alloc] init];
 		[_brush loadSettings];
-		
 		_eraser = [[BrushEraser alloc] init];
 		[_eraser loadSettings];
-		
-		_currentBrush = _brush;
+		 
+		 _currentBrush = _brush;
+		 */
+		_artist = [[Artist alloc] init];
+		[_artist loadSettings];
     }
     return self;
 }
@@ -42,8 +45,10 @@
 		_canvas = [[Canvas alloc] initWithWidth:_canvasWidth  height:_canvasHeight backgroundColor:aColor];
 		[_canvas setDocument:self];
 		
-		[_brush setCanvasSize:NSMakeSize(width,height)];
-		[_eraser setCanvasSize:[_canvas size]];
+		
+		//[_brush setCanvasSize:NSMakeSize(width,height)];
+		//[_eraser setCanvasSize:[_canvas size]];
+		[_artist setCanvasSize:[_canvas size]];
 	}
 	
 	return self;
@@ -52,8 +57,9 @@
 - (void)dealloc
 {
 	[_canvas release];
-	[_brush release];
-	[_eraser release];
+	//[_brush release];
+	//[_eraser release];
+	[_artist release];
 
 	[super dealloc];
 }
@@ -70,6 +76,7 @@
 {
 	return _canvas;
 }
+/*
 - (Brush *)brush
 {
 	return _brush;
@@ -89,7 +96,11 @@
 {
 	return _currentBrush;
 }
-
+*/
+- (Artist *)artist
+{
+	return _artist;
+}
 - (ScrollingSketchView *)scrollingSketchView
 {
 	return _sketchView;
@@ -134,8 +145,9 @@
 	_canvasHeight = [_canvas size].height;
 	[_canvas setDocument:self];
 
-	[_brush setCanvasSize:[_canvas size]];
-	[_eraser setCanvasSize:[_canvas size]];
+	//[_brush setCanvasSize:[_canvas size]];
+	//[_eraser setCanvasSize:[_canvas size]];
+	[_artist setCanvasSize:[_canvas size]];
     return YES;
 }
 

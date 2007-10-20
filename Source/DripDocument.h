@@ -14,15 +14,17 @@
 #import "BrushEraser.h"
 #import "BrushResat.h"
 #import "ScrollingSketchView.h"
+#import "Artist.h"
 
 @interface DripDocument : NSDocument
 {
 	unsigned int _canvasWidth;
 	unsigned int _canvasHeight;
 	
-	Brush *_brush;
-	BrushEraser *_eraser;
-	Brush *_currentBrush;
+	//Brush *_brush;
+	//BrushEraser *_eraser;
+	//Brush *_currentBrush;
+	Artist *_artist;
 	ScrollingSketchView *_sketchView;
 	
 	Canvas *_canvas;
@@ -33,10 +35,11 @@
 - (unsigned int)height;
 - (Canvas *)canvas;
 
-- (Brush *)brush;
-- (BrushEraser *)eraser;
-- (void)setCurrentBrush:(Brush *)newBrush;
-- (Brush *)currentBrush;
+//- (Brush *)brush;
+//- (BrushEraser *)eraser;
+//- (void)setCurrentBrush:(Brush *)newBrush;
+//- (Brush *)currentBrush;
+- (Artist *)artist;
 - (ScrollingSketchView *)scrollingSketchView;
 - (void)setScrollingSketchView:(ScrollingSketchView *)newSketchView;
 @end

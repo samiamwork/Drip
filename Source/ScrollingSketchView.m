@@ -10,6 +10,8 @@
 #import "DripInspectors.h"
 #import "CheckerPattern.h"
 
+NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
+
 @implementation ScrollingSketchView
 
 - (id)initWithFrame:(NSRect)frame {
@@ -36,15 +38,13 @@
 															   [NSScroller scrollerWidth],[NSScroller scrollerWidth])];
 		[_cornerView setAutoresizingMask:NSViewMinXMargin|NSViewMaxYMargin];
 		
-		_currentBrush = [[Brush alloc] init];
+		_artist = nil;
 		_canvas = nil;
 		_canvasOrigin = NSZeroPoint;
-		_zoom = 1.0f;
-		
-		_currentBrush = nil;
+		_zoom = 1.0f;		
+
 		_brushCursor = nil;
 		_isPanning = NO;
-		[self setBrush:[[Brush alloc] init]];
     }
     return self;
 }
@@ -56,7 +56,7 @@
 	[_cornerView release];
 	
 	[_canvas release];
-	[_currentBrush release];
+	[_artist release];
 	
 	[super dealloc];
 }
@@ -140,7 +140,7 @@
 	if( [_canvas isPlayingBack] )
 		return;
 
-	NSRect drawnRect = [_canvas beginStrokeAtPoint:theMousePoint withBrush:_currentBrush];
+	NSRect drawnRect = [_canvas beginStrokeAtPoint:theMousePoint withBrush:[_artist currentBrush]];
 	
 	[[_canvas document] updateChangeCount:NSChangeDone];
 	
@@ -193,7 +193,7 @@
 	if( [_canvas isPlayingBack] )
 		return;
 	
-	NSRect drawnRect = [_canvas continueStrokeAtPoint:newPressurePoint withBrush:_currentBrush];
+	NSRect drawnRect = [_canvas continueStrokeAtPoint:newPressurePoint withBrush:[_artist currentBrush]];
 	
 	[self invalidateCanvasRect:drawnRect];
 }
@@ -205,7 +205,7 @@
 		[self resetCursorRects];
 		return;
 	} else {
-		[_canvas endStrokeWithBrush:_currentBrush];
+		[_canvas endStrokeWithBrush:[_artist currentBrush]];
 		[[_canvas currentLayer] updateThumbnail];
 		[[DripInspectors sharedController] layersUpdated];
 	}
@@ -214,7 +214,7 @@
 
 - (void)tabletProximity:(NSEvent *)theEvent
 {
-	if( ![theEvent isEnteringProximity] )
+	if( [theEvent type] != NSTabletProximity )
 		return;
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:DripPenEnteredNotification object:nil userInfo:[NSDictionary dictionaryWithObject:theEvent forKey:@"event"]];
@@ -250,18 +250,18 @@
 	_panningMode = NO;
 }
 
-- (void)setBrush:(Brush *)newBrush
+- (void)setArtist:(Artist *)newArtist
 {
-	if( newBrush == _currentBrush )
+	if( newArtist == _artist )
 		return;
 	
-	[_currentBrush release];
-	_currentBrush = [newBrush retain];
+	[_artist release];
+	_artist = [newArtist retain];
 	[self rebuildBrushCursor];
 }
-- (Brush *)brush
+- (Artist *)artist
 {
-	return _currentBrush;
+	return _artist;
 }
 
 - (void)setCanvas:(Canvas *)newCanvas
@@ -327,14 +327,14 @@
 
 - (void)rebuildBrushCursor
 {
-	if( _currentBrush == nil ) {
+	if( _artist == nil ) {
 		[_brushCursor release];
 		_brushCursor = nil;
 		[self resetCursorRects];
 		return;
 	}
 	
-	float brushSize = [_currentBrush size]*_zoom;
+	float brushSize = [[_artist currentBrush] size]*_zoom;
 	if( brushSize < 2.0f )
 		brushSize = 2.0f;
 	int cursorSize = (int)ceilf(brushSize+2.0f);

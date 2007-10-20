@@ -19,7 +19,7 @@
 	
 	Canvas *newCanvas = [(DripDocument*)[self document] canvas];
 	[_sketchView setCanvas:newCanvas];
-	[_sketchView setBrush:[(DripDocument*)[self document] brush]];
+	[_sketchView setArtist:[(DripDocument*)[self document] artist]];
 	// set the zoom slider
 	[_zoomSlider setFloatValue:log10f([_sketchView zoom])];
 	[_zoomText setStringValue:[NSString stringWithFormat:@"%.02f%%",[_sketchView zoom]*100.0f]];
