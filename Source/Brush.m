@@ -526,6 +526,13 @@ void sampleBitmap(unsigned char *bitmap, unsigned int pitch, unsigned int width,
 }
 - (NSRect)continueStrokeAtPoint:(PressurePoint)aPoint
 {
+	// we're currently rejecting equal points in the render line method
+	// but this has the problem of discarding the last point drawn including it's pressure
+	// so the next line will start from a pressure that was not previously drawn.
+	// however this does not seem undesireable since the pressure *did* in fact change that fast.
+	//if( aPoint.x == _lastBrushPosition.x && aPoint.y == _lastBrushPosition.y )
+	//	return NSZeroRect;
+	
 	NSRect invalidRect = [self renderLineFromPoint:_lastBrushPosition toPoint:&aPoint onLayer:_workLayer leftover:&_leftoverDistance];
 	_lastBrushPosition = aPoint;
 	
@@ -569,6 +576,9 @@ void sampleBitmap(unsigned char *bitmap, unsigned int pitch, unsigned int width,
 
 - (NSRect)renderLineFromPoint:(PressurePoint)startPoint toPoint:(PressurePoint *)endPoint onLayer:(PaintLayer *)aLayer leftover:(float *)leftoverDistance
 {
+	if( startPoint.x == endPoint->x && startPoint.y == endPoint->y )
+		return NSZeroRect;
+	
 	float x,y;
 	float brushSize;
 	float baseBrushSize = _intSize;
