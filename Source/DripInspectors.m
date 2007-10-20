@@ -67,7 +67,10 @@ static DripInspectors *g_sharedController;
 		minSize.height -= ADVANCED_VIEW_HEIGHT;
 		[[self window] setMinSize:minSize];
 		frameRect.size.height -= ADVANCED_VIEW_HEIGHT;
-		frameRect.origin.y += ADVANCED_VIEW_HEIGHT;
+		// because the window always unarchives from the nib expanded and the saved frame record
+		// in this case is with the window collapsed we need to compensate for the window being too
+		// high. So we do not add the normal ADVANCED_VIEW_HEIGHT.
+		//frameRect.origin.y += ADVANCED_VIEW_HEIGHT;
 		[[self window] setFrame:frameRect display:YES animate:YES];
 		
 		[_layerTable setAutoresizingMask:layerTableAutoresizingMask];
