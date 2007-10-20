@@ -143,6 +143,8 @@
 	ptr += sizeof(CFSwappedFloat32);
 	*(CFSwappedFloat32 *)ptr = CFConvertFloat32HostToSwapped(_strokeOpacity);
 	ptr += sizeof(CFSwappedFloat32);
+	*(UInt32 *)ptr = CFSwapInt32HostToBig( _blendMode );
+	ptr += sizeof(UInt32);
 	
 	*ptr = (_pressureAffectsSize ? 2:0) | (_pressureAffectsFlow ? 1:0) | (_pressureAffectsResaturation ? 4:0);
 	
