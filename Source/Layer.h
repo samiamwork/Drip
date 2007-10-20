@@ -40,6 +40,8 @@
 - (void)setBlendMode:(CGBlendMode)newBlendMode;
 - (CGBlendMode)blendMode;
 
+- (void)changeSettings:(DripEventLayerSettings *)newSettings;
+
 - (NSImage *)thumbnail;
 - (void)updateThumbnail;
 - (void)fillLayerWithColor:(NSColor *)aColor;

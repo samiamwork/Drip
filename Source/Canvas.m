@@ -175,7 +175,7 @@
 	} else if( [theEvent isKindOfClass:[DripEventLayerSettings class]] ) {
 		DripEventLayerSettings *layerSettings = (DripEventLayerSettings *)theEvent;
 		Layer *aLayer = [_layers objectAtIndex:[layerSettings layerIndex]];
-		[[aLayer mainPaintLayer] changeSettings:layerSettings];
+		[aLayer changeSettings:layerSettings];
 		if( aLayer != _currentLayer )
 			[self rebuildTopAndBottom];
 		return NSMakeRect(0.0f,0.0f,_width,_height);

@@ -246,4 +246,11 @@
 {
 	[_mainPaintLayer fillLayerWithColor:aColor];
 }
+
+- (void)changeSettings:(DripEventLayerSettings *)newSettings
+{
+	[self setOpacity:[newSettings opacity]];
+	[self setVisible:[newSettings opacity]];
+	[self setBlendMode:[newSettings blendMode]];
+}
 @end
