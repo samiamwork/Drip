@@ -22,6 +22,7 @@
 #import "DripEventLayerSettings.h"
 #import "DripEventLayerFill.h"
 #import "NSData+gzip.h"
+#import "Artist.h"
 
 @interface Canvas : NSObject <NSCoding> {
 	NSMutableArray *_compositeLayers;
@@ -30,13 +31,12 @@
 	NSMutableArray *_layers;
 	
 	NSMutableArray *_backupLayers;
-	BOOL _isPlayingBack;
-	unsigned int _eventIndex;
-	Brush *_playbackBrush;
-	BrushEraser *_playbackEraser;
-	Brush *_currentPlaybackBrush;
-	PressurePoint _lastPlaybackPoint;
+	Canvas *_playbackCanvas;
+	Artist *_playbackArtist;
+	
 	NSMutableArray *_paintEvents;
+	unsigned int _eventIndex;
+	
 	DripEventLayerSettings *_layerSettings;
 	
 	unsigned int _width;
@@ -49,12 +49,19 @@
 - (void)addLayer;
 - (void)deleteLayer:(Layer *)layerToDelete;
 - (void)insertLayer:(Layer *)theLayer AtIndex:(unsigned int)theTargetIndex;
+- (void)moveLayerAtIndex:(unsigned int)fromIndex toIndex:(unsigned int)toIndex;
 - (void)collapseLayer:(Layer *)layerToCollapse;
 - (NSArray *)layers;
 - (void)setCurrentLayer:(Layer *)aLayer;
 - (Layer *)currentLayer;
 - (NSSize)size;
 - (void)rebuildTopAndBottom;
+
+// this is PERMANENT and cannot be undone.
+// if we were to resume recording later after disabling it there will be events missing and
+// we would not be able to reconstruct the drawing from the recorded events so they
+// would be useless.
+- (void)disableRecording;
 
 - (void)compactEvents;
 - (unsigned int)currentPlaybackEvent;

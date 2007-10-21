@@ -16,20 +16,10 @@
     self = [super init];
     if (self) {
     
-        // Add your subclass-specific initialization here.
-        // If an error occurs here, send a [self release] message and return nil.
-		_canvasWidth = 300;
+        _canvasWidth = 300;
 		_canvasHeight = 300;
 		_canvas = nil;
 		
-		/*
-		_brush = [[Brush alloc] init];
-		[_brush loadSettings];
-		_eraser = [[BrushEraser alloc] init];
-		[_eraser loadSettings];
-		 
-		 _currentBrush = _brush;
-		 */
 		_artist = [[Artist alloc] init];
 		[_artist loadSettings];
     }
@@ -46,8 +36,6 @@
 		[_canvas setDocument:self];
 		
 		
-		//[_brush setCanvasSize:NSMakeSize(width,height)];
-		//[_eraser setCanvasSize:[_canvas size]];
 		[_artist setCanvasSize:[_canvas size]];
 	}
 	
@@ -57,8 +45,6 @@
 - (void)dealloc
 {
 	[_canvas release];
-	//[_brush release];
-	//[_eraser release];
 	[_artist release];
 
 	[super dealloc];
@@ -76,27 +62,7 @@
 {
 	return _canvas;
 }
-/*
-- (Brush *)brush
-{
-	return _brush;
-}
-- (BrushEraser *)eraser
-{
-	return _eraser;
-}
-- (void)setCurrentBrush:(Brush *)newBrush
-{
-	if( newBrush != _brush && newBrush != _eraser )
-		return;
-	
-	_currentBrush = newBrush;
-}
-- (Brush *)currentBrush
-{
-	return _currentBrush;
-}
-*/
+
 - (Artist *)artist
 {
 	return _artist;
@@ -145,8 +111,6 @@
 	_canvasHeight = [_canvas size].height;
 	[_canvas setDocument:self];
 
-	//[_brush setCanvasSize:[_canvas size]];
-	//[_eraser setCanvasSize:[_canvas size]];
 	[_artist setCanvasSize:[_canvas size]];
     return YES;
 }

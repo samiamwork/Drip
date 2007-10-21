@@ -23,6 +23,9 @@
 		_width = 0;
 		_height = 0;
 		
+		_playbackArtist = nil;
+		_playbackCanvas = nil;
+		
 		_document = nil;
 	}
 
@@ -71,7 +74,7 @@
 
 - (unsigned int)currentPlaybackEvent
 {
-	if( !_isPlayingBack )
+	if( ![self isPlayingBack] )
 		return 0;
 	
 	return _eventIndex;
@@ -81,53 +84,40 @@
 	return [_paintEvents count];
 }
 
+// TODO: need to preserve the selected layer before begining playback
+// (and restore it when we're done).
 - (void)beginPlayback
 {
-	_isPlayingBack = YES;
-	_backupLayers = _layers;
 	
-	Layer *aLayer = [[Layer alloc] initWithWidth:_width height:_height];
-	[aLayer setName:@"Layer 0"];
-	_layers = [[NSMutableArray alloc] initWithObjects:aLayer,nil];
-	[aLayer release];
-	[_compositeLayers release];
-	_compositeLayers = nil;
-	_currentLayer = nil;
-	[self setCurrentLayer:aLayer];
+	_playbackCanvas = [[Canvas alloc] initWithWidth:_width height:_height backgroundColor:nil];
+	[_playbackCanvas disableRecording];
+	_playbackArtist = [[Artist alloc] init];
+	[_playbackArtist setCanvasSize:[_playbackCanvas size]];
 	
-	_currentPlaybackBrush = _playbackBrush = [[Brush alloc] init];
-	[_playbackBrush setCanvasSize:NSMakeSize(_width,_height)];
-	_playbackEraser = [[BrushEraser alloc] init];
-	[_playbackEraser setCanvasSize:NSMakeSize(_width,_height)];
 	_eventIndex = 0;
-	
 	// peek at the first event and play it if it's a layer fill event
 	// we do this to eliminate flicker at the start of playback.
 	// layer fill is basically part of layer setup.
 	DripEvent *firstEvent = [_paintEvents objectAtIndex:_eventIndex];
 	if( [firstEvent isKindOfClass:[DripEventLayerFill class]] ) {
-		[_currentLayer fillLayerWithColor:[(DripEventLayerFill *)firstEvent color]];
+		//[_currentLayer fillLayerWithColor:[(DripEventLayerFill *)firstEvent color]];
+		[[_playbackCanvas currentLayer] fillLayerWithColor:[(DripEventLayerFill *)firstEvent color]];
 		_eventIndex++;
 	}
 }
 - (void)endPlayback
 {
-	if( !_isPlayingBack )
+	if( !_playbackCanvas )
 		return;
 	
-	_isPlayingBack = NO;
-	[_layers release];
-	_layers = _backupLayers;
-	[self setCurrentLayer:[_layers objectAtIndex:0]];
-	
-	[_playbackBrush release];
-	_playbackBrush = nil;
-	[_playbackEraser release];
-	_playbackBrush = nil;
+	[_playbackArtist release];
+	_playbackArtist = nil;
+	[_playbackCanvas release];
+	_playbackCanvas = nil;
 }
 - (BOOL)isPlayingBack
 {
-	return _isPlayingBack;
+	return _playbackCanvas ? YES : NO;
 }
 - (NSRect)playNextEvent
 {
@@ -142,51 +132,67 @@
 	if( [theEvent isKindOfClass:[DripEventStrokeBegin class]] ) {
 		DripEventStrokeBegin *brushDown = (DripEventStrokeBegin *)theEvent;
 		PressurePoint aPoint = (PressurePoint){[brushDown position].x, [brushDown position].y, [brushDown pressure]};
-		return [_currentPlaybackBrush beginStrokeAtPoint:aPoint onLayer:_currentLayer];
+		//return [_currentPlaybackBrush beginStrokeAtPoint:aPoint onLayer:_currentLayer];
+		return [_playbackCanvas beginStrokeAtPoint:aPoint withBrush:[_playbackArtist currentBrush]];
 	} else if( [theEvent isKindOfClass:[DripEventStrokeContinue class]] ) {
 		DripEventStrokeContinue *brushDrag = (DripEventStrokeContinue *)theEvent;
 		PressurePoint dragPoint = (PressurePoint){[brushDrag position].x, [brushDrag position].y, [brushDrag pressure]};
-		NSRect affectedRect = [_currentPlaybackBrush continueStrokeAtPoint:dragPoint];
-		return affectedRect;
+		//return [_currentPlaybackBrush continueStrokeAtPoint:dragPoint];
+		return [_playbackCanvas continueStrokeAtPoint:dragPoint withBrush:[_playbackArtist currentBrush]];
 	} else if( [theEvent isKindOfClass:[DripEventStrokeEnd class]] ) {
-		[_currentPlaybackBrush endStroke];
+		//[_currentPlaybackBrush endStroke];
+		[_playbackCanvas endStrokeWithBrush:[_playbackArtist currentBrush]];
 		return NSZeroRect;
 	} else if( [theEvent isKindOfClass:[DripEventBrushSettings class]] ) {
 		DripEventBrushSettings *brushSettings = (DripEventBrushSettings *)theEvent;
+		/*
 		if( [brushSettings type] == kBrushTypePaint )
 			_currentPlaybackBrush = _playbackBrush;
 		else
 			_currentPlaybackBrush = _playbackEraser;
 		[_currentPlaybackBrush changeSettings:brushSettings];
-		return NSZeroRect;
+		 */
+		[_playbackArtist changeBrushSettings:brushSettings];
+		//return NSZeroRect;
 	} else if( [theEvent isKindOfClass:[DripEventLayerAdd class]] ) {
-		[self addLayer];
+		//[self addLayer];
+		[_playbackCanvas addLayer];
 		return NSMakeRect(0.0f,0.0f,_width,_height);
 	} else if( [theEvent isKindOfClass:[DripEventLayerDelete class]] ) {
-		[self deleteLayer:_currentLayer];
+		//[self deleteLayer:_currentLayer];
+		[_playbackCanvas deleteLayer:[_playbackCanvas currentLayer]];
 		return NSMakeRect(0.0f,0.0f,_width,_height);
 	} else if( [theEvent isKindOfClass:[DripEventLayerCollapse class]] ) {
-		[self collapseLayer:_currentLayer];
+		//[self collapseLayer:_currentLayer];
+		[_playbackCanvas collapseLayer:[_playbackCanvas currentLayer]];
 		return NSMakeRect(0.0f,0.0f,_width,_height);
 	} else if( [theEvent isKindOfClass:[DripEventLayerMove class]] ) {
 		DripEventLayerMove *layerMove = (DripEventLayerMove *)theEvent;
-		[self insertLayer:[_layers objectAtIndex:[layerMove fromIndex]] AtIndex:[layerMove toIndex]];
+		//[self insertLayer:[_layers objectAtIndex:[layerMove fromIndex]] AtIndex:[layerMove toIndex]];
+		[_playbackCanvas moveLayerAtIndex:[layerMove fromIndex] toIndex:[layerMove toIndex]];
 		return NSMakeRect(0.0f,0.0f,_width,_height);
 	} else if( [theEvent isKindOfClass:[DripEventLayerSettings class]] ) {
 		DripEventLayerSettings *layerSettings = (DripEventLayerSettings *)theEvent;
-		Layer *aLayer = [_layers objectAtIndex:[layerSettings layerIndex]];
+		Layer *aLayer = [[_playbackCanvas layers] objectAtIndex:[layerSettings layerIndex]];
 		[aLayer changeSettings:layerSettings];
-		if( aLayer != _currentLayer )
-			[self rebuildTopAndBottom];
+		// TODO: stop going behind the canvas's back to change layer settings.
+		[_playbackCanvas settingsChangedForLayer:aLayer];
+		//if( aLayer != _currentLayer )
+		//	[self rebuildTopAndBottom];
+		
 		return NSMakeRect(0.0f,0.0f,_width,_height);
 	} else if( [theEvent isKindOfClass:[DripEventLayerChange class]] ) {
-		[self setCurrentLayer:[_layers objectAtIndex:[(DripEventLayerChange *)theEvent layerIndex]]];
+		//[self setCurrentLayer:[_layers objectAtIndex:[(DripEventLayerChange *)theEvent layerIndex]]];
+		[_playbackCanvas setCurrentLayer:[[_playbackCanvas layers] objectAtIndex:[(DripEventLayerChange *)theEvent layerIndex]]];
 	} else if( [theEvent isKindOfClass:[DripEventLayerFill class]] ) {
-		[_currentLayer fillLayerWithColor:[(DripEventLayerFill *)theEvent color]];
+		//[_currentLayer fillLayerWithColor:[(DripEventLayerFill *)theEvent color]];
+		[[_playbackCanvas currentLayer] fillLayerWithColor:[(DripEventLayerFill *)theEvent color]];
+		// TODO: can I get rid of the fudge factor?
 		return NSMakeRect(-1.0f,-1.0f,(float)_width,(float)_height);
 	}else {
 		printf("unknown event!\n");
 	}
+	
 	return NSZeroRect;
 }
 
@@ -230,6 +236,9 @@
 			return nil;
 		}
 		NSKeyedUnarchiver *unarchiver = (NSKeyedUnarchiver *)decoder;
+		
+		_playbackArtist = nil;
+		_playbackCanvas = nil;
 		
 		_width = (unsigned int)[unarchiver decodeIntForKey:@"width"];
 		_height = (unsigned int)[unarchiver decodeIntForKey:@"height"];
@@ -319,8 +328,9 @@
 		_layerSettings = nil;
 		_document = nil;
 		
+		_playbackCanvas = nil;
+		_playbackArtist = nil;
 		// fill first layer with white
-		// TODO: make the color a preference/parameter and if nil then leave transparent.
 		[self fillCurrentLayerWithColor:aColor];
 	}
 	
@@ -378,6 +388,14 @@
 	
 }
 
+// This CANNOT be undone!
+// designed to be used for a playback canvas.
+- (void)disableRecording
+{
+	[_paintEvents release];
+	_paintEvents = nil;
+}
+
 - (void)addDripEvent:(DripEvent *)newEvent
 {
 	if( _layerSettings != nil ) {
@@ -401,7 +419,7 @@
 
 	// EVENT:
 	// add new layer
-	if( !_isPlayingBack )
+	if( ![self isPlayingBack] )
 		[_paintEvents addObject:[[[DripEventLayerAdd alloc] init] autorelease]];
 	Layer *newLayer = [[Layer alloc] initWithWidth:_width height:_height];
 	
@@ -444,7 +462,7 @@
 	}
 	// EVENT:
 	// remove layer at "deleteIndex"
-	if( !_isPlayingBack )
+	if( ![self isPlayingBack] )
 		[_paintEvents addObject:[[[DripEventLayerDelete alloc] init] autorelease]];
 	[_layers removeObjectAtIndex:deleteIndex];
 	
@@ -476,7 +494,7 @@
 	}
 	// EVENT:
 	// move layer at index "theLayerIndex" to "theTargetIndex"
-	if( !_isPlayingBack )
+	if( ![self isPlayingBack] )
 		[_paintEvents addObject:[[[DripEventLayerMove alloc] initWithFromIndex:theLayerIndex toIndex:theTargetIndex] autorelease]];
 	[_layers insertObject:theLayer atIndex:theTargetIndex];
 	if( theLayerIndex > theTargetIndex )
@@ -484,6 +502,11 @@
 	[_layers removeObjectAtIndex:theLayerIndex];
 	
 	[self rebuildTopAndBottom];
+}
+
+- (void)moveLayerAtIndex:(unsigned int)fromIndex toIndex:(unsigned int)toIndex
+{
+	[self insertLayer:[_layers objectAtIndex:fromIndex] AtIndex:toIndex];
 }
 
 - (void)collapseLayer:(Layer *)layerToCollapse
@@ -499,7 +522,7 @@
 	}
 	// EVENT:
 	// merge layer at index "theLayerIndex" and the layer under it and insert in place of the two.
-	if( !_isPlayingBack )
+	if( ![self isPlayingBack] )
 		[_paintEvents addObject:[[[DripEventLayerCollapse alloc] init] autorelease]];
 	
 	Layer *joinedLayers = [[Layer alloc] initWithContentsOfLayers:_layers inRange:NSMakeRange(theLayerIndex-1,2)];
@@ -533,7 +556,7 @@
 	_currentLayer = aLayer;
 	// EVENT:
 	// set CurrentLayer to layer at index "layerIndex"
-	if( !_isPlayingBack )
+	if( ![self isPlayingBack] )
 		[_paintEvents addObject:[[[DripEventLayerChange alloc] initWithLayerIndex:layerIndex] autorelease]];
 	
 	[self rebuildTopAndBottom];
@@ -548,7 +571,7 @@
 
 - (NSRect)beginStrokeAtPoint:(PressurePoint)aPoint withBrush:(Brush *)aBrush
 {
-	if( _isPlayingBack )
+	if( [self isPlayingBack] )
 		return NSZeroRect;
 	
 	if( _layerSettings != nil ) {
@@ -562,7 +585,7 @@
 }
 - (NSRect)continueStrokeAtPoint:(PressurePoint)aPoint withBrush:(Brush *)aBrush
 {
-	if( _isPlayingBack )
+	if( [self isPlayingBack] )
 		return NSZeroRect;
 
 	[_paintEvents addObject:[[[DripEventStrokeContinue alloc] initWithPosition:NSMakePoint(aPoint.x,aPoint.y) pressure:aPoint.pressure] autorelease]];
@@ -573,7 +596,7 @@
 	// EVENT:
 	// End stroke
 	// TODO: the event needs to support a brush identifier
-	if( !_isPlayingBack )
+	if( ![self isPlayingBack] )
 		[_paintEvents addObject:[[[DripEventStrokeEnd alloc] init] autorelease]];
 	
 	[aBrush endStroke];
@@ -586,7 +609,7 @@
 	
 	//EVENT:
 	// fill currentLayer
-	if( !_isPlayingBack )
+	if( ![self isPlayingBack] )
 		[_paintEvents addObject:[[[DripEventLayerFill alloc] initWithColor:aColor] autorelease]];
 
 	[_currentLayer fillLayerWithColor:aColor];
@@ -602,6 +625,11 @@
 
 - (void)drawRect:(NSRect)aRect
 {
+	if( _playbackCanvas ) {
+		[_playbackCanvas drawRect:aRect];
+		return;
+	}
+	
 	CGContextRef cxt = [[NSGraphicsContext currentContext] graphicsPort];
 	
 	[self drawRect:aRect inContext:cxt];
@@ -632,6 +660,11 @@
 	
 	[_layerSettings release];
 	_layerSettings = [[DripEventLayerSettings alloc] initWithLayerIndex:layerIndex opacity:[aLayer opacity] visible:[aLayer visible] blendMode:[aLayer blendMode]];
+	
+	// if this layer is not the current layer then we need to rebuild our top and bottom (not likely but it's cheap to check
+	// and it is possible).
+	if( aLayer == _currentLayer )
+		[self rebuildTopAndBottom];
 }
 
 - (NSBitmapImageRep *)bitmapImageRep
