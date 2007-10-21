@@ -12,6 +12,7 @@
 @interface CompressionPreview : NSImageView {
 	NSPoint _imageOffset;
 	NSPoint _lastMousePosition;
+	BOOL _isDragging;
 }
 
 @end

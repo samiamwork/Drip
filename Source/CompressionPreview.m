@@ -14,6 +14,7 @@
 - (id)initWithFrame:(NSRect)frame {
 	if( (self = [super initWithFrame:frame]) ) {
         _imageOffset = NSZeroPoint;
+		_isDragging = NO;
     }
     return self;
 }
@@ -71,6 +72,8 @@
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
+	_isDragging = YES;
+	[[self window] invalidateCursorRectsForView:self];
 	_lastMousePosition = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 }
 
@@ -100,6 +103,12 @@
 	[self setNeedsDisplay:YES];
 }
 
+- (void)mouseUp:(NSEvent *)theEvent
+{
+	_isDragging = YES;
+	[[self window] invalidateCursorRectsForView:self];
+}
+
 - (void)drawRect:(NSRect)rect {
 	CGContextRef cxt = [[NSGraphicsContext currentContext] graphicsPort];
 	CGContextSaveGState( cxt );
@@ -111,6 +120,14 @@
 	CGContextSetRGBFillColor( cxt, 0.6f,0.6f,0.6f,1.0f );
 	CGContextStrokeRectWithWidth(cxt, *(CGRect *)&bounds, 1.0f);
 	CGContextRestoreGState( cxt );
+}
+
+- (void)resetCursorRects
+{
+	if( _isDragging )
+		[self addCursorRect:[self bounds] cursor:[NSCursor closedHandCursor]];
+	else
+		[self addCursorRect:[self bounds] cursor:[NSCursor openHandCursor]];
 }
 
 @end
