@@ -20,6 +20,8 @@
 	IBOutlet NSTextField *_zoomText;
 	IBOutlet NSProgressIndicator *_exportProgressBar;
 	
+	unsigned int _playbackSpeed;
+	
 	NSTimer *_playbackTimer;
 	MovieEncoder *_encoder;
 }
@@ -27,4 +29,6 @@
 - (IBAction)setZoom:(id)sender;
 - (IBAction)zoomIn:(id)sender;
 - (IBAction)zoomOut:(id)sender;
+
+- (IBAction)setPlaybackSpeed:(id)sender;
 @end

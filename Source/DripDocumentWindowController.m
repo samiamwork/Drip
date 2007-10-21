@@ -17,6 +17,8 @@
 {
 	_playbackTimer = nil;
 	
+	_playbackSpeed = 1;
+	
 	Canvas *newCanvas = [(DripDocument*)[self document] canvas];
 	[_sketchView setCanvas:newCanvas];
 	[_sketchView setArtist:[(DripDocument*)[self document] artist]];
@@ -137,7 +139,9 @@
 	NSRect canvasRect = NSMakeRect(0.0f,0.0f,(float)[theCanvas size].width,(float)[theCanvas size].height);
 	
 	/*NSRect invalidCanvasRect = */
-	[theCanvas playNextVisibleEvent];
+	int step = 0;
+	for( step = 0; step < _playbackSpeed; step++ )
+		[theCanvas playNextVisibleEvent];
 	// we have a frame to compress
 	// TODO fix the problem with using the invalidRect here instead (probably having to do with the NSFillRect in the base layer)
 	[theCanvas drawRect:canvasRect inContext:[_encoder frameContext]];
@@ -155,6 +159,7 @@
 		
 		[_playbackTimer invalidate];
 		_playbackTimer = nil;
+		printf("export done\n");
 	}
 	// everyone out of the pool!
 	[pool release];
@@ -163,7 +168,13 @@
 - (void)playbackTick:(NSTimer *)theTimer
 {
 	Canvas *theCanvas = [(DripDocument*)[self document] canvas];
-	NSRect invalidCanvasRect = [theCanvas playNextEvent];
+	NSRect invalidCanvasRect;
+	
+	int step = 0;
+	for( step = 0; step < _playbackSpeed; step++ )
+		invalidCanvasRect = NSUnionRect( [theCanvas playNextVisibleEvent], invalidCanvasRect );
+	
+	/*
 	while( NSIsEmptyRect(invalidCanvasRect) ) {
 		if( ![theCanvas isPlayingBack] ) {
 			[self stopPlayback:self];
@@ -171,8 +182,11 @@
 		}
 		invalidCanvasRect = [theCanvas playNextEvent];
 	}
-	//TODO: should be more precise
+	 */
+	
 	[_sketchView invalidateCanvasRect:invalidCanvasRect];
+	if( ![theCanvas isPlayingBack] )
+		[self stopPlayback:self];
 }
 
 - (IBAction)exportImage:(id)sender
@@ -231,6 +245,53 @@
 	[_sketchView setZoom:currentZoom];
 	[_zoomSlider setFloatValue:log10f([_sketchView zoom])];
 	[_zoomText setStringValue:[NSString stringWithFormat:@"%.02f%%",[_sketchView zoom]*100.0f]];
+}
+
+- (BOOL)validateMenuItem:(id <NSMenuItem>)menuItem
+{
+	if( [[[menuItem menu] title] isEqualToString:@"Playback Speed"] ) {
+		switch( _playbackSpeed ) {
+			case 2:
+				[self setPlaybackSpeed:[[menuItem menu] itemWithTag:1]];
+				break;
+			case 3:
+				[self setPlaybackSpeed:[[menuItem menu] itemWithTag:2]];
+				break;
+			case 1:
+			default:
+				_playbackSpeed = 0;
+				[self setPlaybackSpeed:[[menuItem menu] itemWithTag:0]];
+		}
+		
+		return YES;
+	}
+	
+	return YES;
+}
+
+- (IBAction)setPlaybackSpeed:(id)sender
+{
+	NSMenu *speedMenu = [sender menu];
+	switch( [sender tag] ) {
+		case 0:
+			_playbackSpeed = 1;
+			[sender setState:NSOnState];
+			[[speedMenu itemWithTag:1] setState:NSOffState];
+			[[speedMenu itemWithTag:2] setState:NSOffState];
+			break;
+		case 1:
+			_playbackSpeed = 2;
+			[[speedMenu itemWithTag:0] setState:NSOffState];
+			[sender setState:NSOnState];
+			[[speedMenu itemWithTag:2] setState:NSOffState];
+			break;
+		case 2:
+			_playbackSpeed = 3;
+			[[speedMenu itemWithTag:0] setState:NSOffState];
+			[[speedMenu itemWithTag:1] setState:NSOffState];
+			[sender setState:NSOnState];
+			break;
+	}
 }
 
 - (void)windowDidBecomeMain:(NSNotification *)notification

@@ -26,6 +26,7 @@
                 exportPlaybackToQuicktime = id; 
                 pausePlayback = id; 
                 playBack = id; 
+                setPlaybackSpeed = id; 
             }; 
             CLASS = FirstResponder; 
             LANGUAGE = ObjC; 
