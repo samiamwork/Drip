@@ -124,14 +124,18 @@ void loadCompressionSettings( ComponentInstance component )
 		ss.depth = 0;
 		ss.spatialQuality = codecHighQuality;
 		
-		SCSetInfo( component, scSpatialSettingsType, &ss );
+		result = SCSetInfo( component, scSpatialSettingsType, &ss );
+		if( result != noErr )
+			printf("error setting spatial settings (%d)\n", result);
 		
 		SCTemporalSettings ts;
 		ts.temporalQuality = 0;
 		ts.frameRate = FixRatio(30,1);
 		ts.keyFrameRate = 0;
 		
-		SCSetInfo( component, scTemporalSettingsType, &ts );
+		result = SCSetInfo( component, scTemporalSettingsType, &ts );
+		if( result != noErr )
+			printf("error setting temporal settings (%d)\n", result);
 	}
 }
 
@@ -153,7 +157,7 @@ void saveCompressionSettings( ComponentInstance component )
 
 NSString *currentCodecName( void )
 {
-	ComponentInstance component = OpenDefaultComponent(StandardCompressionType,StandardCompressionSubType);
+	ComponentInstance component = OpenDefaultComponent(StandardCompressionType, StandardCompressionSubType);
 	if( component == NULL ) {
 		printf("Falied to open component.\n");
 		return nil;
@@ -339,17 +343,7 @@ NSString *currentCodecName( void )
 	}
 	
 	// load settings from defaults
-	NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:@"compressionSettings"];
-	if( data ) {
-		QTAtomContainer container = NewHandle( [data length] );
-		if( container ) {
-			[data getBytes:*container];
-			result = SCSetSettingsFromAtomContainer( component, container);
-			if( result )
-				printf("SCSetSettingsFromAtomContainer() failed with error %d\n", result);
-			QTDisposeAtomContainer(container);
-		}
-	}
+	loadCompressionSettings( component );
 	
 	long flags = scAllowEncodingWithCompressionSession;
 	SCSetInfo( component, scPreferenceFlagsType, &flags);
@@ -364,16 +358,7 @@ NSString *currentCodecName( void )
 	}
 	
 	// save settings back to user defaults
-	QTAtomContainer newSettingsContainer;
-	result = SCGetSettingsAsAtomContainer( component , &newSettingsContainer );
-	if( result )
-		printf("SCGetSettingsAsAtomContainer() failed with %d\n", result);
-	else {
-		data = [NSData dataWithBytes:*newSettingsContainer length:GetHandleSize(newSettingsContainer)];
-		[[NSUserDefaults standardUserDefaults] setObject:data forKey:@"compressionSettings"];
-		QTDisposeAtomContainer( newSettingsContainer );
-	}
-	
+	saveCompressionSettings( component );
 	CloseComponent( component );
 	
 	if( _codecDescription == nil )
@@ -412,17 +397,9 @@ NSString *currentCodecName( void )
 	}
 	
 	// load settings from defaults
-	NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:@"compressionSettings"];
-	if( data ) {
-		QTAtomContainer container = NewHandle( [data length] );
-		if( container ) {
-			[data getBytes:*container];
-			result = SCSetSettingsFromAtomContainer( component, container);
-			if( result )
-				printf("SCSetSettingsFromAtomContainer() failed with error %d\n", result);
-			QTDisposeAtomContainer(container);
-		}
-	}
+	loadCompressionSettings( component );
+	
+	// TODO: disable multi-pass?
 	
 	long flags = scAllowEncodingWithCompressionSession;
 	SCSetInfo( component, scPreferenceFlagsType, &flags);
