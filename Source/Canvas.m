@@ -25,6 +25,7 @@
 		
 		_playbackArtist = nil;
 		_playbackCanvas = nil;
+		_displayPlaybackUpdates = YES;
 		
 		_document = nil;
 	}
@@ -239,6 +240,7 @@
 		
 		_playbackArtist = nil;
 		_playbackCanvas = nil;
+		_displayPlaybackUpdates = YES;
 		
 		_width = (unsigned int)[unarchiver decodeIntForKey:@"width"];
 		_height = (unsigned int)[unarchiver decodeIntForKey:@"height"];
@@ -330,6 +332,7 @@
 		
 		_playbackCanvas = nil;
 		_playbackArtist = nil;
+		_displayPlaybackUpdates = YES;
 		// fill first layer with white
 		[self fillCurrentLayerWithColor:aColor];
 	}
@@ -394,6 +397,15 @@
 {
 	[_paintEvents release];
 	_paintEvents = nil;
+}
+
+- (void)setDisplayPlaybackUpdates:(BOOL)shouldUpdate
+{
+	_displayPlaybackUpdates = shouldUpdate;
+}
+- (Canvas *)playbackCanvas
+{
+	return _playbackCanvas;
 }
 
 - (void)addDripEvent:(DripEvent *)newEvent
@@ -616,7 +628,12 @@
 }
 
 - (void)drawRect:(NSRect)aRect inContext:(CGContextRef)context
-{	
+{
+	if( _playbackCanvas && _displayPlaybackUpdates ) {
+		[_playbackCanvas drawRect:aRect inContext:context];
+		return;
+	}
+	
 	NSEnumerator *layerEnumerator = [_compositeLayers objectEnumerator];
 	Layer *aLayer;
 	while( (aLayer = [layerEnumerator nextObject]) )
@@ -625,7 +642,7 @@
 
 - (void)drawRect:(NSRect)aRect
 {
-	if( _playbackCanvas ) {
+	if( _playbackCanvas && _displayPlaybackUpdates ) {
 		[_playbackCanvas drawRect:aRect];
 		return;
 	}

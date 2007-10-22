@@ -96,7 +96,8 @@
 	
 	// ...draw the frames
 	NSRect canvasRect = NSMakeRect(0.0f,0.0f,(float)canvasWidth,(float)canvasHeight);
-	[theCanvas drawRect:canvasRect inContext:[_encoder frameContext]];
+	[theCanvas setDisplayPlaybackUpdates:NO];
+	[[theCanvas playbackCanvas] drawRect:canvasRect inContext:[_encoder frameContext]];
 	[_encoder frameReady];
 	
 	// set up the progress view.
@@ -189,7 +190,7 @@
 		[theCanvas playNextVisibleEvent];
 	// we have a frame to compress
 	// TODO fix the problem with using the invalidRect here instead (probably having to do with the NSFillRect in the base layer)
-	[theCanvas drawRect:canvasRect inContext:[_encoder frameContext]];
+	[[theCanvas playbackCanvas] drawRect:canvasRect inContext:[_encoder frameContext]];
 	[_encoder frameReady];
 	
 	// calculate time left if we're more than 10% done
@@ -230,6 +231,8 @@
 		
 		[_playbackTimer invalidate];
 		_playbackTimer = nil;
+		
+		[theCanvas setDisplayPlaybackUpdates:YES];
 		printf("export done\n");
 	}
 	// everyone out of the pool!

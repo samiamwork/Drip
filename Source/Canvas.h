@@ -33,6 +33,7 @@
 	NSMutableArray *_backupLayers;
 	Canvas *_playbackCanvas;
 	Artist *_playbackArtist;
+	BOOL _displayPlaybackUpdates;
 	
 	NSMutableArray *_paintEvents;
 	unsigned int _eventIndex;
@@ -62,6 +63,8 @@
 // we would not be able to reconstruct the drawing from the recorded events so they
 // would be useless.
 - (void)disableRecording;
+- (void)setDisplayPlaybackUpdates:(BOOL)shouldUpdate;
+- (Canvas *)playbackCanvas;
 
 - (void)compactEvents;
 - (unsigned int)currentPlaybackEvent;
