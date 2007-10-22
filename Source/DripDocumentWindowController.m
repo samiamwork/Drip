@@ -19,6 +19,11 @@
 	
 	_playbackSpeed = 1;
 	
+	// export progress indicator controls
+	_exportProgressView = nil;
+	_exportProgressBar = nil;
+	_exportTimeText = nil;
+	
 	Canvas *newCanvas = [(DripDocument*)[self document] canvas];
 	[_sketchView setCanvas:newCanvas];
 	[_sketchView setArtist:[(DripDocument*)[self document] artist]];
@@ -89,11 +94,44 @@
 	[theCanvas drawRect:canvasRect inContext:[_encoder frameContext]];
 	[_encoder frameReady];
 	
+	// set up the progress view.
+	NSSize sketchViewSize = [_sketchView bounds].size;
+	_exportProgressView = [[HUDView alloc] initWithFrame:NSMakeRect(floorf((sketchViewSize.width-300.0f)/2.0f),floorf((sketchViewSize.height-81.0f)/2.0f),300.0f,81.0f )];
+	// progress bar
+	_exportProgressBar = [[NSProgressIndicator alloc] initWithFrame:NSMakeRect(20.0f,20.0f,300.0f-40.0f,20.0f)];
+	[_exportProgressBar setStyle:NSProgressIndicatorBarStyle];
+	[_exportProgressBar setControlSize:NSRegularControlSize];
 	[_exportProgressBar setHidden:NO];
 	[_exportProgressBar setIndeterminate:NO];
 	[_exportProgressBar setMinValue:0.0];
 	[_exportProgressBar setMaxValue:1.0];
 	[_exportProgressBar setDoubleValue:0.0];
+	[_exportProgressView addSubview:_exportProgressBar];
+	[_exportProgressBar release];
+	// "Exporting..." Label
+	NSTextField *exportTitle = [[NSTextField alloc] initWithFrame:NSMakeRect(20.0f,81.0f-20.0f-17.0f,114.0f,17.0f)];
+	[exportTitle setBordered:NO];
+	[exportTitle setEditable:NO];
+	[exportTitle setDrawsBackground:NO];
+	[exportTitle setBezeled:NO];
+	[exportTitle setStringValue:NSLocalizedString(@"Exporting...",@"Exporting...")];
+	[exportTitle setTextColor:[NSColor whiteColor]];
+	[_exportProgressView addSubview:exportTitle];
+	[exportTitle release];
+	// time estimate
+	_exportTimeText = [[NSTextField alloc] initWithFrame:NSMakeRect(300.0f-114.0f-20.0f,81.0f-20.0f-17.0f,114.0f,17.0f)];
+	[_exportTimeText setBordered:NO];
+	[_exportTimeText setEditable:NO];
+	[_exportTimeText setDrawsBackground:NO];
+	[_exportTimeText setBezeled:NO];
+	[_exportTimeText setStringValue:NSLocalizedString(@"Calculating",@"Calculating")];
+	[_exportTimeText setAlignment:NSRightTextAlignment];
+	[_exportTimeText setTextColor:[NSColor whiteColor]];
+	[_exportProgressView addSubview:_exportTimeText];
+	[_exportTimeText release];
+	// TODO: add cancel button
+	[_exportProgressView setAutoresizingMask:NSViewMinXMargin | NSViewMaxXMargin | NSViewMinYMargin | NSViewMaxYMargin];
+	[_sketchView addSubview:_exportProgressView];
 	
 	_playbackTimer = [NSTimer scheduledTimerWithTimeInterval:0.0 target:self selector:@selector(exportTick:) userInfo:nil repeats:YES];
 }
@@ -156,6 +194,11 @@
 		_encoder = nil;
 		
 		[_exportProgressBar setHidden:YES];
+		[_exportProgressView removeFromSuperview];
+		[_exportProgressView release];
+		_exportProgressView = nil;
+		_exportProgressBar = nil;
+		_exportTimeText = nil;
 		
 		[_playbackTimer invalidate];
 		_playbackTimer = nil;

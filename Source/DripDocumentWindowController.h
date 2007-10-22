@@ -12,13 +12,17 @@
 #import "Canvas.h"
 #import "LayerController.h"
 #import "MovieEncoder.h"
+#import "HUDView.h"
 
 @interface DripDocumentWindowController : NSWindowController
 {
 	IBOutlet ScrollingSketchView *_sketchView;
 	IBOutlet NSSlider *_zoomSlider;
 	IBOutlet NSTextField *_zoomText;
-	IBOutlet NSProgressIndicator *_exportProgressBar;
+	
+	NSView *_exportProgressView;
+	NSProgressIndicator *_exportProgressBar;
+	NSTextField *_exportTimeText;
 	
 	unsigned int _playbackSpeed;
 	

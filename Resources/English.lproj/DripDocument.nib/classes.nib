@@ -30,11 +30,10 @@
         {CLASS = BrushView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {CLASS = ColoredView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {
-            ACTIONS = {setZoom = id; zoomIn = id; zoomOut = id; }; 
+            ACTIONS = {setPlaybackSpeed = id; setZoom = id; zoomIn = id; zoomOut = id; }; 
             CLASS = DripDocumentWindowController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
-                "_exportProgressBar" = NSProgressIndicator; 
                 "_sketchView" = ScrollingSketchView; 
                 "_zoomSlider" = NSSlider; 
                 "_zoomText" = NSTextField; 

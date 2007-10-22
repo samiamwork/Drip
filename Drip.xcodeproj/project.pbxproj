@@ -24,6 +24,8 @@
 		3E4399A10CC95760008789DF /* plusDark.tif in Resources */ = {isa = PBXBuildFile; fileRef = 3E43999F0CC95760008789DF /* plusDark.tif */; };
 		3E4399A90CC96070008789DF /* collapse.tif in Resources */ = {isa = PBXBuildFile; fileRef = 3E4399A80CC96070008789DF /* collapse.tif */; };
 		3E439AA30CCA65B7008789DF /* Artist.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E439AA20CCA65B7008789DF /* Artist.m */; };
+		3E439CB10CCBE496008789DF /* TIPCGUtils.c in Sources */ = {isa = PBXBuildFile; fileRef = 3E439CAF0CCBE496008789DF /* TIPCGUtils.c */; };
+		3E439CB60CCBE4F1008789DF /* HUDView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E439CB50CCBE4F1008789DF /* HUDView.m */; };
 		3E4A61680CA47AF300C67DFC /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E4A61670CA47AF300C67DFC /* Quartz.framework */; };
 		3E4A63F40CA4EC1900C67DFC /* MovieEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E4A63F30CA4EC1900C67DFC /* MovieEncoder.m */; };
 		3E5488AB0B4C9572005ED4DA /* DripDocumentWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E5488AA0B4C9572005ED4DA /* DripDocumentWindowController.m */; };
@@ -102,6 +104,10 @@
 		3E4399A80CC96070008789DF /* collapse.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = collapse.tif; sourceTree = "<group>"; };
 		3E439AA10CCA65B7008789DF /* Artist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Artist.h; sourceTree = "<group>"; };
 		3E439AA20CCA65B7008789DF /* Artist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Artist.m; sourceTree = "<group>"; };
+		3E439CAF0CCBE496008789DF /* TIPCGUtils.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = TIPCGUtils.c; sourceTree = "<group>"; };
+		3E439CB00CCBE496008789DF /* TIPCGUtils.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = TIPCGUtils.h; sourceTree = "<group>"; };
+		3E439CB40CCBE4F1008789DF /* HUDView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUDView.h; sourceTree = "<group>"; };
+		3E439CB50CCBE4F1008789DF /* HUDView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUDView.m; sourceTree = "<group>"; };
 		3E4A61670CA47AF300C67DFC /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = /System/Library/Frameworks/Quartz.framework; sourceTree = "<absolute>"; };
 		3E4A63F20CA4EC1900C67DFC /* MovieEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MovieEncoder.h; sourceTree = "<group>"; };
 		3E4A63F30CA4EC1900C67DFC /* MovieEncoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MovieEncoder.m; sourceTree = "<group>"; };
@@ -334,6 +340,8 @@
 				3E5849D10C7022850093CD10 /* AnimatingTableView.m */,
 				3EFC11D40CBE051D009F52D1 /* FramedImageCell.h */,
 				3EFC11D50CBE051D009F52D1 /* FramedImageCell.m */,
+				3E439CB40CCBE4F1008789DF /* HUDView.h */,
+				3E439CB50CCBE4F1008789DF /* HUDView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -373,6 +381,8 @@
 				3E596E680CC09DF6006FA3A2 /* CheckerPattern.c */,
 				3E0FA5850CC6F8DD002D9247 /* ImageButton.h */,
 				3E0FA5860CC6F8DD002D9247 /* ImageButton.m */,
+				3E439CB00CCBE496008789DF /* TIPCGUtils.h */,
+				3E439CAF0CCBE496008789DF /* TIPCGUtils.c */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -562,6 +572,8 @@
 				3E59716D0CC54616006FA3A2 /* CompressionPreview.m in Sources */,
 				3E0FA5870CC6F8DD002D9247 /* ImageButton.m in Sources */,
 				3E439AA30CCA65B7008789DF /* Artist.m in Sources */,
+				3E439CB10CCBE496008789DF /* TIPCGUtils.c in Sources */,
+				3E439CB60CCBE4F1008789DF /* HUDView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
