@@ -27,6 +27,8 @@
 	unsigned int _playbackSpeed;
 	
 	NSTimer *_playbackTimer;
+	NSTimeInterval _exportStartTime;
+	NSTimeInterval _lastTimeWeEstimated;
 	MovieEncoder *_encoder;
 }
 

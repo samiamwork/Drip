@@ -133,6 +133,8 @@
 	[_exportProgressView setAutoresizingMask:NSViewMinXMargin | NSViewMaxXMargin | NSViewMinYMargin | NSViewMaxYMargin];
 	[_sketchView addSubview:_exportProgressView];
 	
+	_exportStartTime = [NSDate timeIntervalSinceReferenceDate];
+	_lastTimeWeEstimated = _exportStartTime;
 	_playbackTimer = [NSTimer scheduledTimerWithTimeInterval:0.0 target:self selector:@selector(exportTick:) userInfo:nil repeats:YES];
 }
 
@@ -184,6 +186,27 @@
 	// TODO fix the problem with using the invalidRect here instead (probably having to do with the NSFillRect in the base layer)
 	[theCanvas drawRect:canvasRect inContext:[_encoder frameContext]];
 	[_encoder frameReady];
+	
+	// calculate time left if we're more than 10% done
+	float percentLeft = (float)([theCanvas eventCount]-[theCanvas currentPlaybackEvent])/(float)[theCanvas eventCount];
+	NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
+	if( percentLeft < 0.9f && now-_lastTimeWeEstimated > 5.0 ) {
+		_lastTimeWeEstimated = now;
+		NSTimeInterval timeLeft = (now-_exportStartTime)*(percentLeft/(1.0f-percentLeft));
+		int hours = timeLeft/(60.0*60.0);
+		timeLeft -= (double)hours*60.0*60.0;
+		int mins = timeLeft/60.0;
+		timeLeft -= (double)mins*60.0;
+		int secs = timeLeft;
+		
+		NSString *timeString;
+		if( mins < 1 )
+			timeString = NSLocalizedString(@"less than a minute",@"less than a minute");
+		else
+			timeString = [NSString stringWithFormat:@"-%d:%02d:%02d",hours,mins,secs];
+		[_exportTimeText setStringValue:timeString];
+	}
+	
 
 	double newProgress = (double)[theCanvas currentPlaybackEvent]/(double)[theCanvas eventCount];
 	[_exportProgressBar setDoubleValue:newProgress];
