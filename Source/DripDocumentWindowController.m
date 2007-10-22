@@ -53,6 +53,11 @@
 	newWindowFrame.size.width = canvasSize.width+extraWindowSize.width;
 	newWindowFrame.size.height = canvasSize.height+extraWindowSize.height;
 	
+	if( newWindowFrame.size.width < 300.0f )
+		newWindowFrame.size.width = 300.0f;
+	if( newWindowFrame.size.height < 200.0f )
+		newWindowFrame.size.height = 200.0f;
+	
 	newWindowFrame.origin.x = roundf(mainScreenFrame.origin.x + (mainScreenFrame.size.width-newWindowFrame.size.width)/2.0f);
 	if( newWindowFrame.origin.x < mainScreenFrame.origin.x ) {
 		newWindowFrame.origin.x = mainScreenFrame.origin.x;
