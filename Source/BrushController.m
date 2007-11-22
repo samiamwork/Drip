@@ -15,8 +15,6 @@
 	if( (self = [super init]) ) {
 		_currentBrush = nil;
 		
-		//_paintBrush = nil;
-		//_eraserBrush = nil;
 		_artist = nil;
 		_sketchView = nil;
 		
@@ -28,8 +26,6 @@
 
 - (void)dealloc
 {
-	//[_paintBrush release];
-	//[_eraserBrush release];
 	[_artist release];
 	[_sketchView release];
 
@@ -210,7 +206,6 @@
 	[_resaturationExpressionCheckbox setEnabled:[_currentBrush usesPressureAffectsResaturation]];
 	
 	[_brushView setBrush:_currentBrush];
-	//[_currentBrush setColor:[_colorWell color]];
 	if( [brush isMemberOfClass:[Brush class]] ) {
 		[_colorWell setEnabled:YES];
 		[_colorWell setColor:[brush color]];

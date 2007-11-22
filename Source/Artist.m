@@ -41,6 +41,9 @@
 {
 	[_paintBrush loadSettings];
 	[_eraserBrush loadSettings];
+	
+	[_color release];
+	_color = [[*_currentBrushPtr color] retain];
 }
 
 - (void)saveSettings
