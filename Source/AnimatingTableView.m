@@ -50,6 +50,13 @@ static const CGFunctionCallbacks linearFunctionCallbacks = {0, &linearColorBlend
 - (void)highlightSelectionInClipRect:(NSRect)aRect
 {
 	NSColor *alternateSelectedControlColor = [NSColor alternateSelectedControlColor];
+	[alternateSelectedControlColor setFill];
+	NSRect rowRect = [self rectOfRow:[self selectedRow]];
+	if( _slidingAnimation ) {
+		// Drawing a gradient is pretty slow so we just do a solid fill if we're animating.
+		NSRectFill( rowRect );
+		return;
+	}
 	float hue, saturation, brightness, alpha;
 	[[alternateSelectedControlColor colorUsingColorSpaceName:NSDeviceRGBColorSpace] getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha];
 	
@@ -64,11 +71,9 @@ static const CGFunctionCallbacks linearFunctionCallbacks = {0, &linearColorBlend
 	[lighterColor getRed:&twoColors->colorOne.red green:&twoColors->colorOne.green blue:&twoColors->colorOne.blue alpha:&twoColors->colorOne.alpha];
 	[darkerColor getRed:&twoColors->colorTwo.red green:&twoColors->colorTwo.green blue:&twoColors->colorTwo.blue alpha:&twoColors->colorTwo.alpha];
 	
-	NSRect rowRect = [self rectOfRow:[self selectedRow]];
 	NSRect topLine;
 	NSRect gradientRect;
 	NSDivideRect( rowRect, &topLine, &gradientRect, 1.0f, NSMinYEdge );
-	[alternateSelectedControlColor setFill];
 	NSRectFill( topLine );
 	
 	CGContextRef cxt = [[NSGraphicsContext currentContext] graphicsPort];
