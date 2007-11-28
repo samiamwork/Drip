@@ -248,6 +248,7 @@ NSString *currentCodecName( void )
 	[_codecDescription setDrawsBackground:NO];
 	[_codecDescription setSelectable:NO];
 	[_codecDescription setBezeled:NO];
+	[[_codecDescription cell] setLineBreakMode:NSLineBreakByTruncatingTail];
 	[_codecDescription setStringValue:currentCodecName()];
 	[containerView addSubview:_codecDescription];
 	
@@ -263,7 +264,7 @@ NSString *currentCodecName( void )
 	[_sizeSlider setMinValue:0.0];
 	[_sizeSlider setMaxValue:1.0];
 	[_sizeSlider setDoubleValue:1.0];
-	[_sizeSlider setNumberOfTickMarks:3];
+	[_sizeSlider setNumberOfTickMarks:5];
 	[_sizeSlider setTarget:self];
 	[_sizeSlider setAction:@selector(setScale:)];
 	[containerView addSubview:_sizeSlider];
