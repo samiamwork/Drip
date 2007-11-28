@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 #import <QuickTime/QuickTime.h>
 
-@interface MovieEncoder : NSObject {
+@interface MovieEncoder : NSWindowController {
 	CVPixelBufferPoolRef _pixelBufferPool;
 	Movie _movie;
 	Track _track;
@@ -23,9 +23,10 @@
 	
 	NSString *_path;
 	
-	NSTextField *_codecDescription;
-	NSTextField *_sizeField;
-	NSSlider *_sizeSlider;
+	IBOutlet NSView *_containerView;
+	IBOutlet NSTextField *_codecDescription;
+	IBOutlet NSTextField *_sizeField;
+	IBOutlet NSSlider *_sizeSlider;
 	float _scale;
 	
 	void *_bitmapBytes;
@@ -39,7 +40,8 @@
 - (void)setPath:(NSString *)newPath;
 - (CGContextRef)frameContext;
 
-- (void)promptForSettings:(id)sender;
+- (IBAction)promptForSettings:(id)sender;
+- (IBAction)setScale:(id)sender;
 
 - (void)beginMovie;
 - (void)endMovie;

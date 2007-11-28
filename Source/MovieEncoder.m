@@ -61,7 +61,7 @@ static void SourceFrameTrackingCallback(void *sourceTrackingRefCon, ICMSourceTra
 
 - (id)initWithWidth:(unsigned int)width height:(unsigned int)height
 {
-	if( (self = [super init]) ) {
+	if( (self = [super initWithWindowNibName:@"MovieExport"]) ) {
 		if( width == 0 || height == 0 ) {
 			[self release];
 			return nil;
@@ -81,6 +81,7 @@ static void SourceFrameTrackingCallback(void *sourceTrackingRefCon, ICMSourceTra
 		
 		_bitmapContext = NULL;
 		_bitmapBytes = NULL;
+		[self window];
 	}
 	
 	return self;
@@ -213,11 +214,13 @@ NSString *currentCodecName( void )
 		directory = [_path stringByDeletingLastPathComponent];
 	}
 	
-	NSView *containerView = [[NSView alloc] initWithFrame:NSMakeRect(0.0f,0.0f,300.0f,75.0f)];
-	[containerView setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
-	[savePanel setAccessoryView:containerView];
-	NSRect superBounds = [[containerView superview] bounds];
-	[containerView setFrame:NSMakeRect(0.0f,0.0f,superBounds.size.width,75.0f)];
+	//NSView *containerView = [[NSView alloc] initWithFrame:NSMakeRect(0.0f,0.0f,300.0f,75.0f)];
+	//[containerView setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
+	[savePanel setAccessoryView:_containerView];
+	
+	/*
+	NSRect superBounds = [[_containerView superview] bounds];
+	[_containerView setFrame:NSMakeRect(0.0f,0.0f,superBounds.size.width,75.0f)];
 	[containerView release];
 	NSSize containerSize = [containerView bounds].size;
 	
@@ -280,18 +283,28 @@ NSString *currentCodecName( void )
 	[_sizeField setStringValue:sizeString];
 	[sizeString release];
 	[containerView addSubview:_sizeField];
+	*/
+	
+	[_codecDescription setStringValue:currentCodecName()];
+	[_sizeSlider setMinValue:0.0];
+	[_sizeSlider setMaxValue:1.0];
+	[_sizeSlider setDoubleValue:1.0];
+	NSString *sizeString = [[NSString alloc] initWithFormat:@"%d x %d",_width,_height];
+	[_sizeField setStringValue:sizeString];
 	
 	if( [savePanel runModalForDirectory:directory file:filename] != NSFileHandlingPanelOKButton )
 		return NO;
 	
 	[self setPath:[savePanel filename]];
 
+	/*
 	[_codecDescription release];
 	_codecDescription = nil;
 	[_sizeField release];
 	_sizeField = nil;
 	[_sizeSlider release];
 	_sizeSlider = nil;
+	 */
 	return YES;
 }
 - (NSString *)path
@@ -312,7 +325,7 @@ NSString *currentCodecName( void )
 	return _bitmapContext;
 }
 
-- (void)setScale:(id)sender
+- (IBAction)setScale:(id)sender
 {
 	float newScale = [sender floatValue];
 	if( newScale == _scale )

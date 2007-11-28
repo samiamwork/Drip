@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IBClasses</key>
+	<array>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>promptForSettings</key>
+				<string>id</string>
+				<key>setScale</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>MovieEncoder</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>_codecDescription</key>
+				<string>NSTextField</string>
+				<key>_containerView</key>
+				<string>NSView</string>
+				<key>_sizeField</key>
+				<string>NSTextField</string>
+				<key>_sizeSlider</key>
+				<string>NSSlider</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSWindowController</string>
+		</dict>
+	</array>
+	<key>IBVersion</key>
+	<string>1</string>
+</dict>
+</plist>
