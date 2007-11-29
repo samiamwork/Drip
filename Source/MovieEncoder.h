@@ -34,6 +34,8 @@
 	IBOutlet NSProgressIndicator *_exportProgressBar;
 	IBOutlet NSTextField *_exportTimeText;
 	
+	id _delegate;
+	
 	void *_bitmapBytes;
 	CGContextRef _bitmapContext;
 }
@@ -44,9 +46,12 @@
 - (NSString *)path;
 - (void)setPath:(NSString *)newPath;
 - (CGContextRef)frameContext;
+- (void)setDelegate:(id)theDelegate;
+- (id)delegate;
 
 - (IBAction)promptForSettings:(id)sender;
 - (IBAction)setScale:(id)sender;
+- (IBAction)cancelExport:(id)sender;
 
 - (void)setProgress:(double)theProgress timeEstimate:(NSString *)theTimeEstimate;
 

@@ -84,6 +84,7 @@
 	unsigned int canvasHeight = (unsigned int)[theCanvas size].height;
 	
 	_encoder = [[MovieEncoder alloc] initWithWidth:canvasWidth height:canvasHeight];
+	[_encoder setDelegate:self];
 	NSString *filename = [[[[self document] fileURL] path] stringByDeletingPathExtension];
 	filename = [filename stringByAppendingPathExtension:@"mov"];
 	[_encoder setPath:filename];
@@ -181,6 +182,26 @@
 	[theCanvas endPlayback];
 }
 
+- (void)stopExport
+{
+	Canvas *theCanvas = [(DripDocument*)[self document] canvas];
+	[theCanvas endPlayback];
+	[_encoder endMovie];
+	[_encoder release];
+	_encoder = nil;
+
+	[_playbackTimer invalidate];
+	_playbackTimer = nil;
+	
+	[theCanvas setDisplayPlaybackUpdates:YES];
+	printf("export done\n");
+}
+
+- (void)movieEncoderCanceledMovie:(MovieEncoder *)aMovieEncoder
+{
+	[self stopExport];
+}
+
 - (void)exportTick:(NSTimer *)theTimer
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -217,30 +238,13 @@
 		//[_exportTimeText setStringValue:timeString];
 	}
 	
-
 	double newProgress = (double)[theCanvas currentPlaybackEvent]/(double)[theCanvas eventCount];
 	//[_exportProgressBar setDoubleValue:newProgress];
 	[_encoder setProgress:newProgress timeEstimate:timeString];
 	
-	if( ![theCanvas isPlayingBack] ) {
-		[theCanvas endPlayback];
-		[_encoder endMovie];
-		[_encoder release];
-		_encoder = nil;
-		/*
-		[_exportProgressBar setHidden:YES];
-		[_exportProgressView removeFromSuperview];
-		[_exportProgressView release];
-		_exportProgressView = nil;
-		_exportProgressBar = nil;
-		_exportTimeText = nil;
-		*/
-		[_playbackTimer invalidate];
-		_playbackTimer = nil;
-		
-		[theCanvas setDisplayPlaybackUpdates:YES];
-		printf("export done\n");
-	}
+	if( ![theCanvas isPlayingBack] )
+		[self stopExport];
+	
 	// everyone out of the pool!
 	[pool release];
 }

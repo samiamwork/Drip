@@ -8,6 +8,10 @@
 
 #import "MovieEncoder.h"
 
+@interface NSObject (EncoderDelegate)
+- (void)movieEncoderCanceledMovie:(MovieEncoder *)aMovieEncoder;
+@end
+
 static OSStatus FrameOutputCallback(void* encodedFrameOutputRefCon, ICMCompressionSessionRef session, OSStatus error, ICMEncodedFrameRef frame, void* reserved)
 {
 	if(error == noErr) {
@@ -54,6 +58,8 @@ static void SourceFrameTrackingCallback(void *sourceTrackingRefCon, ICMSourceTra
 		
 		_bitmapContext = NULL;
 		_bitmapBytes = NULL;
+		
+		_delegate = nil;
 	}
 
 	return self;
@@ -81,6 +87,8 @@ static void SourceFrameTrackingCallback(void *sourceTrackingRefCon, ICMSourceTra
 		
 		_bitmapContext = NULL;
 		_bitmapBytes = NULL;
+		
+		_delegate = nil;
 		[self window];
 	}
 	
@@ -325,6 +333,15 @@ NSString *currentCodecName( void )
 	return _bitmapContext;
 }
 
+- (void)setDelegate:(id)theDelegate
+{
+	_delegate = theDelegate;
+}
+- (id)delegate
+{
+	return _delegate;
+}
+
 - (IBAction)setScale:(id)sender
 {
 	float newScale = [sender floatValue];
@@ -379,6 +396,14 @@ NSString *currentCodecName( void )
 		return;
 	
 	[_codecDescription setStringValue:currentCodecName()];
+}
+
+- (IBAction)cancelExport:(id)sender
+{
+	// Let the delegate decide if we need to really end it.
+	//[self endMovie];
+	if( _delegate && [_delegate respondsToSelector:@selector(movieEncoderCanceledMovie:)] )
+		[_delegate movieEncoderCanceledMovie:self];
 }
 
 - (void)setProgress:(double)theProgress timeEstimate:(NSString *)theTimeEstimate
