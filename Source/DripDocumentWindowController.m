@@ -10,6 +10,7 @@
 #import "DripDocument.h"
 #import "DripInspectors.h"
 #import "ImageExporter.h"
+#import "CheckerPattern.h"
 
 @implementation DripDocumentWindowController
 
@@ -100,6 +101,7 @@
 	// ...draw the frames
 	NSRect canvasRect = NSMakeRect(0.0f,0.0f,(float)canvasWidth,(float)canvasHeight);
 	[theCanvas setDisplayPlaybackUpdates:NO];
+	drawCheckerPatternInContextWithPhase([_encoder frameContext], CGSizeMake(0.0f, 0.0f), *(CGRect *)&canvasRect, 10.0f);
 	[[theCanvas playbackCanvas] drawRect:canvasRect inContext:[_encoder frameContext]];
 	[_encoder frameReady];
 	
@@ -215,6 +217,7 @@
 		[theCanvas playNextVisibleEvent];
 	// we have a frame to compress
 	// TODO fix the problem with using the invalidRect here instead (probably having to do with the NSFillRect in the base layer)
+	drawCheckerPatternInContextWithPhase([_encoder frameContext], CGSizeMake(0.0f, 0.0f), *(CGRect *)&canvasRect, 10.0f);
 	[[theCanvas playbackCanvas] drawRect:canvasRect inContext:[_encoder frameContext]];
 	[_encoder frameReady];
 	
