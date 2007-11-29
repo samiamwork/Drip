@@ -20,9 +20,9 @@
 	IBOutlet NSSlider *_zoomSlider;
 	IBOutlet NSTextField *_zoomText;
 	
-	NSView *_exportProgressView;
-	NSProgressIndicator *_exportProgressBar;
-	NSTextField *_exportTimeText;
+	//NSView *_exportProgressView;
+	//NSProgressIndicator *_exportProgressBar;
+	//NSTextField *_exportTimeText;
 	
 	unsigned int _playbackSpeed;
 	

@@ -19,10 +19,12 @@
 	
 	_playbackSpeed = 1;
 	
+	/*
 	// export progress indicator controls
 	_exportProgressView = nil;
 	_exportProgressBar = nil;
 	_exportTimeText = nil;
+	*/
 	
 	Canvas *newCanvas = [(DripDocument*)[self document] canvas];
 	[_sketchView setCanvas:newCanvas];
@@ -91,7 +93,7 @@
 		printf("export canceled (no filename chosen)\n");
 		return;
 	}
-	[_encoder beginMovie];
+	[_encoder beginMovieForWindow:[self window]];
 	[theCanvas beginPlayback];
 	
 	// ...draw the frames
@@ -101,6 +103,7 @@
 	[_encoder frameReady];
 	
 	// set up the progress view.
+	/*
 	NSSize sketchViewSize = [_sketchView bounds].size;
 	_exportProgressView = [[HUDView alloc] initWithFrame:NSMakeRect(floorf((sketchViewSize.width-300.0f)/2.0f),floorf((sketchViewSize.height-81.0f)/2.0f),300.0f,81.0f )];
 	// progress bar
@@ -138,6 +141,7 @@
 	// TODO: add cancel button
 	[_exportProgressView setAutoresizingMask:NSViewMinXMargin | NSViewMaxXMargin | NSViewMinYMargin | NSViewMaxYMargin];
 	[_sketchView addSubview:_exportProgressView];
+	*/
 	
 	_exportStartTime = [NSDate timeIntervalSinceReferenceDate];
 	_lastTimeWeEstimated = _exportStartTime;
@@ -194,6 +198,7 @@
 	[_encoder frameReady];
 	
 	// calculate time left if we're more than 10% done
+	NSString *timeString = nil;
 	float percentLeft = (float)([theCanvas eventCount]-[theCanvas currentPlaybackEvent])/(float)[theCanvas eventCount];
 	NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
 	if( percentLeft < 0.9f && now-_lastTimeWeEstimated > 5.0 ) {
@@ -205,30 +210,31 @@
 		timeLeft -= (double)mins*60.0;
 		int secs = timeLeft;
 		
-		NSString *timeString;
 		if( mins < 1 )
 			timeString = NSLocalizedString(@"less than a minute",@"less than a minute");
 		else
 			timeString = [NSString stringWithFormat:@"-%d:%02d:%02d",hours,mins,secs];
-		[_exportTimeText setStringValue:timeString];
+		//[_exportTimeText setStringValue:timeString];
 	}
 	
 
 	double newProgress = (double)[theCanvas currentPlaybackEvent]/(double)[theCanvas eventCount];
-	[_exportProgressBar setDoubleValue:newProgress];
+	//[_exportProgressBar setDoubleValue:newProgress];
+	[_encoder setProgress:newProgress timeEstimate:timeString];
+	
 	if( ![theCanvas isPlayingBack] ) {
 		[theCanvas endPlayback];
 		[_encoder endMovie];
 		[_encoder release];
 		_encoder = nil;
-		
+		/*
 		[_exportProgressBar setHidden:YES];
 		[_exportProgressView removeFromSuperview];
 		[_exportProgressView release];
 		_exportProgressView = nil;
 		_exportProgressBar = nil;
 		_exportTimeText = nil;
-		
+		*/
 		[_playbackTimer invalidate];
 		_playbackTimer = nil;
 		

@@ -242,7 +242,6 @@
 		2A37F4B8FDCFA73011CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				3E51E1AA0CFE0D4A0013BFE5 /* MovieExport.nib */,
 				3E4399A80CC96070008789DF /* collapse.tif */,
 				3E43999E0CC95760008789DF /* minusDark.tif */,
 				3E43999F0CC95760008789DF /* plusDark.tif */,
@@ -252,6 +251,7 @@
 				3E0FA57B0CC6F546002D9247 /* plus.tif */,
 				3E8AF99D0CBB479C0056C32F /* Drip.icns */,
 				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
+				3E51E1AA0CFE0D4A0013BFE5 /* MovieExport.nib */,
 				2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */,
 				2A37F4B4FDCFA73011CA2CEA /* DripDocument.nib */,
 				3E8C3BB60C922A0C0091E8BE /* DripInspectors.nib */,

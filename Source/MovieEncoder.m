@@ -381,7 +381,14 @@ NSString *currentCodecName( void )
 	[_codecDescription setStringValue:currentCodecName()];
 }
 
-- (void)beginMovie
+- (void)setProgress:(double)theProgress timeEstimate:(NSString *)theTimeEstimate
+{
+	[_exportProgressBar setDoubleValue:theProgress];
+	if( theTimeEstimate )
+		[_exportTimeText setStringValue:theTimeEstimate];
+}
+
+- (void)beginMovieForWindow:(NSWindow *)theWindow
 {
 	// update the width and height
 	int newWidth;
@@ -486,6 +493,10 @@ NSString *currentCodecName( void )
 	}
 	_currentFrame = 0;
 	
+	[self setProgress:0.0 timeEstimate:NSLocalizedString(@"Calculating",@"Calculating")];
+	[_exportProgressBar setMinValue:0.0];
+	[_exportProgressBar setMaxValue:1.0];
+	[NSApp beginSheet:_progressSheet modalForWindow:theWindow modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
 
 - (void)endMovie
@@ -525,6 +536,9 @@ NSString *currentCodecName( void )
 	free( _bitmapBytes );
 	_bitmapContext = NULL;
 	_bitmapBytes = NULL;
+	
+	[NSApp endSheet:_progressSheet];
+	[_progressSheet orderOut:nil];
 }
 
 - (void)frameReady

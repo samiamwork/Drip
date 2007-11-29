@@ -29,6 +29,11 @@
 	IBOutlet NSSlider *_sizeSlider;
 	float _scale;
 	
+	// For export progress
+	IBOutlet NSWindow *_progressSheet;
+	IBOutlet NSProgressIndicator *_exportProgressBar;
+	IBOutlet NSTextField *_exportTimeText;
+	
 	void *_bitmapBytes;
 	CGContextRef _bitmapContext;
 }
@@ -43,7 +48,10 @@
 - (IBAction)promptForSettings:(id)sender;
 - (IBAction)setScale:(id)sender;
 
-- (void)beginMovie;
+- (void)setProgress:(double)theProgress timeEstimate:(NSString *)theTimeEstimate;
+
+// begin encoding the movie and attach the progress sheet to theWindow
+- (void)beginMovieForWindow:(NSWindow *)theWindow;
 - (void)endMovie;
 - (void)frameReady;
 

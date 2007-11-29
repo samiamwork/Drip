@@ -22,6 +22,12 @@
 				<string>NSTextField</string>
 				<key>_containerView</key>
 				<string>NSView</string>
+				<key>_exportProgressBar</key>
+				<string>NSProgressIndicator</string>
+				<key>_exportTimeText</key>
+				<string>NSTextField</string>
+				<key>_progressSheet</key>
+				<string>NSWindow</string>
 				<key>_sizeField</key>
 				<string>NSTextField</string>
 				<key>_sizeSlider</key>
