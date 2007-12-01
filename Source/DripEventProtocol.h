@@ -7,6 +7,9 @@
  *
  */
 
+#import "Canvas.h"
+#import "Artist.h"
+
 // length + type
 #define EVENT_HEADER_LENGTH (1+1)
 typedef enum DripEventType {
@@ -48,4 +51,8 @@ typedef enum DripEventType {
  * over a network or storing to disk).
  */
 - (NSData *)data;
+
+/* call this to playback the event
+ */
+- (NSRect)runWithCanvas:(Canvas *)theCanvas artist:(Artist *)theArtist;
 @end

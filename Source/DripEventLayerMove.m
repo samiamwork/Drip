@@ -86,4 +86,11 @@
 	free(bytes);
 	return theData;
 }
+
+- (NSRect)runWithCanvas:(Canvas *)theCanvas artist:(Artist *)theArtist
+{
+	[theCanvas moveLayerAtIndex:_fromIndex toIndex:_toIndex];
+	return NSMakeRect(0.0f,0.0f,[theCanvas size].width,[theCanvas size].height);
+}
+
 @end

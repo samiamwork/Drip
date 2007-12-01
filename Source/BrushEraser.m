@@ -269,7 +269,7 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 }
 
 #pragma mark Settings
-
+/*
 - (void)changeSettings:(DripEventBrushSettings *)theSettings
 {
 	if( [theSettings type] != kBrushTypeEraser )
@@ -287,7 +287,7 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 {
 	return [[[DripEventBrushSettings alloc] initWithType:kBrushTypeEraser size:_brushSize hardness:_hardness spacing:_spacing resaturation:_resaturation strokeOpacity:_strokeOpacity blendMode:_blendMode pressureAffectsFlow:_pressureAffectsFlow pressureAffectsSize:_pressureAffectsSize pressureAffectsResaturation:_pressureAffectsResaturation color:[NSColor colorWithCalibratedRed:_RGBAColor[0] green:_RGBAColor[1] blue:_RGBAColor[2] alpha:_RGBAColor[3]]] autorelease];
 }
-
+*/
 - (void)saveSettings
 {
 	NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];

@@ -8,12 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "DripEventProtocol.h"
-
-
-typedef enum BrushType {
-	kBrushTypePaint = 1,
-	kBrushTypeEraser
-} BrushType;
+#import "Brush.h"
 
 @interface DripEventBrushSettings : NSObject <DripEvent> {
 	BrushType _type;
@@ -30,6 +25,7 @@ typedef enum BrushType {
 }
 
 - (id)initWithType:(BrushType)theType size:(float)theSize hardness:(float)theHardness spacing:(float)theSpacing resaturation:(float)theResaturation strokeOpacity:(float)theStrokeOpacity blendMode:(CGBlendMode)blendMode pressureAffectsFlow:(BOOL)willAffectFlow pressureAffectsSize:(BOOL)willAffectSize pressureAffectsResaturation:(BOOL)willAffectResaturation color:(NSColor *)theColor;
+- (id)initWithBrush:(Brush *)theBrush;
 
 - (BrushType)type;
 - (float)size;

@@ -48,4 +48,10 @@
 	return theData;
 }
 
+- (NSRect)runWithCanvas:(Canvas *)theCanvas artist:(Artist *)theArtist
+{
+	[theCanvas addLayer];
+	return NSMakeRect(0.0f,0.0f,[theCanvas size].width,[theCanvas size].height);
+}
+
 @end

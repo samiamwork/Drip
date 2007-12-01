@@ -51,7 +51,7 @@
 	[_paintBrush saveSettings];
 	[_eraserBrush saveSettings];
 }
-
+/*
 - (void)changeBrushSettings:(DripEventBrushSettings *)newSettings
 {
 	if( [newSettings type] == kBrushTypeEraser )
@@ -61,7 +61,7 @@
 	
 	[[self currentBrush] changeSettings:newSettings];
 }
-
+*/
 - (void)setCanvasSize:(NSSize)canvasSize
 {
 	[_paintBrush setCanvasSize:canvasSize];

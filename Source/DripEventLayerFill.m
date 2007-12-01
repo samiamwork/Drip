@@ -92,6 +92,13 @@
 	return theData;
 }
 
+- (NSRect)runWithCanvas:(Canvas *)theCanvas artist:(Artist *)theArtist
+{
+	[[theCanvas currentLayer] fillLayerWithColor:_color];
+	// TODO: can I get rid of the fudge factor?
+	return NSMakeRect(-1.0f,-1.0f,[theCanvas size].width,[theCanvas size].height);
+}
+
 - (NSColor *)color
 {
 	return _color;

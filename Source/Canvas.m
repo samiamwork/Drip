@@ -7,6 +7,19 @@
 //
 
 #import "Canvas.h"
+#import "DripEvent.h"
+
+#import "DripEventBrushSettings.h"
+#import "DripEventLayerSettings.h"
+#import "DripEventLayerFill.h"
+#import "DripEventStrokeBegin.h"
+#import "DripEventLayerChange.h"
+#import "DripEventLayerAdd.h"
+#import "DripEventLayerDelete.h"
+#import "DripEventLayerCollapse.h"
+#import "DripEventLayerMove.h"
+#import "DripEventStrokeContinue.h"
+#import "DripEventStrokeEnd.h"
 
 @implementation Canvas
 
@@ -129,47 +142,32 @@
 	
 	DripEvent *theEvent = [_paintEvents objectAtIndex:_eventIndex];
 	_eventIndex++;
-	
+	/*
 	if( [theEvent isKindOfClass:[DripEventStrokeBegin class]] ) {
 		DripEventStrokeBegin *brushDown = (DripEventStrokeBegin *)theEvent;
 		PressurePoint aPoint = (PressurePoint){[brushDown position].x, [brushDown position].y, [brushDown pressure]};
-		//return [_currentPlaybackBrush beginStrokeAtPoint:aPoint onLayer:_currentLayer];
 		return [_playbackCanvas beginStrokeAtPoint:aPoint withBrush:[_playbackArtist currentBrush]];
 	} else if( [theEvent isKindOfClass:[DripEventStrokeContinue class]] ) {
 		DripEventStrokeContinue *brushDrag = (DripEventStrokeContinue *)theEvent;
 		PressurePoint dragPoint = (PressurePoint){[brushDrag position].x, [brushDrag position].y, [brushDrag pressure]};
-		//return [_currentPlaybackBrush continueStrokeAtPoint:dragPoint];
 		return [_playbackCanvas continueStrokeAtPoint:dragPoint withBrush:[_playbackArtist currentBrush]];
 	} else if( [theEvent isKindOfClass:[DripEventStrokeEnd class]] ) {
-		//[_currentPlaybackBrush endStroke];
 		[_playbackCanvas endStrokeWithBrush:[_playbackArtist currentBrush]];
 		return NSZeroRect;
 	} else if( [theEvent isKindOfClass:[DripEventBrushSettings class]] ) {
 		DripEventBrushSettings *brushSettings = (DripEventBrushSettings *)theEvent;
-		/*
-		if( [brushSettings type] == kBrushTypePaint )
-			_currentPlaybackBrush = _playbackBrush;
-		else
-			_currentPlaybackBrush = _playbackEraser;
-		[_currentPlaybackBrush changeSettings:brushSettings];
-		 */
 		[_playbackArtist changeBrushSettings:brushSettings];
-		//return NSZeroRect;
 	} else if( [theEvent isKindOfClass:[DripEventLayerAdd class]] ) {
-		//[self addLayer];
 		[_playbackCanvas addLayer];
 		return NSMakeRect(0.0f,0.0f,_width,_height);
 	} else if( [theEvent isKindOfClass:[DripEventLayerDelete class]] ) {
-		//[self deleteLayer:_currentLayer];
 		[_playbackCanvas deleteLayer:[_playbackCanvas currentLayer]];
 		return NSMakeRect(0.0f,0.0f,_width,_height);
 	} else if( [theEvent isKindOfClass:[DripEventLayerCollapse class]] ) {
-		//[self collapseLayer:_currentLayer];
 		[_playbackCanvas collapseLayer:[_playbackCanvas currentLayer]];
 		return NSMakeRect(0.0f,0.0f,_width,_height);
 	} else if( [theEvent isKindOfClass:[DripEventLayerMove class]] ) {
 		DripEventLayerMove *layerMove = (DripEventLayerMove *)theEvent;
-		//[self insertLayer:[_layers objectAtIndex:[layerMove fromIndex]] AtIndex:[layerMove toIndex]];
 		[_playbackCanvas moveLayerAtIndex:[layerMove fromIndex] toIndex:[layerMove toIndex]];
 		return NSMakeRect(0.0f,0.0f,_width,_height);
 	} else if( [theEvent isKindOfClass:[DripEventLayerSettings class]] ) {
@@ -178,23 +176,20 @@
 		[aLayer changeSettings:layerSettings];
 		// TODO: stop going behind the canvas's back to change layer settings.
 		[_playbackCanvas settingsChangedForLayer:aLayer];
-		//if( aLayer != _currentLayer )
-		//	[self rebuildTopAndBottom];
 		
 		return NSMakeRect(0.0f,0.0f,_width,_height);
 	} else if( [theEvent isKindOfClass:[DripEventLayerChange class]] ) {
-		//[self setCurrentLayer:[_layers objectAtIndex:[(DripEventLayerChange *)theEvent layerIndex]]];
 		[_playbackCanvas setCurrentLayer:[[_playbackCanvas layers] objectAtIndex:[(DripEventLayerChange *)theEvent layerIndex]]];
 	} else if( [theEvent isKindOfClass:[DripEventLayerFill class]] ) {
-		//[_currentLayer fillLayerWithColor:[(DripEventLayerFill *)theEvent color]];
 		[[_playbackCanvas currentLayer] fillLayerWithColor:[(DripEventLayerFill *)theEvent color]];
 		// TODO: can I get rid of the fudge factor?
 		return NSMakeRect(-1.0f,-1.0f,(float)_width,(float)_height);
 	}else {
 		printf("unknown event!\n");
 	}
+	 */
 	
-	return NSZeroRect;
+	return [theEvent runWithCanvas:_playbackCanvas artist:_playbackArtist];
 }
 
 - (NSRect)playNextVisibleEvent
@@ -554,7 +549,11 @@
 		[_layerSettings release];
 		_layerSettings = nil;
 	}
-	[_paintEvents addObject:[aBrush settings]];
+	
+	DripEventBrushSettings *settings = [[DripEventBrushSettings alloc] initWithBrush:aBrush];
+	[_paintEvents addObject:settings];
+	[settings release];
+	
 	[_paintEvents addObject:[[[DripEventStrokeBegin alloc] initWithPosition:NSMakePoint(aPoint.x,aPoint.y) pressure:aPoint.pressure] autorelease]];
 	return [aBrush beginStrokeAtPoint:aPoint onLayer:_currentLayer];
 }

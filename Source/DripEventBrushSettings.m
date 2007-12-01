@@ -54,6 +54,27 @@
 	return self;
 }
 
+- (id)initWithBrush:(Brush *)theBrush
+{
+	if( (self = [super init]) ) {
+		_type = [theBrush type];
+		_size = [theBrush size];
+		_spacing = [theBrush spacing];
+		_hardness = [theBrush hardness];
+		_resaturation = [theBrush resaturation];
+		_strokeOpacity = [theBrush strokeOpacity];
+		_blendMode = [theBrush blendMode];
+		_pressureAffectsFlow = [theBrush pressureAffectsFlow];
+		_pressureAffectsSize = [theBrush pressureAffectsSize];
+		_pressureAffectsResaturation = [theBrush pressureAffectsResaturation];
+		
+		NSColor *rgbColor = [[theBrush color] colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+		[rgbColor getRed:&_RGBAColor[0] green:&_RGBAColor[1] blue:&_RGBAColor[2] alpha:&_RGBAColor[3]];
+	}
+	
+	return self;
+}
+
 #define EVENT_LENGTH (EVENT_HEADER_LENGTH+1+sizeof(CFSwappedFloat32)*9+sizeof(UInt32)+1)
 - (unsigned int)length
 {
@@ -123,6 +144,7 @@
 									 pressureAffectsSize:(pressureAffects & 2)
 							 pressureAffectsResaturation:(pressureAffects & 4)
 												   color:[NSColor colorWithCalibratedRed:rgba[0] green:rgba[1] blue:rgba[2] alpha:rgba[3]]] autorelease];
+	 
 }
 
 - (NSData *)data
@@ -164,6 +186,29 @@
 	NSData *theData = [NSData dataWithBytes:bytes length:EVENT_LENGTH];
 	free(bytes);
 	return theData;
+}
+
+- (NSRect)runWithCanvas:(Canvas *)theCanvas artist:(Artist *)theArtist
+{
+	if( _type == kBrushTypeEraser )
+		[theArtist selectEraser];
+	else
+		[theArtist selectPaintBrush];
+	
+	Brush *theBrush = [theArtist currentBrush];
+	
+	[theBrush setSize:_size];
+	[theBrush setHardness:_hardness];
+	[theBrush setSpacing:_spacing];
+	[theBrush setResaturation:_resaturation];
+	[theBrush setStrokeOpacity:_strokeOpacity];
+	[theBrush setBlendMode:_blendMode];
+	[theBrush setPressureAffectsFlow:_pressureAffectsFlow];
+	[theBrush setPressureAffectsSize:_pressureAffectsSize];
+	[theBrush setPressureAffectsResaturation:_pressureAffectsResaturation];
+	[theBrush setColor:[self color]];
+	
+	return NSZeroRect;
 }
 
 - (BrushType)type

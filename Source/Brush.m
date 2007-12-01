@@ -351,6 +351,11 @@ float valueWithCosCurve(float t, float crossover)
 {
 	return YES;
 }
+
+- (BrushType)type
+{
+	return kBrushTypePaint;
+}
 /*
 - (void)createBezierCurveWithCrossover:(float)crossover
 {
@@ -646,7 +651,7 @@ void sampleBitmap(unsigned char *bitmap, unsigned int pitch, unsigned int width,
 }
 
 #pragma mark Settings
-
+/*
 - (void)changeSettings:(DripEventBrushSettings *)theSettings
 {
 	if( [theSettings type] != kBrushTypePaint )
@@ -667,7 +672,7 @@ void sampleBitmap(unsigned char *bitmap, unsigned int pitch, unsigned int width,
 {
 	return [[[DripEventBrushSettings alloc] initWithType:kBrushTypePaint size:_brushSize hardness:_hardness spacing:_spacing resaturation:_resaturation strokeOpacity:_strokeOpacity blendMode:_blendMode pressureAffectsFlow:_pressureAffectsFlow pressureAffectsSize:_pressureAffectsSize pressureAffectsResaturation:_pressureAffectsResaturation color:[NSColor colorWithCalibratedRed:_RGBAColor[0] green:_RGBAColor[1] blue:_RGBAColor[2] alpha:_RGBAColor[3]]] autorelease];
 }
-
+*/
 - (void)saveSettings
 {
 	NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];

@@ -10,9 +10,9 @@
 #import "Layer.h"
 #import "Brush.h"
 #import "BrushEraser.h"
-#import "DripEvent.h"
 #import "NSData+gzip.h"
 #import "Artist.h"
+//#import "DripEventLayerSettings.h"
 
 @interface Canvas : NSObject <NSCoding> {
 	NSMutableArray *_compositeLayers;
@@ -28,7 +28,7 @@
 	NSMutableArray *_paintEvents;
 	unsigned int _eventIndex;
 	
-	DripEventLayerSettings *_layerSettings;
+	id _layerSettings;
 	
 	unsigned int _width;
 	unsigned int _height;

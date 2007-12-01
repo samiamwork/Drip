@@ -28,7 +28,7 @@
 - (void)loadSettings;
 - (void)saveSettings;
 - (void)setCanvasSize:(NSSize)canvasSize;
-- (void)changeBrushSettings:(DripEventBrushSettings *)newSettings;
+//- (void)changeBrushSettings:(DripEventBrushSettings *)newSettings;
 
 - (Brush *)paintBrush;
 - (BrushEraser *)eraserBrush;

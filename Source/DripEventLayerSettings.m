@@ -95,4 +95,19 @@
 	return theData;
 }
 
+- (NSRect)runWithCanvas:(Canvas *)theCanvas artist:(Artist *)theArtist
+{
+	Layer *aLayer = [[theCanvas layers] objectAtIndex:_layerIndex];
+	[aLayer setBlendMode:_blendMode];
+	[aLayer setOpacity:_opacity];
+	[aLayer setVisible:_visible];
+	
+	// TODO: stop going behind the canvas's back to change layer settings (relevant anymore?).
+	// generally when we're playing back we are not also recording so it does not matter
+	// that we go behind the canvas's back.
+	[theCanvas settingsChangedForLayer:aLayer];
+	
+	return NSMakeRect(0.0f,0.0f,[theCanvas size].width,[theCanvas size].height);
+}
+
 @end

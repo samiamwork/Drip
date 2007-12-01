@@ -8,8 +8,12 @@
 
 #import <Cocoa/Cocoa.h>
 #import "PaintLayer.h"
-#import "DripEventBrushSettings.h"
 #import "Layer.h"
+
+typedef enum BrushType {
+	kBrushTypePaint = 1,
+	kBrushTypeEraser
+} BrushType;
 
 extern NSString *const kPaintBrushSizeKey;
 extern NSString *const kPaintBrushHardnessKey;
@@ -86,6 +90,8 @@ typedef struct PressurePoint {
 - (NSColor*)color;
 - (BOOL)usesColor;
 
+- (BrushType)type;
+
 //- (void)createBezierCurveWithCrossover:(float)crossover;
 
 - (void)drawDabAtPoint:(NSPoint)aPoint;
@@ -97,8 +103,8 @@ typedef struct PressurePoint {
 - (NSRect)renderPointAt:(PressurePoint)aPoint onLayer:(PaintLayer *)aLayer;
 - (NSRect)renderLineFromPoint:(PressurePoint)startPoint toPoint:(PressurePoint *)endPoint onLayer:(PaintLayer *)aLayer leftover:(float *)leftoverDistance;
 
-- (void)changeSettings:(DripEventBrushSettings *)theSettings;
-- (DripEventBrushSettings *)settings;
+//- (void)changeSettings:(DripEventBrushSettings *)theSettings;
+//- (DripEventBrushSettings *)settings;
 - (void)saveSettings;
 - (void)loadSettings;
 @end

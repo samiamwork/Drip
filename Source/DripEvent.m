@@ -8,6 +8,18 @@
 
 #import "DripEvent.h"
 
+#import "DripEventStrokeBegin.h"
+#import "DripEventStrokeContinue.h"
+#import "DripEventStrokeEnd.h"
+#import "DripEventBrushSettings.h"
+#import "DripEventLayerChange.h"
+#import "DripEventLayerAdd.h"
+#import "DripEventLayerDelete.h"
+#import "DripEventLayerCollapse.h"
+#import "DripEventLayerMove.h"
+#import "DripEventLayerSettings.h"
+#import "DripEventLayerFill.h"
+
 @implementation DripEvent
 
 - (id)init
@@ -88,5 +100,9 @@
 	[NSException raise:NSInvalidArgumentException format:@"-data only defined for abstract class."];
 	return nil;
 }
-
+- (NSRect)runWithCanvas:(Canvas *)theCanvas artist:(Artist *)theArtist
+{
+	[NSException raise:NSInvalidArgumentException format:@"-runWithCanvas:artist: only defined for abstract class."];
+	return NSZeroRect;
+}
 @end

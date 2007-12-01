@@ -48,4 +48,10 @@
 	return theData;
 }
 
+- (NSRect)runWithCanvas:(Canvas *)theCanvas artist:(Artist *)theArtist
+{
+	[theCanvas endStrokeWithBrush:[theArtist currentBrush]];
+	return NSZeroRect;
+}
+
 @end

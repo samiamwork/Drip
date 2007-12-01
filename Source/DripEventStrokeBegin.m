@@ -83,6 +83,12 @@
 	return theData;
 }
 
+- (NSRect)runWithCanvas:(Canvas *)theCanvas artist:(Artist *)theArtist
+{
+	PressurePoint aPoint = (PressurePoint){_canvasPosition.x, _canvasPosition.y, _pressure};
+	return [theCanvas beginStrokeAtPoint:aPoint withBrush:[theArtist currentBrush]];
+}
+
 - (NSPoint)position
 {
 	return _canvasPosition;

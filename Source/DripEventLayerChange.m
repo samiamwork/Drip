@@ -67,4 +67,10 @@
 	return theData;
 }
 
+- (NSRect)runWithCanvas:(Canvas *)theCanvas artist:(Artist *)theArtist
+{
+	[theCanvas setCurrentLayer:[[theCanvas layers] objectAtIndex:_layerIndex]];
+	return NSZeroRect;
+}
+
 @end

@@ -257,14 +257,14 @@
 {
 	return _cxt;
 }
-
+/*
 - (void)changeSettings:(DripEventLayerSettings *)newSettings
 {
 	[self setOpacity:[newSettings opacity]];
 	[self setVisible:[newSettings visible]];
 	[self setBlendMode:[newSettings blendMode]];
 }
-
+*/
 - (NSImage *)thumbnail
 {
 	if( _thumbnail == nil ) {
