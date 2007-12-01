@@ -7,9 +7,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "DripEvent.h"
+#import "DripEventProtocol.h"
 
-@interface DripEventStrokeContinue : DripEvent {
+@interface DripEventStrokeContinue : NSObject <DripEvent> {
 	NSPoint _canvasPosition;
 	float _pressure;
 }

@@ -7,10 +7,10 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "DripEvent.h"
+#import "DripEventProtocol.h"
 
 
-@interface DripEventLayerSettings : DripEvent {
+@interface DripEventLayerSettings : NSObject <DripEvent> {
 	float _opacity;
 	BOOL _visible;
 	CGBlendMode _blendMode;

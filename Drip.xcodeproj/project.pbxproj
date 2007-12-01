@@ -178,6 +178,7 @@
 		3EE0890F0C63044000CAE28C /* ScrollingSketchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScrollingSketchView.m; sourceTree = "<group>"; };
 		3EE089150C6304FB00CAE28C /* Canvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Canvas.h; sourceTree = "<group>"; };
 		3EE089160C6304FB00CAE28C /* Canvas.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Canvas.m; sourceTree = "<group>"; };
+		3EE9DFA60D00E2B3006CF151 /* DripEventProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripEventProtocol.h; sourceTree = "<group>"; };
 		3EFC11D40CBE051D009F52D1 /* FramedImageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FramedImageCell.h; sourceTree = "<group>"; };
 		3EFC11D50CBE051D009F52D1 /* FramedImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FramedImageCell.m; sourceTree = "<group>"; };
 		8D15AC360486D014006FF6A4 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -395,6 +396,7 @@
 			children = (
 				3ED06C470C89FAF000BF0669 /* DripEvent.h */,
 				3ED06C480C89FAF000BF0669 /* DripEvent.m */,
+				3EE9DFA60D00E2B3006CF151 /* DripEventProtocol.h */,
 				3E5AE5360C99B57800BB7C9D /* DripEventStrokeBegin.h */,
 				3E5AE5370C99B57800BB7C9D /* DripEventStrokeBegin.m */,
 				3E5AE5400C99B61200BB7C9D /* DripEventStrokeContinue.h */,

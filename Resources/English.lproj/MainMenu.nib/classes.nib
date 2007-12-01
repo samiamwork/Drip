@@ -1,37 +1,68 @@
-{
-    IBClasses = (
-        {
-            ACTIONS = {
-                cancelNewFile = id; 
-                clearBackgroundToggled = id; 
-                colorChanged = id; 
-                newFile = id; 
-                okNewFile = id; 
-                sizeChanged = id; 
-            }; 
-            CLASS = DripDelegate; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                "_backgroundColorWell" = NSColorWell; 
-                "_colorRadio" = NSMatrix; 
-                "_heightField" = NSTextField; 
-                "_newFileWindow" = NSWindow; 
-                "_widthField" = NSTextField; 
-            }; 
-            SUPERCLASS = NSObject; 
-        }, 
-        {
-            ACTIONS = {
-                exportImage = id; 
-                exportPlaybackToQuicktime = id; 
-                pausePlayback = id; 
-                playBack = id; 
-                setPlaybackSpeed = id; 
-            }; 
-            CLASS = FirstResponder; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = NSObject; 
-        }
-    ); 
-    IBVersion = 1; 
-}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IBClasses</key>
+	<array>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>cancelNewFile</key>
+				<string>id</string>
+				<key>clearBackgroundToggled</key>
+				<string>id</string>
+				<key>colorChanged</key>
+				<string>id</string>
+				<key>newFile</key>
+				<string>id</string>
+				<key>okNewFile</key>
+				<string>id</string>
+				<key>sizeChanged</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>DripDelegate</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>_backgroundColorWell</key>
+				<string>NSColorWell</string>
+				<key>_colorRadio</key>
+				<string>NSMatrix</string>
+				<key>_heightField</key>
+				<string>NSTextField</string>
+				<key>_newFileWindow</key>
+				<string>NSWindow</string>
+				<key>_widthField</key>
+				<string>NSTextField</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>exportImage</key>
+				<string>id</string>
+				<key>exportPlaybackToQuicktime</key>
+				<string>id</string>
+				<key>pausePlayback</key>
+				<string>id</string>
+				<key>playBack</key>
+				<string>id</string>
+				<key>setPlaybackSpeed</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>FirstResponder</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+	</array>
+	<key>IBVersion</key>
+	<string>1</string>
+</dict>
+</plist>

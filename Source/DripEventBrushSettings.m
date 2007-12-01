@@ -55,6 +55,19 @@
 }
 
 #define EVENT_LENGTH (EVENT_HEADER_LENGTH+1+sizeof(CFSwappedFloat32)*9+sizeof(UInt32)+1)
+- (unsigned int)length
+{
+	return EVENT_LENGTH;
+}
+- (unsigned int)bytesNeeded
+{
+	return 0;
+}
+- (unsigned int)addBytes:(void *)bytes length:(unsigned int)length
+{
+	return 0;
+}
+
 + (id)eventWithBytes:(void *)bytes length:(unsigned int)length
 {
 	unsigned char eventLength = *(unsigned char *)bytes;

@@ -7,31 +7,23 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "DripEventProtocol.h"
 
-// length + type
-#define EVENT_HEADER_LENGTH (1+1)
-typedef enum DripEventType {
-	kDripEventStrokeBegin = 1,
-	kDripEventStrokeContinue,
-	kDripEventStrokeEnd,
-	kDripEventBrushSettings,
-	kDripEventLayerChange,
-	// never sent across network (i.e. not allowed)
-	kDripEventLayerAdd,
-	kDripEventLayerDelete,
-	kDripEventLayerCollapse,
-	kDripEventLayerMove,
-	kDripEventLayerSettings,
-	kDripEventLayerFill
-} DripEventType;
+#import "DripEventStrokeBegin.h"
+#import "DripEventStrokeContinue.h"
+#import "DripEventStrokeEnd.h"
+#import "DripEventBrushSettings.h"
+#import "DripEventLayerChange.h"
+#import "DripEventLayerAdd.h"
+#import "DripEventLayerDelete.h"
+#import "DripEventLayerCollapse.h"
+#import "DripEventLayerMove.h"
+#import "DripEventLayerSettings.h"
+#import "DripEventLayerFill.h"
 
-@interface DripEvent : NSObject {
-	NSTimeInterval _timestamp;
+
+@interface DripEvent : NSObject <DripEvent> {
+
 }
 
-+ (id)eventWithBytes:(void *)bytes length:(unsigned int)length;
-- (NSData *)data;
-
-- (NSTimeInterval)timestamp;
-- (void)setTimestamp:(NSTimeInterval)newTimestamp;
 @end

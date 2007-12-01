@@ -265,47 +265,10 @@
 				return nil;
 			}
 			
-			DripEvent *newEvent = nil;
-			switch( bytes[position+1] ) {
-				case kDripEventStrokeBegin:
-					newEvent = [DripEventStrokeBegin eventWithBytes:&bytes[position] length:[eventData length]-position];
-					break;
-				case kDripEventStrokeContinue:
-					newEvent = [DripEventStrokeContinue eventWithBytes:&bytes[position] length:[eventData length]-position];
-					break;
-				case kDripEventStrokeEnd:
-					newEvent = [DripEventStrokeEnd eventWithBytes:&bytes[position] length:[eventData length]-position];
-					break;
-				case kDripEventBrushSettings:
-					newEvent = [DripEventBrushSettings eventWithBytes:&bytes[position] length:[eventData length]-position];
-					break;
-				case kDripEventLayerChange:
-					newEvent = [DripEventLayerChange eventWithBytes:&bytes[position] length:[eventData length]-position];
-					break;
-				case kDripEventLayerAdd:
-					newEvent = [DripEventLayerAdd eventWithBytes:&bytes[position] length:[eventData length]-position];
-					break;
-				case kDripEventLayerDelete:
-					newEvent = [DripEventLayerDelete eventWithBytes:&bytes[position] length:[eventData length]-position];
-					break;
-				case kDripEventLayerCollapse:
-					newEvent = [DripEventLayerCollapse eventWithBytes:&bytes[position] length:[eventData length]-position];
-					break;
-				case kDripEventLayerMove:
-					newEvent = [DripEventLayerMove eventWithBytes:&bytes[position] length:[eventData length]-position];
-					break;
-				case kDripEventLayerSettings:
-					newEvent = [DripEventLayerSettings eventWithBytes:&bytes[position] length:[eventData length]-position];
-					break;
-				case kDripEventLayerFill:
-					newEvent = [DripEventLayerFill eventWithBytes:&bytes[position] length:[eventData length]-position];
-					break;
-				default:
-					printf("unknown event! (%d)\n", bytes[position+1]);
-			}
+			DripEvent *newEvent = [DripEvent eventWithBytes:&bytes[position] length:[eventData length]-position];
 			
 			[_paintEvents addObject:newEvent];
-			position += bytes[position];
+			position += [newEvent length];
 		}
 		
 	}

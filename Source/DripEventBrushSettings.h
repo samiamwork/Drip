@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "DripEvent.h"
+#import "DripEventProtocol.h"
 
 
 typedef enum BrushType {
@@ -15,7 +15,7 @@ typedef enum BrushType {
 	kBrushTypeEraser
 } BrushType;
 
-@interface DripEventBrushSettings : DripEvent {
+@interface DripEventBrushSettings : NSObject <DripEvent> {
 	BrushType _type;
 	float _RGBAColor[4];
 	float _size;

@@ -7,10 +7,10 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "DripEvent.h"
+#import "DripEventProtocol.h"
 
 
-@interface DripEventLayerAdd : DripEvent {
+@interface DripEventLayerAdd : NSObject <DripEvent> {
 }
 
 @end

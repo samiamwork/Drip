@@ -91,4 +91,18 @@
 	return NO;
 }
 
+#pragma mark NewFile window Delegate methods
+
+- (void)windowDidBecomeKey:(NSNotification *)notification
+{
+	NSPasteboard *thePasteboard = [NSPasteboard generalPasteboard];
+	NSString *bestType = [thePasteboard availableTypeFromArray:[NSArray arrayWithObject:NSTIFFPboardType]];
+	if( !bestType )
+		return;
+	
+	NSImage *pasteboardImage = [[NSImage alloc] initWithPasteboard:thePasteboard];
+	[_widthField setIntValue:(int)[pasteboardImage size].width];
+	[_heightField setIntValue:(int)[pasteboardImage size].height];
+}
+
 @end

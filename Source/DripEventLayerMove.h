@@ -7,9 +7,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "DripEvent.h"
+#import "DripEventProtocol.h"
 
-@interface DripEventLayerMove : DripEvent {
+@interface DripEventLayerMove : NSObject <DripEvent> {
 	unsigned int _fromIndex;
 	unsigned int _toIndex;
 }

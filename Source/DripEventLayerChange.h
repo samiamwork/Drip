@@ -7,10 +7,10 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "DripEvent.h"
+#import "DripEventProtocol.h"
 
 
-@interface DripEventLayerChange : DripEvent {
+@interface DripEventLayerChange : NSObject <DripEvent> {
 	unsigned int _layerIndex;
 }
 
