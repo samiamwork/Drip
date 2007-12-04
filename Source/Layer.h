@@ -45,4 +45,5 @@
 - (NSImage *)thumbnail;
 - (void)updateThumbnail;
 - (void)fillLayerWithColor:(NSColor *)aColor;
+- (CGRect)fillLayerWithImage:(CGImageRef )theImage;
 @end

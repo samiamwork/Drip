@@ -36,7 +36,7 @@
 	NSDocument *_document;
 }
 
-- (id)initWithWidth:(unsigned int)width height:(unsigned int)height backgroundColor:(NSColor *)aColor;
+- (id)initWithWidth:(unsigned int)width height:(unsigned int)height backgroundColor:(NSColor *)aColor imageData:(NSData *)theImageData;
 - (void)addLayer;
 - (void)deleteLayer:(Layer *)layerToDelete;
 - (void)insertLayer:(Layer *)theLayer AtIndex:(unsigned int)theTargetIndex;
@@ -51,7 +51,7 @@
 // this is PERMANENT and cannot be undone.
 // if we were to resume recording later after disabling it there will be events missing and
 // we would not be able to reconstruct the drawing from the recorded events so they
-// would be useless.
+// would be useless. Thus, it is not allowed to be undone.
 - (void)disableRecording;
 - (void)setDisplayPlaybackUpdates:(BOOL)shouldUpdate;
 - (Canvas *)playbackCanvas;
@@ -70,6 +70,7 @@
 - (void)endStrokeWithBrush:(Brush *)aBrush;
 
 - (void)fillCurrentLayerWithColor:(NSColor *)aColor;
+- (CGRect)fillCurrentLayerWithImage:(NSData *)theImageData;
 
 - (void)drawRect:(NSRect)aRect inContext:(CGContextRef)context;
 - (void)drawRect:(NSRect)aRect;

@@ -19,6 +19,7 @@
 #import "DripEventLayerMove.h"
 #import "DripEventLayerSettings.h"
 #import "DripEventLayerFill.h"
+#import "DripEventLayerImageFill.h"
 
 @implementation DripEvent
 
@@ -71,6 +72,9 @@
 			break;
 		case kDripEventLayerFill:
 			newEvent = [DripEventLayerFill eventWithBytes:bytes length:length];
+			break;
+		case kDripEventLayerImageFill:
+			newEvent = [DripEventLayerImageFill eventWithBytes:bytes length:length];
 			break;
 		default:
 			printf("unknown event! (%d)\n", ((unsigned char *)bytes)[1]);

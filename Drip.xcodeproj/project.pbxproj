@@ -13,6 +13,7 @@
 		3E0FA5940CC70183002D9247 /* minus.tif in Resources */ = {isa = PBXBuildFile; fileRef = 3E0FA5920CC70183002D9247 /* minus.tif */; };
 		3E0FA5950CC70183002D9247 /* minusPressed.tif in Resources */ = {isa = PBXBuildFile; fileRef = 3E0FA5930CC70183002D9247 /* minusPressed.tif */; };
 		3E1670660C61740F0014705B /* DripDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E1670650C61740F0014705B /* DripDelegate.m */; };
+		3E1D27CB0D04E0EF00FB5F41 /* DripEventLayerImageFill.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E1D27CA0D04E0EF00FB5F41 /* DripEventLayerImageFill.m */; };
 		3E31448C0CA1ABCF00BF3DB3 /* CenteredTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E31448B0CA1ABCF00BF3DB3 /* CenteredTextCell.m */; };
 		3E3146410CA23FDF00BF3DB3 /* DripEventLayerCollapse.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E3146400CA23FDF00BF3DB3 /* DripEventLayerCollapse.m */; };
 		3E3146E60CA3317700BF3DB3 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E3146E50CA3317700BF3DB3 /* QuickTime.framework */; };
@@ -88,6 +89,8 @@
 		3E0FA5930CC70183002D9247 /* minusPressed.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = minusPressed.tif; sourceTree = "<group>"; };
 		3E1670640C61740F0014705B /* DripDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripDelegate.h; sourceTree = "<group>"; };
 		3E1670650C61740F0014705B /* DripDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DripDelegate.m; sourceTree = "<group>"; };
+		3E1D27C90D04E0EF00FB5F41 /* DripEventLayerImageFill.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripEventLayerImageFill.h; sourceTree = "<group>"; };
+		3E1D27CA0D04E0EF00FB5F41 /* DripEventLayerImageFill.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DripEventLayerImageFill.m; sourceTree = "<group>"; };
 		3E31448A0CA1ABCF00BF3DB3 /* CenteredTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CenteredTextCell.h; sourceTree = "<group>"; };
 		3E31448B0CA1ABCF00BF3DB3 /* CenteredTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CenteredTextCell.m; sourceTree = "<group>"; };
 		3E31463F0CA23FDF00BF3DB3 /* DripEventLayerCollapse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripEventLayerCollapse.h; sourceTree = "<group>"; };
@@ -419,6 +422,8 @@
 				3E3146400CA23FDF00BF3DB3 /* DripEventLayerCollapse.m */,
 				3E596F6A0CC14F36006FA3A2 /* DripEventLayerFill.h */,
 				3E596F6B0CC14F36006FA3A2 /* DripEventLayerFill.m */,
+				3E1D27C90D04E0EF00FB5F41 /* DripEventLayerImageFill.h */,
+				3E1D27CA0D04E0EF00FB5F41 /* DripEventLayerImageFill.m */,
 			);
 			name = Events;
 			sourceTree = "<group>";
@@ -582,6 +587,7 @@
 				3E439AA30CCA65B7008789DF /* Artist.m in Sources */,
 				3E439CB10CCBE496008789DF /* TIPCGUtils.c in Sources */,
 				3E439CB60CCBE4F1008789DF /* HUDView.m in Sources */,
+				3E1D27CB0D04E0EF00FB5F41 /* DripEventLayerImageFill.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

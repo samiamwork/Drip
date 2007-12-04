@@ -12,6 +12,7 @@
 #import "DripEventBrushSettings.h"
 #import "DripEventLayerSettings.h"
 #import "DripEventLayerFill.h"
+#import "DripEventLayerImageFill.h"
 #import "DripEventStrokeBegin.h"
 #import "DripEventLayerChange.h"
 #import "DripEventLayerAdd.h"
@@ -103,7 +104,7 @@
 - (void)beginPlayback
 {
 	
-	_playbackCanvas = [[Canvas alloc] initWithWidth:_width height:_height backgroundColor:nil];
+	_playbackCanvas = [[Canvas alloc] initWithWidth:_width height:_height backgroundColor:nil imageData:nil];
 	[_playbackCanvas disableRecording];
 	_playbackArtist = [[Artist alloc] init];
 	[_playbackArtist setCanvasSize:[_playbackCanvas size]];
@@ -271,7 +272,7 @@
 	return self;
 }
 
-- (id)initWithWidth:(unsigned int)width height:(unsigned int)height backgroundColor:(NSColor *)aColor
+- (id)initWithWidth:(unsigned int)width height:(unsigned int)height backgroundColor:(NSColor *)aColor imageData:(NSData *)theImageData
 {
 	if( (self =[super init]) ) {
 		_width = width;
@@ -587,6 +588,24 @@
 		[_paintEvents addObject:[[[DripEventLayerFill alloc] initWithColor:aColor] autorelease]];
 
 	[_currentLayer fillLayerWithColor:aColor];
+}
+
+- (CGRect)fillCurrentLayerWithImage:(NSData *)theImageData
+{
+	if( !theImageData )
+		return CGRectZero;
+	
+	DripEventLayerImageFill *imageFillEvent = [[DripEventLayerImageFill alloc] initWithImageData:theImageData];
+	if( !imageFillEvent || ![imageFillEvent image] )
+		return CGRectZero;
+	
+	if( ![self isPlayingBack] )
+		[_paintEvents addObject:imageFillEvent];
+	
+	CGRect affectedRect = [_currentLayer fillLayerWithImage:[imageFillEvent image]];
+	[imageFillEvent release];
+
+	return affectedRect;
 }
 
 - (void)drawRect:(NSRect)aRect inContext:(CGContextRef)context

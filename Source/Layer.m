@@ -246,6 +246,11 @@
 {
 	[_mainPaintLayer fillLayerWithColor:aColor];
 }
+
+- (CGRect)fillLayerWithImage:(CGImageRef )theImage
+{
+	return [_mainPaintLayer fillLayerWithImage:theImage];
+}
 /*
 - (void)changeSettings:(DripEventLayerSettings *)newSettings
 {

@@ -49,7 +49,7 @@
 - (IBAction)okNewFile:(id)sender
 {
 	[self sizeChanged:nil];
-	DripDocument *_newDocument = [[DripDocument alloc] initWithWidth:[_widthField intValue] height:[_heightField intValue] backgroundColor:[[_colorRadio selectedCell] tag] ? nil : [_backgroundColorWell color]];
+	DripDocument *_newDocument = [[DripDocument alloc] initWithWidth:[_widthField intValue] height:[_heightField intValue] backgroundColor:[[_colorRadio selectedCell] tag] ? nil : [_backgroundColorWell color] imageData:nil];
 	[[NSDocumentController sharedDocumentController] addDocument:_newDocument];
 	[_newDocument makeWindowControllers];
 	[_newDocument showWindows];

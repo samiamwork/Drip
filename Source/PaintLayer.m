@@ -311,6 +311,20 @@
 	CGContextFillRect( _cxt, CGRectMake(0.0f,0.0f,(float)_width,(float)_height));
 }
 
+- (CGRect)fillLayerWithImage:(CGImageRef )theImage
+{
+	// put the image in the center of the layer
+	unsigned int imageWidth = CGImageGetWidth( theImage );
+	unsigned int imageHeight = CGImageGetHeight( theImage );
+	
+	int dw = (_width - imageWidth)/2;
+	int dh = (_height - imageHeight)/2;
+	
+	CGRect imageRect = CGRectMake( dw, dh, imageWidth, imageHeight );
+	CGContextDrawImage( _cxt, imageRect, theImage );
+	return imageRect;
+}
+
 - (CGImageRef)getImageForRect:(NSRect)aRect
 {
 	CGColorSpaceRef colorSpace;

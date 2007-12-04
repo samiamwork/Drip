@@ -26,15 +26,14 @@
     return self;
 }
 
-- (id)initWithWidth:(unsigned int)width height:(unsigned int)height backgroundColor:(NSColor *)aColor
+- (id)initWithWidth:(unsigned int)width height:(unsigned int)height backgroundColor:(NSColor *)aColor imageData:(NSData *)theImageData;
 {
 	if( (self = [self init]) ) {
 		_canvasWidth = width;
 		_canvasHeight = height;
 		
-		_canvas = [[Canvas alloc] initWithWidth:_canvasWidth  height:_canvasHeight backgroundColor:aColor];
+		_canvas = [[Canvas alloc] initWithWidth:_canvasWidth  height:_canvasHeight backgroundColor:aColor imageData:theImageData];
 		[_canvas setDocument:self];
-		
 		
 		[_artist setCanvasSize:[_canvas size]];
 	}
