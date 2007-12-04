@@ -294,6 +294,7 @@
 		_displayPlaybackUpdates = YES;
 		// fill first layer with white
 		[self fillCurrentLayerWithColor:aColor];
+		[self fillCurrentLayerWithImage:theImageData];
 	}
 	
 	return self;

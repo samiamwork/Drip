@@ -49,7 +49,20 @@
 - (IBAction)okNewFile:(id)sender
 {
 	[self sizeChanged:nil];
-	DripDocument *_newDocument = [[DripDocument alloc] initWithWidth:[_widthField intValue] height:[_heightField intValue] backgroundColor:[[_colorRadio selectedCell] tag] ? nil : [_backgroundColorWell color] imageData:nil];
+	
+	NSData *imageData = nil;
+	if( [_imageCheckbox state] == NSOnState ) {
+		printf("getting pasteboard\n");
+		NSPasteboard *thePasteboard = [NSPasteboard generalPasteboard];
+		NSString *bestType = [thePasteboard availableTypeFromArray:[NSArray arrayWithObject:NSTIFFPboardType]];
+		if( bestType ) {
+			printf("imagedata found\n");
+			imageData = [thePasteboard dataForType:bestType];
+			if( !imageData )
+				printf("nil image data\n");
+		}
+	}
+	DripDocument *_newDocument = [[DripDocument alloc] initWithWidth:[_widthField intValue] height:[_heightField intValue] backgroundColor:[[_colorRadio selectedCell] tag] ? nil : [_backgroundColorWell color] imageData:imageData];
 	[[NSDocumentController sharedDocumentController] addDocument:_newDocument];
 	[_newDocument makeWindowControllers];
 	[_newDocument showWindows];
@@ -97,12 +110,20 @@
 {
 	NSPasteboard *thePasteboard = [NSPasteboard generalPasteboard];
 	NSString *bestType = [thePasteboard availableTypeFromArray:[NSArray arrayWithObject:NSTIFFPboardType]];
-	if( !bestType )
+	if( !bestType ) {
+		[_imageCheckbox setEnabled:NO];
+		[_imageCheckbox setState:NSOffState];
 		return;
+	}
+	
+	[_imageCheckbox setEnabled:YES];
+	[_imageCheckbox setState:NSOffState];
 	
 	NSImage *pasteboardImage = [[NSImage alloc] initWithPasteboard:thePasteboard];
 	[_widthField setIntValue:(int)[pasteboardImage size].width];
 	[_heightField setIntValue:(int)[pasteboardImage size].height];
+
+	[pasteboardImage release];
 }
 
 @end

@@ -18,6 +18,8 @@
 	IBOutlet NSColorWell *_backgroundColorWell;
 	IBOutlet NSMatrix *_colorRadio;
 	
+	IBOutlet NSButton *_imageCheckbox;
+	
 	DripInspectors *_inspectors;
 }
 

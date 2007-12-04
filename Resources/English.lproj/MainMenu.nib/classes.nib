@@ -32,6 +32,8 @@
 				<string>NSMatrix</string>
 				<key>_heightField</key>
 				<string>NSTextField</string>
+				<key>_imageCheckbox</key>
+				<string>NSButton</string>
 				<key>_newFileWindow</key>
 				<string>NSWindow</string>
 				<key>_widthField</key>
