@@ -52,15 +52,10 @@
 	
 	NSData *imageData = nil;
 	if( [_imageCheckbox state] == NSOnState ) {
-		printf("getting pasteboard\n");
 		NSPasteboard *thePasteboard = [NSPasteboard generalPasteboard];
 		NSString *bestType = [thePasteboard availableTypeFromArray:[NSArray arrayWithObject:NSTIFFPboardType]];
-		if( bestType ) {
-			printf("imagedata found\n");
+		if( bestType )
 			imageData = [thePasteboard dataForType:bestType];
-			if( !imageData )
-				printf("nil image data\n");
-		}
 	}
 	DripDocument *_newDocument = [[DripDocument alloc] initWithWidth:[_widthField intValue] height:[_heightField intValue] backgroundColor:[[_colorRadio selectedCell] tag] ? nil : [_backgroundColorWell color] imageData:imageData];
 	[[NSDocumentController sharedDocumentController] addDocument:_newDocument];

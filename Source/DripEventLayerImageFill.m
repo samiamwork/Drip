@@ -145,12 +145,14 @@
 	NSMutableData *pngData = [[NSMutableData alloc] init];
 	CGImageDestinationRef imageDest = CGImageDestinationCreateWithData((CFMutableDataRef)pngData, CFSTR("public.png"), 1, NULL);
 	CGImageDestinationAddImage( imageDest, _image, NULL);
+	CGImageDestinationFinalize( imageDest );
 	CFRelease( imageDest );
 	
-	if( [pngData length] < [_imageData length] ) {
+	if( [pngData length] < [_imageData length] && [pngData length] != 0 ) {
 		[_imageData release];
 		_imageData = pngData;
-	}
+	} else
+		[pngData release];
 	
 	unsigned int totalEventLength = EVENT_LENGTH + [_imageData length];
 	unsigned char *bytes = (unsigned char*)malloc( totalEventLength );

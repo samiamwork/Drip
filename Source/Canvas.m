@@ -112,12 +112,12 @@
 	_eventIndex = 0;
 	// peek at the first event and play it if it's a layer fill event
 	// we do this to eliminate flicker at the start of playback.
-	// layer fill is basically part of layer setup.
-	DripEvent *firstEvent = [_paintEvents objectAtIndex:_eventIndex];
-	if( [firstEvent isKindOfClass:[DripEventLayerFill class]] ) {
-		//[_currentLayer fillLayerWithColor:[(DripEventLayerFill *)firstEvent color]];
-		[[_playbackCanvas currentLayer] fillLayerWithColor:[(DripEventLayerFill *)firstEvent color]];
+	// layer fill is basically part of layer setup. Also includes imageFill
+	DripEvent *anEvent = [_paintEvents objectAtIndex:_eventIndex];
+	while( [anEvent isKindOfClass:[DripEventLayerFill class]] || [anEvent isKindOfClass:[DripEventLayerImageFill class]] ) {
+		[anEvent runWithCanvas:_playbackCanvas artist:nil];
 		_eventIndex++;
+		anEvent = [_paintEvents objectAtIndex:_eventIndex];
 	}
 }
 - (void)endPlayback
@@ -262,9 +262,12 @@
 			}
 			
 			DripEvent *newEvent = [DripEvent eventWithBytes:&bytes[position] length:[eventData length]-position];
+			position += [newEvent length];
+			while( [newEvent bytesNeeded] )
+				position += [newEvent addBytes:&bytes[position] length:[eventData length]-position];
+				
 			
 			[_paintEvents addObject:newEvent];
-			position += [newEvent length];
 		}
 		
 	}
