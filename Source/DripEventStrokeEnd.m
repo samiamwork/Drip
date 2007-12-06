@@ -50,7 +50,7 @@
 
 - (NSRect)runWithCanvas:(Canvas *)theCanvas artist:(Artist *)theArtist
 {
-	[theCanvas endStrokeWithBrush:[theArtist currentBrush]];
+	[theCanvas endStrokeWithArtist:theArtist];
 	return NSZeroRect;
 }
 

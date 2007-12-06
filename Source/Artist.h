@@ -21,6 +21,8 @@
 	
 	Brush **_currentBrushPtr;
 	
+	// the last settings returned by the getChangedBrushSettings method
+	id _lastCheckedBrushSettings;
 	// this artist's current color;
 	NSColor *_color;
 }
@@ -28,7 +30,14 @@
 - (void)loadSettings;
 - (void)saveSettings;
 - (void)setCanvasSize:(NSSize)canvasSize;
-//- (void)changeBrushSettings:(DripEventBrushSettings *)newSettings;
+// ONLY! called by the canvas object to check if the settings have
+// changed since the last call to this method.
+// This restriction prevents an Artist from being used on more
+// than one canvas at a time (not a problem since there is no reason
+// to do that).
+// - returns nil if there are no changes
+// - returns a DripEventBrushSettings object if things have changed.
+- (id)getNewBrushSettings;
 
 - (Brush *)paintBrush;
 - (BrushEraser *)eraserBrush;

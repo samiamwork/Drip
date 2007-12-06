@@ -27,7 +27,6 @@
 	
 	NSMutableArray *_paintEvents;
 	unsigned int _eventIndex;
-	
 	id _layerSettings;
 	
 	unsigned int _width;
@@ -65,9 +64,9 @@
 - (NSRect)playNextEvent;
 - (NSRect)playNextVisibleEvent;
 
-- (NSRect)beginStrokeAtPoint:(PressurePoint)aPoint withBrush:(Brush *)aBrush;
-- (NSRect)continueStrokeAtPoint:(PressurePoint)aPoint withBrush:(Brush *)aBrush;
-- (void)endStrokeWithBrush:(Brush *)aBrush;
+- (NSRect)beginStrokeAtPoint:(PressurePoint)aPoint withArtist:(Artist *)anArtist;
+- (NSRect)continueStrokeAtPoint:(PressurePoint)aPoint withArtist:(Artist *)anArtist;
+- (void)endStrokeWithArtist:(Artist *)anArtist;
 
 - (void)fillCurrentLayerWithColor:(NSColor *)aColor;
 - (CGRect)fillCurrentLayerWithImage:(NSData *)theImageData;

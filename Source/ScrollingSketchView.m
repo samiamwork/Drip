@@ -140,7 +140,7 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 	if( [_canvas isPlayingBack] )
 		return;
 
-	NSRect drawnRect = [_canvas beginStrokeAtPoint:theMousePoint withBrush:[_artist currentBrush]];
+	NSRect drawnRect = [_canvas beginStrokeAtPoint:theMousePoint withArtist:_artist];
 	
 	[[_canvas document] updateChangeCount:NSChangeDone];
 	
@@ -193,7 +193,7 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 	if( [_canvas isPlayingBack] )
 		return;
 	
-	NSRect drawnRect = [_canvas continueStrokeAtPoint:newPressurePoint withBrush:[_artist currentBrush]];
+	NSRect drawnRect = [_canvas continueStrokeAtPoint:newPressurePoint withArtist:_artist];
 	
 	[self invalidateCanvasRect:drawnRect];
 }
@@ -205,7 +205,7 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 		[self resetCursorRects];
 		return;
 	} else {
-		[_canvas endStrokeWithBrush:[_artist currentBrush]];
+		[_canvas endStrokeWithArtist:_artist];
 		[[_canvas currentLayer] updateThumbnail];
 		[[DripInspectors sharedController] layersUpdated];
 	}

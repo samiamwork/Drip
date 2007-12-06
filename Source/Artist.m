@@ -7,6 +7,7 @@
 //
 
 #import "Artist.h"
+#import "DripEventBrushSettings.h"
 
 
 @implementation Artist
@@ -23,6 +24,8 @@
 		_currentBrushPtr = &_currentPenTipBrush;
 		
 		_color = [[*_currentBrushPtr color] retain];
+		
+		_lastCheckedBrushSettings = nil;
 	}
 
 	return self;
@@ -32,6 +35,8 @@
 {
 	[_paintBrush release];
 	[_eraserBrush release];
+	[_color release];
+	[_lastCheckedBrushSettings release];
 
 	[super dealloc];
 }
@@ -51,17 +56,20 @@
 	[_paintBrush saveSettings];
 	[_eraserBrush saveSettings];
 }
-/*
-- (void)changeBrushSettings:(DripEventBrushSettings *)newSettings
+
+- (id)getNewBrushSettings
 {
-	if( [newSettings type] == kBrushTypeEraser )
-		[self selectEraser];
-	else
-		[self selectPaintBrush];
+	DripEventBrushSettings *brushSettings = [[DripEventBrushSettings alloc] initWithBrush:*_currentBrushPtr];
+	if( !_lastCheckedBrushSettings || ![_lastCheckedBrushSettings isEqual:brushSettings] ) {
+		[_lastCheckedBrushSettings release];
+		_lastCheckedBrushSettings = brushSettings;
+		return [brushSettings retain];
+	}
 	
-	[[self currentBrush] changeSettings:newSettings];
+	[brushSettings release];
+	return  nil;
 }
-*/
+
 - (void)setCanvasSize:(NSSize)canvasSize
 {
 	[_paintBrush setCanvasSize:canvasSize];

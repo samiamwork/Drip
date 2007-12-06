@@ -54,7 +54,9 @@
 	
 	[_paintEvents release];
 	[_document release];
-
+	[_playbackArtist release];
+	[_playbackCanvas release];
+	
 	[super dealloc];
 }
 
@@ -544,7 +546,7 @@
 
 #pragma mark drawing methods
 
-- (NSRect)beginStrokeAtPoint:(PressurePoint)aPoint withBrush:(Brush *)aBrush
+- (NSRect)beginStrokeAtPoint:(PressurePoint)aPoint withArtist:(Artist *)anArtist
 {
 	if( [self isPlayingBack] )
 		return NSZeroRect;
@@ -555,22 +557,26 @@
 		_layerSettings = nil;
 	}
 	
-	DripEventBrushSettings *settings = [[DripEventBrushSettings alloc] initWithBrush:aBrush];
-	[_paintEvents addObject:settings];
-	[settings release];
+	// if we don't have a last brush setting for this artist or if the current setting
+	// is different than than the one we have on record then update it and add the event.
+	
+	DripEventBrushSettings *brushSettings = [anArtist getNewBrushSettings];
+	if( brushSettings )
+		[_paintEvents addObject:brushSettings];
+	[brushSettings release];
 	
 	[_paintEvents addObject:[[[DripEventStrokeBegin alloc] initWithPosition:NSMakePoint(aPoint.x,aPoint.y) pressure:aPoint.pressure] autorelease]];
-	return [aBrush beginStrokeAtPoint:aPoint onLayer:_currentLayer];
+	return [[anArtist currentBrush] beginStrokeAtPoint:aPoint onLayer:_currentLayer];
 }
-- (NSRect)continueStrokeAtPoint:(PressurePoint)aPoint withBrush:(Brush *)aBrush
+- (NSRect)continueStrokeAtPoint:(PressurePoint)aPoint withArtist:(Artist *)anArtist
 {
 	if( [self isPlayingBack] )
 		return NSZeroRect;
 
 	[_paintEvents addObject:[[[DripEventStrokeContinue alloc] initWithPosition:NSMakePoint(aPoint.x,aPoint.y) pressure:aPoint.pressure] autorelease]];
-	return [aBrush continueStrokeAtPoint:aPoint];
+	return [[anArtist currentBrush] continueStrokeAtPoint:aPoint];
 }
-- (void)endStrokeWithBrush:(Brush *)aBrush;
+- (void)endStrokeWithArtist:(Artist *)anArtist;
 {
 	// EVENT:
 	// End stroke
@@ -578,7 +584,7 @@
 	if( ![self isPlayingBack] )
 		[_paintEvents addObject:[[[DripEventStrokeEnd alloc] init] autorelease]];
 	
-	[aBrush endStroke];
+	[[anArtist currentBrush] endStroke];
 }
 
 - (void)fillCurrentLayerWithColor:(NSColor *)aColor
