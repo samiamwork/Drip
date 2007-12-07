@@ -20,7 +20,6 @@
 	
 	NSMutableArray *_layers;
 	
-	NSMutableArray *_backupLayers;
 	Canvas *_playbackCanvas;
 	Artist *_playbackArtist;
 	BOOL _displayPlaybackUpdates;
