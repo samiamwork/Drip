@@ -32,8 +32,11 @@
 		_brushMaskLayers = [[NSMutableArray alloc] init];
 		
 		_mainPaintLayer = [[decoder decodeObjectForKey:@"paintLayer"] retain];
+		CGContextSetInterpolationQuality( [_mainPaintLayer cxt], kCGInterpolationNone );
 		_mainMaskLayer = [[MaskLayer alloc] initWithWidth:[_mainPaintLayer width] height:[_mainPaintLayer height]];
+		CGContextSetInterpolationQuality( [_mainMaskLayer cxt], kCGInterpolationNone );
 		_scratchPaintLayer = [[PaintLayer alloc] initWithWidth:[_mainPaintLayer width] height:[_mainPaintLayer height]];
+		CGContextSetInterpolationQuality( [_scratchPaintLayer cxt], kCGInterpolationNone );
 	}
 	
 	return self;
@@ -43,8 +46,11 @@
 {
 	if( (self = [super init]) ) {
 		_mainPaintLayer = [[PaintLayer alloc] initWithWidth:width height:height];
+		CGContextSetInterpolationQuality( [_mainPaintLayer cxt], kCGInterpolationNone );
 		_mainMaskLayer = [[MaskLayer alloc] initWithWidth:width height:height];
+		CGContextSetInterpolationQuality( [_mainMaskLayer cxt], kCGInterpolationNone );
 		_scratchPaintLayer = [[PaintLayer alloc] initWithWidth:[_mainPaintLayer width] height:[_mainPaintLayer height]];
+		CGContextSetInterpolationQuality( [_scratchPaintLayer cxt], kCGInterpolationNone );
 		
 		_brushPaintLayers = [[NSMutableArray alloc] init];
 		_brushMaskLayers = [[NSMutableArray alloc] init];
@@ -158,8 +164,7 @@
 	if( ![_mainPaintLayer visible] )
 		return;
 	
-	//[_mainPaintLayer drawRect:aRect inContext:aContext];
-	
+	// composite all mask layers together and mask the main layer with the composite mask
 	CGImageRef mainLayerImage = [_mainPaintLayer getImageForRect:aRect];
 	NSEnumerator *layerEnumerator = [_brushMaskLayers objectEnumerator];
 	MaskLayer *aMaskLayer;
@@ -171,7 +176,6 @@
 	
 	CGImageRelease( newMaskImage );
 	CGImageRelease( mainLayerImage );
-	//CGContextSetAlpha( aContext, [_mainPaintLayer opacity]);
 	CGContextDrawImage( [_scratchPaintLayer cxt], *(CGRect *)&aRect, newMaskedImage );
 	CGImageRelease( newMaskedImage );
 	
