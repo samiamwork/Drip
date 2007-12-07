@@ -48,11 +48,8 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 	[self setNeedsDisplayInRect:invalidCanvasRect];
 }
 
-- (void)drawRect:(NSRect)rect {
-
-	if( _canvas == nil )
-		return;
-	
+- (void)drawMinimalRect:(NSRect)rect
+{
 	NSRect canvasRect = NSMakeRect(0.0f,0.0f,[_canvas size].width,[_canvas size].height);
 	NSRect drawRect = rect;
 	drawRect = DESCALE_RECT(drawRect,_zoom);
@@ -72,6 +69,18 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 	drawCheckerPatternInContextWithPhase( cxt, CGSizeMake(0.0f,0.0f), *(CGRect *)&canvasDrawRect, 10.0f );
 	[_canvas drawRect:canvasDrawRect];
 	CGContextRestoreGState(cxt);
+}
+
+- (void)drawRect:(NSRect)rect {
+	if( _canvas == nil )
+		return;
+	
+	NSRect *rectsToDraw = NULL;
+	int rectCount;
+	[self getRectsBeingDrawn:(const NSRect **)&rectsToDraw count:&rectCount];
+	int i;
+	for( i=0; i < rectCount; i++ )
+		[self drawMinimalRect:rectsToDraw[i]];
 	
 }
 
