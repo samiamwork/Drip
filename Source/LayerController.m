@@ -142,7 +142,7 @@
 	
 	[_layerTable fadeInRow:[theLayers count]-1-indexToSelect];
 	
-	[_sketchView setNeedsDisplay:YES];
+	//[_sketchView setNeedsDisplay:YES];
 	[_opacitySlider setFloatValue:[[_theCanvas currentLayer] opacity]];
 }
 - (IBAction)deleteLayer:(id)sender
@@ -165,7 +165,7 @@
 	
 	[_layerTable fadeOutRow:[theLayers count]-1-indexToSelect];
 	
-	[_sketchView setNeedsDisplay:YES];
+	//[_sketchView setNeedsDisplay:YES];
 	[_opacitySlider setFloatValue:[[_theCanvas currentLayer] opacity]];
 }
 
@@ -287,7 +287,7 @@
 	}
 
 	[_theCanvas insertLayer:_draggingLayer AtIndex:toLayerRow];
-	[_sketchView setNeedsDisplay:YES];
+	//[_sketchView setNeedsDisplay:YES];
 	[_opacitySlider setFloatValue:[[_theCanvas currentLayer] opacity]];
 	
 	//the layer order has changed so we need a new array
@@ -317,6 +317,7 @@
 
 - (void)tableViewAnimationDone:(AnimatingTableView *)aTableView
 {
+	[_sketchView setNeedsDisplay:YES];
 	if( !_oldLayers )
 		return;
 	

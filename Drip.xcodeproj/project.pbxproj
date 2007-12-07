@@ -319,6 +319,8 @@
 				3E1D29BD0D07D35D00FB5F41 /* CenteredScrollView.m */,
 				3E1D29BF0D07D3BA00FB5F41 /* SketchView.h */,
 				3E1D29C00D07D3BA00FB5F41 /* SketchView.m */,
+				3EE0890E0C63044000CAE28C /* ScrollingSketchView.h */,
+				3EE0890F0C63044000CAE28C /* ScrollingSketchView.m */,
 			);
 			name = SketchView;
 			sourceTree = "<group>";
@@ -360,8 +362,6 @@
 				3E856D2E0CB9EDBE00479845 /* ColoredView.m */,
 				3EE088950C62C6A500CAE28C /* BrushView.h */,
 				3EE088960C62C6A500CAE28C /* BrushView.m */,
-				3EE0890E0C63044000CAE28C /* ScrollingSketchView.h */,
-				3EE0890F0C63044000CAE28C /* ScrollingSketchView.m */,
 				3E856CA90CB99E5300479845 /* CleanColorWell.h */,
 				3E856CAA0CB99E5300479845 /* CleanColorWell.m */,
 				3E856E010CBA0DA900479845 /* ShelfView.h */,
