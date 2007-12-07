@@ -12,8 +12,8 @@
 
 @interface Layer : NSObject {
 	PaintLayer *_scratchPaintLayer;
+	MaskLayer *_scratchMaskLayer;
 	PaintLayer *_mainPaintLayer;
-	MaskLayer *_mainMaskLayer;
 	
 	NSMutableArray *_brushPaintLayers;
 	NSMutableArray *_brushMaskLayers;

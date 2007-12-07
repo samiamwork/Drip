@@ -33,8 +33,8 @@
 		
 		_mainPaintLayer = [[decoder decodeObjectForKey:@"paintLayer"] retain];
 		CGContextSetInterpolationQuality( [_mainPaintLayer cxt], kCGInterpolationNone );
-		_mainMaskLayer = [[MaskLayer alloc] initWithWidth:[_mainPaintLayer width] height:[_mainPaintLayer height]];
-		CGContextSetInterpolationQuality( [_mainMaskLayer cxt], kCGInterpolationNone );
+		_scratchMaskLayer = [[MaskLayer alloc] initWithWidth:[_mainPaintLayer width] height:[_mainPaintLayer height]];
+		CGContextSetInterpolationQuality( [_scratchMaskLayer cxt], kCGInterpolationNone );
 		_scratchPaintLayer = [[PaintLayer alloc] initWithWidth:[_mainPaintLayer width] height:[_mainPaintLayer height]];
 		CGContextSetInterpolationQuality( [_scratchPaintLayer cxt], kCGInterpolationNone );
 	}
@@ -47,8 +47,8 @@
 	if( (self = [super init]) ) {
 		_mainPaintLayer = [[PaintLayer alloc] initWithWidth:width height:height];
 		CGContextSetInterpolationQuality( [_mainPaintLayer cxt], kCGInterpolationNone );
-		_mainMaskLayer = [[MaskLayer alloc] initWithWidth:width height:height];
-		CGContextSetInterpolationQuality( [_mainMaskLayer cxt], kCGInterpolationNone );
+		_scratchMaskLayer = [[MaskLayer alloc] initWithWidth:width height:height];
+		CGContextSetInterpolationQuality( [_scratchMaskLayer cxt], kCGInterpolationNone );
 		_scratchPaintLayer = [[PaintLayer alloc] initWithWidth:[_mainPaintLayer width] height:[_mainPaintLayer height]];
 		CGContextSetInterpolationQuality( [_scratchPaintLayer cxt], kCGInterpolationNone );
 		
@@ -68,7 +68,7 @@
 			[paintLayers addObject:[[layers objectAtIndex:layerIndex] mainPaintLayer]];
 		
 		_mainPaintLayer = [[PaintLayer alloc] initWithContentsOfLayers:paintLayers inRange:NSMakeRange(0,[paintLayers count])];
-		_mainMaskLayer = [[MaskLayer alloc] initWithWidth:[_mainPaintLayer width] height:[_mainPaintLayer height]];
+		_scratchMaskLayer = [[MaskLayer alloc] initWithWidth:[_mainPaintLayer width] height:[_mainPaintLayer height]];
 		_scratchPaintLayer = [[PaintLayer alloc] initWithWidth:[_mainPaintLayer width] height:[_mainPaintLayer height]];
 		
 		_brushMaskLayers = [[NSMutableArray alloc] init];
@@ -82,7 +82,7 @@
 {
 	[_scratchPaintLayer release];
 	[_mainPaintLayer release];
-	[_mainMaskLayer release];
+	[_scratchMaskLayer release];
 	
 	[_brushPaintLayers release];
 	[_brushMaskLayers release];
@@ -97,8 +97,8 @@
 	
 	[_mainPaintLayer release];
 	_mainPaintLayer = [newPaintLayer retain];
-	[_mainMaskLayer release];
-	_mainMaskLayer = [[MaskLayer alloc] initWithWidth:[_mainPaintLayer width] height:[_mainPaintLayer height]];
+	[_scratchMaskLayer release];
+	_scratchMaskLayer = [[MaskLayer alloc] initWithWidth:[_mainPaintLayer width] height:[_mainPaintLayer height]];
 	[_scratchPaintLayer release];
 	_scratchPaintLayer = [[PaintLayer alloc] initWithWidth:[_mainPaintLayer width] height:[_mainPaintLayer height]];
 }
@@ -125,11 +125,11 @@
 - (void)commitLayer:(PaintLayer *)aLayer rect:(NSRect)aRect
 {
 	aRect = NSIntersectionRect(aRect,NSMakeRect(0.0f,0.0f,(float)[_mainPaintLayer width],(float)[_mainPaintLayer height]));
-	// TODO:behave different if it is a mask
+
 	if( [aLayer isKindOfClass:[MaskLayer class]] ) {
 		
-		[aLayer drawRect:aRect inContext:[_mainMaskLayer cxt]];
-		CGImageRef cachedMask = [_mainMaskLayer getImageForRect:aRect];
+		[aLayer drawRect:aRect inContext:[_scratchMaskLayer cxt]];
+		CGImageRef cachedMask = [_scratchMaskLayer getImageForRect:aRect];
 		CGImageRef cachedImage = [_mainPaintLayer getImageForRect:aRect];
 		CGImageRef maskedImage = CGImageCreateWithMask(cachedImage,cachedMask);
 		CGContextClearRect( [_mainPaintLayer cxt],*(CGRect *)&aRect );
@@ -140,10 +140,10 @@
 		CGImageRelease( maskedImage );
 		
 		// clear the work layers
-		CGContextSaveGState( [_mainMaskLayer cxt] );
-		CGContextSetRGBFillColor( [_mainMaskLayer cxt], 1.0f,1.0f,1.0f,1.0f);
-		CGContextFillRect([_mainMaskLayer cxt], *(CGRect *)&aRect);
-		CGContextRestoreGState( [_mainMaskLayer cxt] );
+		CGContextSaveGState( [_scratchMaskLayer cxt] );
+		CGContextSetRGBFillColor( [_scratchMaskLayer cxt], 1.0f,1.0f,1.0f,1.0f);
+		CGContextFillRect([_scratchMaskLayer cxt], *(CGRect *)&aRect);
+		CGContextRestoreGState( [_scratchMaskLayer cxt] );
 		
 		CGContextSaveGState( [aLayer cxt] );
 		CGContextSetRGBFillColor([aLayer cxt],1.0f,1.0f,1.0f,1.0f);
@@ -169,9 +169,9 @@
 	NSEnumerator *layerEnumerator = [_brushMaskLayers objectEnumerator];
 	MaskLayer *aMaskLayer;
 	while( (aMaskLayer = [layerEnumerator nextObject]) )
-		[aMaskLayer drawRect:aRect inContext:[_mainMaskLayer cxt]];
+		[aMaskLayer drawRect:aRect inContext:[_scratchMaskLayer cxt]];
 
-	CGImageRef newMaskImage = [_mainMaskLayer getImageForRect:aRect];
+	CGImageRef newMaskImage = [_scratchMaskLayer getImageForRect:aRect];
 	CGImageRef newMaskedImage = CGImageCreateWithMask( mainLayerImage, newMaskImage );
 	
 	CGImageRelease( newMaskImage );
@@ -180,10 +180,10 @@
 	CGImageRelease( newMaskedImage );
 	
 	// clear mask layer
-	CGContextSaveGState( [_mainMaskLayer cxt] );
-	CGContextSetRGBFillColor( [_mainMaskLayer cxt], 1.0f,1.0f,1.0f,1.0f);
-	CGContextFillRect([_mainMaskLayer cxt], *(CGRect *)&aRect);
-	CGContextRestoreGState( [_mainMaskLayer cxt] );
+	CGContextSaveGState( [_scratchMaskLayer cxt] );
+	CGContextSetRGBFillColor( [_scratchMaskLayer cxt], 1.0f,1.0f,1.0f,1.0f);
+	CGContextFillRect([_scratchMaskLayer cxt], *(CGRect *)&aRect);
+	CGContextRestoreGState( [_scratchMaskLayer cxt] );
 	
 	layerEnumerator = [_brushPaintLayers objectEnumerator];
 	PaintLayer *aLayer;
