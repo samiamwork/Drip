@@ -66,12 +66,12 @@
 {
 	return _artist;
 }
-- (ScrollingSketchView *)scrollingSketchView
+- (SketchView *)sketchView
 {
 	return _sketchView;
 }
 // we don't need to retain it since we do nothing with it but give it out to those who ask for it.
-- (void)setScrollingSketchView:(ScrollingSketchView *)newSketchView
+- (void)setSketchView:(SketchView *)newSketchView
 {
 	_sketchView = newSketchView;
 }

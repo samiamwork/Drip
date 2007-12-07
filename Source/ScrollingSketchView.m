@@ -10,7 +10,7 @@
 #import "DripInspectors.h"
 #import "CheckerPattern.h"
 
-NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
+//NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 
 @implementation ScrollingSketchView
 

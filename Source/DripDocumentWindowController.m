@@ -34,7 +34,7 @@
 	[_zoomSlider setFloatValue:log10f([_sketchView zoom])];
 	[_zoomText setStringValue:[NSString stringWithFormat:@"%.02f%%",[_sketchView zoom]*100.0f]];
 	
-	[(DripDocument*)[self document] setScrollingSketchView:_sketchView];
+	[(DripDocument*)[self document] setSketchView:_sketchView];
 	
 	// center window
 	NSRect mainScreenFrame = [[NSScreen mainScreen] visibleFrame];
@@ -48,8 +48,11 @@
 	}
 	
 	NSSize canvasSize = [newCanvas size];
+	// fudge-factor because of a 1-pixel border around the inside of the NSScrollView.
+	canvasSize.width += 2.0f;
+	canvasSize.height += 2.0f;
 	NSSize windowFrameSize = [[self window] frame].size;
-	NSSize viewSize = [_sketchView bounds].size;
+	NSSize viewSize = [_scrollView bounds].size;
 	
 	NSSize extraWindowSize = NSMakeSize(windowFrameSize.width-viewSize.width, windowFrameSize.height-viewSize.height);
 	NSRect newWindowFrame = NSZeroRect;

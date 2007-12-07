@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "Canvas.h"
-#import "ScrollingSketchView.h"
+#import "SketchView.h"
 #import "AnimatingTableView.h"
 
 @interface LayerController : NSObject {
@@ -18,7 +18,7 @@
 	IBOutlet NSButton *_minusButton;
 	IBOutlet NSPopUpButton *_layerBlendModePopUpButton;
 	
-	ScrollingSketchView *_sketchView;
+	SketchView *_sketchView;
 	Canvas *_theCanvas;
 	
 	NSArray *_oldLayers;
@@ -34,7 +34,7 @@
 - (IBAction)setOpacity:(id)sender;
 - (IBAction)setBlendMode:(id)sender;
 
-- (void)setScrollingSketchView:(ScrollingSketchView *)newSketchView;
+- (void)setSketchView:(SketchView *)newSketchView;
 - (void)disable;
 
 - (void)layersUpdated;

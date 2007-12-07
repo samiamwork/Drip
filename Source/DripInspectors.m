@@ -87,7 +87,7 @@ static DripInspectors *g_sharedController;
 		return;
 	}
 	[_layerController setCanvas:[newDocument canvas]];
-	[_layerController setScrollingSketchView:[newDocument scrollingSketchView]];
+	[_layerController setSketchView:[newDocument sketchView]];
 	
 	[[self window] orderFront:nil];
 }

@@ -249,7 +249,7 @@
 	[_colorWell setEnabled:isEnabled];
 }
 
-- (void)setScrollingSketchView:(ScrollingSketchView *)newSketchView
+- (void)setSketchView:(SketchView *)newSketchView
 {
 	if( newSketchView == _sketchView )
 		return;
@@ -291,7 +291,7 @@
 		return;
 	}
 	
-	[self setScrollingSketchView:[newDocument scrollingSketchView]];
+	[self setSketchView:[newDocument sketchView]];
 	
 	[_artist release];
 	_artist = [[_currentDocument artist] retain];

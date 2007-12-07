@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 #import "Brush.h"
 #import "BrushView.h"
-#import "ScrollingSketchView.h"
+#import "SketchView.h"
 #import "DripDocument.h"
 
 @interface BrushController : NSObject {
@@ -31,11 +31,9 @@
 	IBOutlet NSColorWell *_colorWell;
 	IBOutlet NSMatrix *_brushSelector;
 	
-	ScrollingSketchView *_sketchView;
+	SketchView *_sketchView;
 	Brush *_currentBrush;
 	
-	//Brush *_paintBrush;
-	//BrushEraser *_eraserBrush;
 	Artist *_artist;
 	
 	DripDocument *_currentDocument;
@@ -56,7 +54,7 @@
 
 - (IBAction)selectBrush:(id)sender;
 
-- (void)setScrollingSketchView:(ScrollingSketchView *)newSketchView;
+- (void)setSketchView:(SketchView *)newSketchView;
 - (void)disable;
 
 - (void)setDripDocument:(DripDocument *)newDocument;

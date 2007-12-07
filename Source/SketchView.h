@@ -1,8 +1,8 @@
 //
-//  ScrollingSketchView.h
+//  SketchView.h
 //  Drip
 //
-//  Created by Nur Monson on 8/2/07.
+//  Created by Nur Monson on 12/5/07.
 //  Copyright 2007 theidiotproject. All rights reserved.
 //
 
@@ -10,19 +10,13 @@
 #import "Canvas.h"
 #import "Brush.h"
 #import "Artist.h"
-#import "ColoredView.h"
 
-//extern NSString *const DripPenEnteredNotification;
+extern NSString *const DripPenEnteredNotification;
 
-@interface ScrollingSketchView : NSView {
-	NSScroller *_verticalScroller;
-	NSScroller *_horizontalScroller;
-	ColoredView *_cornerView;
-	//Brush *_currentBrush;
+@interface SketchView : NSView {
 	Artist *_artist;
 	
 	Canvas *_canvas;
-	NSPoint _canvasOrigin;
 	float _zoom;
 	NSSize _canvasSize;
 	
@@ -40,12 +34,6 @@
 - (float)zoom;
 
 - (void)rebuildBrushCursor;
-
-- (void)updateVerticalScroller;
-- (void)updateHorizontalScroller;
-- (void)redoScrollers;
-- (float)visibleWidth;
-- (float)visibleHeight;
-
 - (void)invalidateCanvasRect:(NSRect)invalidCanvasRect;
+
 @end

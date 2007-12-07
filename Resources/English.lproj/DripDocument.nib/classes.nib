@@ -1,109 +1,86 @@
-{
-    IBClasses = (
-        {CLASS = AnimatingTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
-        {
-            ACTIONS = {
-                changeFlowExpression = id; 
-                changeHardness = id; 
-                changeSize = id; 
-                changeSizeExpression = id; 
-                changeSpacing = id; 
-                colorChanged = id; 
-            }; 
-            CLASS = BrushController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                "_brushHardnessSlider" = NSSlider; 
-                "_brushHardnessText" = NSTextField; 
-                "_brushSizeSlider" = NSSlider; 
-                "_brushSizeText" = NSTextField; 
-                "_brushSpacingSlider" = NSSlider; 
-                "_brushSpacingText" = NSTextField; 
-                "_brushView" = BrushView; 
-                "_colorWell" = NSColorWell; 
-                "_flowExpressionCheckbox" = NSButton; 
-                "_sizeExpressionCheckbox" = NSButton; 
-                "_sketchView" = ScrollingSketchView; 
-            }; 
-            SUPERCLASS = NSObject; 
-        }, 
-        {CLASS = BrushView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
-        {CLASS = ColoredView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
-        {
-            ACTIONS = {setPlaybackSpeed = id; setZoom = id; zoomIn = id; zoomOut = id; }; 
-            CLASS = DripDocumentWindowController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                "_sketchView" = ScrollingSketchView; 
-                "_zoomSlider" = NSSlider; 
-                "_zoomText" = NSTextField; 
-            }; 
-            SUPERCLASS = NSWindowController; 
-        }, 
-        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
-        {CLASS = ImageButton; LANGUAGE = ObjC; SUPERCLASS = NSButton; }, 
-        {
-            ACTIONS = {addLayer = id; deleteLayer = id; setOpacity = id; }; 
-            CLASS = LayerController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                "_layerTable" = AnimatingTableView; 
-                "_opacitySlider" = NSSlider; 
-                "_sketchView" = ScrollingSketchView; 
-            }; 
-            SUPERCLASS = NSObject; 
-        }, 
-        {CLASS = MyDocument; LANGUAGE = ObjC; SUPERCLASS = NSDocument; }, 
-        {
-            CLASS = MyDocumentWindowController; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = NSWindowController; 
-        }, 
-        {CLASS = MyScrollView; LANGUAGE = ObjC; SUPERCLASS = NSScrollView; }, 
-        {CLASS = ScrollingSketchView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
-        {CLASS = ShortcutButton; LANGUAGE = ObjC; SUPERCLASS = NSButton; }, 
-        {
-            ACTIONS = {selectBrush = id; }; 
-            CLASS = SketchController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {"_brushController" = BrushController; "_sketchView" = ScrollingSketchView; }; 
-            SUPERCLASS = NSObject; 
-        }, 
-        {
-            CLASS = SketchView; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {delegate = id; }; 
-            SUPERCLASS = NSView; 
-        }, 
-        {
-            ACTIONS = {
-                changeBrushShape = id; 
-                changeFlow = id; 
-                changeMainSize = id; 
-                changeOpacity = id; 
-                changePressureOpacity = id; 
-                changePressureSize = id; 
-                changeTipSize = id; 
-            }; 
-            CLASS = TIPBrushController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                "_brushView" = BrushView; 
-                brushFlowSlider = NSSlider; 
-                brushFlowText = NSTextField; 
-                brushImage = NSImageView; 
-                brushMainSizeSlider = NSSlider; 
-                brushMainSizeText = NSTextField; 
-                brushOpacitySlider = NSSlider; 
-                brushOpacityText = NSTextField; 
-                brushPressureOpacityCheckbox = NSButton; 
-                brushPressureSizeCheckbox = NSButton; 
-                brushShape = NSPopUpButton; 
-                brushTipSizeSlider = NSSlider; 
-                brushTipSizeText = NSTextField; 
-            }; 
-            SUPERCLASS = NSObject; 
-        }
-    ); 
-    IBVersion = 1; 
-}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IBClasses</key>
+	<array>
+		<dict>
+			<key>CLASS</key>
+			<string>ImageButton</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSButton</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>ColoredView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>FirstResponder</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>setPlaybackSpeed</key>
+				<string>id</string>
+				<key>setZoom</key>
+				<string>id</string>
+				<key>zoomIn</key>
+				<string>id</string>
+				<key>zoomOut</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>DripDocumentWindowController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>_scrollView</key>
+				<string>NSScrollView</string>
+				<key>_sketchView</key>
+				<string>SketchView</string>
+				<key>_zoomSlider</key>
+				<string>NSSlider</string>
+				<key>_zoomText</key>
+				<string>NSTextField</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSWindowController</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>SketchView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>delegate</key>
+				<string>id</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>CenteredScrollView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSScrollView</string>
+		</dict>
+	</array>
+	<key>IBVersion</key>
+	<string>1</string>
+</dict>
+</plist>

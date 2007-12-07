@@ -104,7 +104,7 @@
 		
 }
 
-- (void)setScrollingSketchView:(ScrollingSketchView *)newSketchView
+- (void)setSketchView:(SketchView *)newSketchView
 {
 	if( newSketchView == _sketchView )
 		return;
