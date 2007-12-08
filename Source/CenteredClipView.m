@@ -10,7 +10,12 @@
 
 
 @implementation CenteredClipView
-
+/*
+- (BOOL)preservesContentDuringLiveResize
+{
+	return YES;
+}
+*/
 - (void)centerDocument
 {
 	NSRect docFrame = [[self documentView] frame];

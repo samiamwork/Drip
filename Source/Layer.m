@@ -164,35 +164,46 @@
 	if( ![_mainPaintLayer visible] )
 		return;
 	
+	NSEnumerator *layerEnumerator;
+	
 	// composite all mask layers together and mask the main layer with the composite mask
 	CGImageRef mainLayerImage = [_mainPaintLayer getImageForRect:aRect];
-	NSEnumerator *layerEnumerator = [_brushMaskLayers objectEnumerator];
-	MaskLayer *aMaskLayer;
-	while( (aMaskLayer = [layerEnumerator nextObject]) )
-		[aMaskLayer drawRect:aRect inContext:[_scratchMaskLayer cxt]];
+	if( [_brushMaskLayers count] == 0 ) {
+		CGContextSaveGState( aContext );
+		CGContextSetAlpha( aContext, [_scratchPaintLayer opacity] );
+		CGContextDrawImage( aContext, *(CGRect *)&aRect, mainLayerImage );
+		CGContextRestoreGState( aContext );
+	} else {
+		layerEnumerator = [_brushMaskLayers objectEnumerator];
+		MaskLayer *aMaskLayer;
+		while( (aMaskLayer = [layerEnumerator nextObject]) )
+			[aMaskLayer drawRect:aRect inContext:[_scratchMaskLayer cxt]];
 
-	CGImageRef newMaskImage = [_scratchMaskLayer getImageForRect:aRect];
-	CGImageRef newMaskedImage = CGImageCreateWithMask( mainLayerImage, newMaskImage );
+		CGImageRef newMaskImage = [_scratchMaskLayer getImageForRect:aRect];
+		CGImageRef newMaskedImage = CGImageCreateWithMask( mainLayerImage, newMaskImage );
+		
+		CGImageRelease( newMaskImage );
+		CGImageRelease( mainLayerImage );
+		CGContextDrawImage( [_scratchPaintLayer cxt], *(CGRect *)&aRect, newMaskedImage );
+		CGImageRelease( newMaskedImage );
+		
+		// clear mask layer
+		CGContextSaveGState( [_scratchMaskLayer cxt] );
+		CGContextSetRGBFillColor( [_scratchMaskLayer cxt], 1.0f,1.0f,1.0f,1.0f);
+		CGContextFillRect([_scratchMaskLayer cxt], *(CGRect *)&aRect);
+		CGContextRestoreGState( [_scratchMaskLayer cxt] );
+	}
 	
-	CGImageRelease( newMaskImage );
-	CGImageRelease( mainLayerImage );
-	CGContextDrawImage( [_scratchPaintLayer cxt], *(CGRect *)&aRect, newMaskedImage );
-	CGImageRelease( newMaskedImage );
-	
-	// clear mask layer
-	CGContextSaveGState( [_scratchMaskLayer cxt] );
-	CGContextSetRGBFillColor( [_scratchMaskLayer cxt], 1.0f,1.0f,1.0f,1.0f);
-	CGContextFillRect([_scratchMaskLayer cxt], *(CGRect *)&aRect);
-	CGContextRestoreGState( [_scratchMaskLayer cxt] );
-	
-	layerEnumerator = [_brushPaintLayers objectEnumerator];
-	PaintLayer *aLayer;
-	while( (aLayer = [layerEnumerator nextObject]) )
-		[aLayer drawRect:aRect inContext:[_scratchPaintLayer cxt]];
-	[_scratchPaintLayer drawRect:aRect inContext:aContext];
-	
-	// clear scratch layer
-	CGContextClearRect( [_scratchPaintLayer cxt], *(CGRect *)&aRect );
+	if( [_brushPaintLayers count] != 0 ) {
+		layerEnumerator = [_brushPaintLayers objectEnumerator];
+		PaintLayer *aLayer;
+		while( (aLayer = [layerEnumerator nextObject]) )
+			[aLayer drawRect:aRect inContext:[_scratchPaintLayer cxt]];
+		[_scratchPaintLayer drawRect:aRect inContext:aContext];
+		
+		// clear scratch layer
+		CGContextClearRect( [_scratchPaintLayer cxt], *(CGRect *)&aRect );
+	}
 }
 
 #pragma mark convenience methods
