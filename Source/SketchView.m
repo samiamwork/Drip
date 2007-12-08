@@ -74,14 +74,14 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 - (void)drawRect:(NSRect)rect {
 	if( _canvas == nil )
 		return;
-	NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
+	//NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
 	NSRect *rectsToDraw = NULL;
 	int rectCount;
 	[self getRectsBeingDrawn:(const NSRect **)&rectsToDraw count:&rectCount];
 	int i;
 	for( i=0; i < rectCount; i++ )
 		[self drawMinimalRect:rectsToDraw[i]];
-	NSTimeInterval end = [NSDate timeIntervalSinceReferenceDate];
+	//NSTimeInterval end = [NSDate timeIntervalSinceReferenceDate];
 	
 	//printf("took %.05fs\n", (float)(end-start));
 }

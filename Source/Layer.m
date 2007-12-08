@@ -194,7 +194,7 @@
 		CGContextRestoreGState( [_scratchMaskLayer cxt] );
 	}
 	
-	if( [_brushPaintLayers count] != 0 ) {
+	if( [_brushPaintLayers count] != 0 || [_brushMaskLayers count] != 0 ) {
 		layerEnumerator = [_brushPaintLayers objectEnumerator];
 		PaintLayer *aLayer;
 		while( (aLayer = [layerEnumerator nextObject]) )
