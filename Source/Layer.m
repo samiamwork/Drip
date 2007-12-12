@@ -128,8 +128,7 @@
 
 	if( [aLayer isKindOfClass:[MaskLayer class]] ) {
 		
-		[aLayer drawRect:aRect inContext:[_scratchMaskLayer cxt]];
-		CGImageRef cachedMask = [_scratchMaskLayer getImageForRect:aRect];
+		CGImageRef cachedMask = [aLayer getImageForRect:aRect];
 		CGImageRef cachedImage = [_mainPaintLayer getImageForRect:aRect];
 		CGImageRef maskedImage = CGImageCreateWithMask(cachedImage,cachedMask);
 		CGContextClearRect( [_mainPaintLayer cxt],*(CGRect *)&aRect );
