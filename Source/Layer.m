@@ -128,7 +128,9 @@
 
 	if( [aLayer isKindOfClass:[MaskLayer class]] ) {
 		
-		CGImageRef cachedMask = [aLayer getImageForRect:aRect];
+		[aLayer drawRect:aRect inContext:[_scratchMaskLayer cxt]];
+		CGImageRef cachedMask = [_scratchMaskLayer getImageForRect:aRect];
+		
 		CGImageRef cachedImage = [_mainPaintLayer getImageForRect:aRect];
 		CGImageRef maskedImage = CGImageCreateWithMask(cachedImage,cachedMask);
 		CGContextClearRect( [_mainPaintLayer cxt],*(CGRect *)&aRect );
@@ -168,6 +170,8 @@
 	// composite all mask layers together and mask the main layer with the composite mask
 	CGImageRef mainLayerImage = [_mainPaintLayer getImageForRect:aRect];
 	if( [_brushMaskLayers count] == 0 ) {
+		// if there are no mask layers (i.e. no one is erasing)
+		// just draw the layer like normal (with opacity)
 		CGContextSaveGState( aContext );
 		CGContextSetAlpha( aContext, [_scratchPaintLayer opacity] );
 		CGContextDrawImage( aContext, *(CGRect *)&aRect, mainLayerImage );
