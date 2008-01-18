@@ -118,6 +118,7 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 {
 	[_workLayer release];
 	_workLayer = [[MaskLayer alloc] initWithWidth:(unsigned int)newCanvasSize.width height:(unsigned int)newCanvasSize.height];
+	[_workLayer setOpacity:_strokeOpacity];
 }
 
 // commented out because it's now drawing like a normal brush but to a mask layer instead of paint.

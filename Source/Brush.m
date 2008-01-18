@@ -184,6 +184,7 @@ float valueWithCosCurve(float t, float crossover)
 	[_workLayer release];
 	_workLayer = [[PaintLayer alloc] initWithWidth:(unsigned int)newCanvasSize.width height:(unsigned int)newCanvasSize.height];
 	[_workLayer setBlendMode:_blendMode];
+	[_workLayer setOpacity:_strokeOpacity];
 }
 
 - (void)setSize:(float)newSize

@@ -202,7 +202,7 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 {
 	if( newArtist == _artist )
 		return;
-	
+
 	[_artist release];
 	_artist = [newArtist retain];
 	[self rebuildBrushCursor];

@@ -171,7 +171,7 @@
 	CGImageRef mainLayerImage = [_mainPaintLayer getImageForRect:aRect];
 	if( [_brushMaskLayers count] == 0 ) {
 		// if there are no mask layers (i.e. no one is erasing)
-		// just draw the layer like normal (with opacity)
+		// just draw the layer plain.
 		CGContextDrawImage( [_scratchPaintLayer cxt], *(CGRect *)&aRect, mainLayerImage );
 		CGImageRelease( mainLayerImage );
 	} else {
