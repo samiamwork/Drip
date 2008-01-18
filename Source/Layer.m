@@ -172,10 +172,8 @@
 	if( [_brushMaskLayers count] == 0 ) {
 		// if there are no mask layers (i.e. no one is erasing)
 		// just draw the layer like normal (with opacity)
-		CGContextSaveGState( aContext );
-		CGContextSetAlpha( aContext, [_scratchPaintLayer opacity] );
-		CGContextDrawImage( aContext, *(CGRect *)&aRect, mainLayerImage );
-		CGContextRestoreGState( aContext );
+		CGContextDrawImage( [_scratchPaintLayer cxt], *(CGRect *)&aRect, mainLayerImage );
+		CGImageRelease( mainLayerImage );
 	} else {
 		layerEnumerator = [_brushMaskLayers objectEnumerator];
 		MaskLayer *aMaskLayer;
@@ -197,16 +195,14 @@
 		CGContextRestoreGState( [_scratchMaskLayer cxt] );
 	}
 	
-	if( [_brushPaintLayers count] != 0 || [_brushMaskLayers count] != 0 ) {
-		layerEnumerator = [_brushPaintLayers objectEnumerator];
-		PaintLayer *aLayer;
-		while( (aLayer = [layerEnumerator nextObject]) )
-			[aLayer drawRect:aRect inContext:[_scratchPaintLayer cxt]];
-		[_scratchPaintLayer drawRect:aRect inContext:aContext];
-		
-		// clear scratch layer
-		CGContextClearRect( [_scratchPaintLayer cxt], *(CGRect *)&aRect );
-	}
+	layerEnumerator = [_brushPaintLayers objectEnumerator];
+	PaintLayer *aLayer;
+	while( (aLayer = [layerEnumerator nextObject]) )
+		[aLayer drawRect:aRect inContext:[_scratchPaintLayer cxt]];
+	[_scratchPaintLayer drawRect:aRect inContext:aContext];
+	
+	// clear scratch layer
+	CGContextClearRect( [_scratchPaintLayer cxt], *(CGRect *)&aRect );
 }
 
 #pragma mark convenience methods
