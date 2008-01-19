@@ -8,6 +8,9 @@
 
 #import "Brush.h"
 
+#import "DripEventStrokeBegin.h"
+#import "DripEventStrokeContinue.h"
+#import "DripEventStrokeEnd.h"
 
 NSString *const kPaintBrushSizeKey = @"paintBrushSize";
 NSString *const kPaintBrushHardnessKey = @"paintBrushHardness";
@@ -57,6 +60,8 @@ NSString *const kPaintBrushColorKey = @"paintBrushColor";
 		[self setPressureAffectsResaturation:NO];
 		[self setPressureAffectsFlow:NO];
 		[self setPressureAffectsSize:YES];
+		
+		_strokeEvents = [[NSMutableArray alloc] init];
 
 		//_brushLookup = (float *)malloc(1001*sizeof(float));
 		//[self createBezierCurveWithCrossover:0.4f];
@@ -72,6 +77,7 @@ NSString *const kPaintBrushColorKey = @"paintBrushColor";
 	if( _dabData )
 		free(_dabData );
 	[_workLayer release];
+	[_strokeEvents release];
 	
 	[super dealloc];
 }
@@ -528,6 +534,11 @@ void sampleBitmap(unsigned char *bitmap, unsigned int pitch, unsigned int width,
 	[_paintingLayer attachLayer:_workLayer];
 
 	_strokeRect = [self renderPointAt:aPoint onLayer:_workLayer];
+	
+	DripEventStrokeBegin *newEvent = [[DripEventStrokeBegin alloc] initWithPosition:NSMakePoint(aPoint.x,aPoint.y) pressure:aPoint.pressure];
+	[_strokeEvents addObject:newEvent];
+	[newEvent release];
+	
 	return _strokeRect;
 }
 - (NSRect)continueStrokeAtPoint:(PressurePoint)aPoint
@@ -543,11 +554,27 @@ void sampleBitmap(unsigned char *bitmap, unsigned int pitch, unsigned int width,
 	_lastBrushPosition = aPoint;
 	
 	_strokeRect = NSUnionRect(_strokeRect,invalidRect);
+	
+	DripEventStrokeContinue *newEvent = [[DripEventStrokeContinue alloc] initWithPosition:NSMakePoint(aPoint.x,aPoint.y) pressure:aPoint.pressure];
+	[_strokeEvents addObject:newEvent];
+	[newEvent release];
+	
 	return invalidRect;
 }
 - (void)endStroke
 {
+	DripEventStrokeBegin *newEvent = [[DripEventStrokeEnd alloc] init];
+	[_strokeEvents addObject:newEvent];
+	[newEvent release];
+	
 	[_paintingLayer commitLayer:_workLayer rect:NSIntegralRect(_strokeRect)];
+}
+
+- (NSArray*)popStrokeEvents
+{
+	NSArray *poppedEvents = [NSArray arrayWithArray:_strokeEvents];
+	[_strokeEvents removeAllObjects];
+	return poppedEvents;
 }
 
 - (NSRect)renderPointAt:(PressurePoint)aPoint onLayer:(PaintLayer *)aLayer

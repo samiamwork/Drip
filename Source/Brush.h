@@ -43,6 +43,8 @@ typedef struct PressurePoint {
 	PressurePoint _lastBrushPosition;
 	Layer *_paintingLayer;
 	
+	NSMutableArray *_strokeEvents;
+	
 	float _brushSize;
 	float _intSize;
 	float _hardness;
@@ -99,6 +101,9 @@ typedef struct PressurePoint {
 - (NSRect)beginStrokeAtPoint:(PressurePoint)aPoint onLayer:(Layer *)aLayer;
 - (NSRect)continueStrokeAtPoint:(PressurePoint)aPoint;
 - (void)endStroke;
+// returns an array of all stored stroke data and removes it from the internal store.
+// if you want to keep the data around you need to retain it.
+- (NSArray*)popStrokeEvents;
 
 - (NSRect)renderPointAt:(PressurePoint)aPoint onLayer:(PaintLayer *)aLayer;
 - (NSRect)renderLineFromPoint:(PressurePoint)startPoint toPoint:(PressurePoint *)endPoint onLayer:(PaintLayer *)aLayer leftover:(float *)leftoverDistance;

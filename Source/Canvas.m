@@ -565,7 +565,7 @@
 		[_paintEvents addObject:brushSettings];
 	[brushSettings release];
 	
-	[_paintEvents addObject:[[[DripEventStrokeBegin alloc] initWithPosition:NSMakePoint(aPoint.x,aPoint.y) pressure:aPoint.pressure] autorelease]];
+	//[_paintEvents addObject:[[[DripEventStrokeBegin alloc] initWithPosition:NSMakePoint(aPoint.x,aPoint.y) pressure:aPoint.pressure] autorelease]];
 	return [[anArtist currentBrush] beginStrokeAtPoint:aPoint onLayer:_currentLayer];
 }
 - (NSRect)continueStrokeAtPoint:(PressurePoint)aPoint withArtist:(Artist *)anArtist
@@ -573,7 +573,7 @@
 	if( [self isPlayingBack] )
 		return NSZeroRect;
 
-	[_paintEvents addObject:[[[DripEventStrokeContinue alloc] initWithPosition:NSMakePoint(aPoint.x,aPoint.y) pressure:aPoint.pressure] autorelease]];
+	//[_paintEvents addObject:[[[DripEventStrokeContinue alloc] initWithPosition:NSMakePoint(aPoint.x,aPoint.y) pressure:aPoint.pressure] autorelease]];
 	return [[anArtist currentBrush] continueStrokeAtPoint:aPoint];
 }
 - (void)endStrokeWithArtist:(Artist *)anArtist;
@@ -581,8 +581,9 @@
 	// EVENT:
 	// End stroke
 	// TODO: the event needs to support a brush identifier
-	if( ![self isPlayingBack] )
-		[_paintEvents addObject:[[[DripEventStrokeEnd alloc] init] autorelease]];
+	//if( ![self isPlayingBack] )
+	//	[_paintEvents addObject:[[[DripEventStrokeEnd alloc] init] autorelease]];
+	[_paintEvents addObjectsFromArray:[[anArtist currentBrush] popStrokeEvents]];
 	
 	[[anArtist currentBrush] endStroke];
 }
