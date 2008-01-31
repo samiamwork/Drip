@@ -48,6 +48,13 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 	[self setNeedsDisplayInRect:invalidCanvasRect];
 }
 
+// Need to disable this while playing back
+- (void)invalidateCanvasRectForUndo:(NSRect)invalidCanvasRect
+{
+	[[[[self window] undoManager] prepareWithInvocationTarget:self] invalidateCanvasRectForUndo:invalidCanvasRect];
+	[self invalidateCanvasRect:invalidCanvasRect];
+}
+
 - (void)drawMinimalRect:(NSRect)rect
 {
 	NSRect canvasRect = NSMakeRect(0.0f,0.0f,[_canvas size].width,[_canvas size].height);
@@ -153,9 +160,10 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 		[self resetCursorRects];
 		return;
 	} else {
-		[_canvas endStrokeWithArtist:_artist];
+		NSRect strokeRect = [_canvas endStrokeWithArtist:_artist];
 		[[_canvas currentLayer] updateThumbnail];
 		[[DripInspectors sharedController] layersUpdated];
+		[[[[self window] undoManager] prepareWithInvocationTarget:self] invalidateCanvasRectForUndo:strokeRect];
 	}
 	
 }

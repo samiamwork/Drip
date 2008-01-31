@@ -65,6 +65,7 @@ NSString *const kPaintBrushColorKey = @"paintBrushColor";
 
 		//_brushLookup = (float *)malloc(1001*sizeof(float));
 		//[self createBezierCurveWithCrossover:0.4f];
+		_settingsHaveChanged = YES;
 	}
 
 	return self;
@@ -203,6 +204,7 @@ float valueWithCosCurve(float t, float crossover)
 	_brushSize = newSize;
 	
 	[self rebuildBrush];
+	_settingsHaveChanged = YES;
 }
 - (float)size
 {
@@ -224,6 +226,7 @@ float valueWithCosCurve(float t, float crossover)
 	
 	_hardness = newHardness;
 	[self rebuildBrush];
+	_settingsHaveChanged = YES;
 }
 - (float)hardness
 {
@@ -242,6 +245,7 @@ float valueWithCosCurve(float t, float crossover)
 		newSpacing = 1.5f;
 	
 	_spacing = newSpacing;
+	_settingsHaveChanged = YES;
 }
 - (float)spacing
 {
@@ -260,6 +264,7 @@ float valueWithCosCurve(float t, float crossover)
 		newResaturation = 1.0f;
 	
 	_resaturation = newResaturation;
+	_settingsHaveChanged = YES;
 }
 - (float)resaturation
 {
@@ -282,6 +287,7 @@ float valueWithCosCurve(float t, float crossover)
 	
 	_strokeOpacity = newStrokeOpacity;
 	[_workLayer setOpacity:_strokeOpacity];
+	_settingsHaveChanged = YES;
 }
 - (float)strokeOpacity
 {
@@ -296,6 +302,7 @@ float valueWithCosCurve(float t, float crossover)
 {
 	_blendMode = newBlendMode;
 	[_workLayer setBlendMode:_blendMode];
+	_settingsHaveChanged = YES;
 }
 - (CGBlendMode)blendMode
 {
@@ -309,6 +316,7 @@ float valueWithCosCurve(float t, float crossover)
 - (void)setPressureAffectsFlow:(BOOL)willAffectFlow
 {
 	_pressureAffectsFlow = willAffectFlow;
+	_settingsHaveChanged = YES;
 }
 - (BOOL)pressureAffectsFlow
 {
@@ -322,6 +330,7 @@ float valueWithCosCurve(float t, float crossover)
 - (void)setPressureAffectsSize:(BOOL)willAffectSize
 {
 	_pressureAffectsSize = willAffectSize;
+	_settingsHaveChanged = YES;
 }
 - (BOOL)pressureAffectsSize
 {
@@ -335,6 +344,7 @@ float valueWithCosCurve(float t, float crossover)
 - (void)setPressureAffectsResaturation:(BOOL)willAffectResaturation
 {
 	_pressureAffectsResaturation = willAffectResaturation;
+	_settingsHaveChanged = YES;
 }
 - (BOOL)pressureAffectsResaturation
 {
@@ -349,6 +359,7 @@ float valueWithCosCurve(float t, float crossover)
 {
 	NSColor *rgb = [aColor colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
 	[rgb getRed:&_RGBAColor[0] green:&_RGBAColor[1] blue:&_RGBAColor[2] alpha:&_RGBAColor[3]];
+	_settingsHaveChanged = YES;
 }
 - (NSColor*)color
 {
@@ -561,13 +572,14 @@ void sampleBitmap(unsigned char *bitmap, unsigned int pitch, unsigned int width,
 	
 	return invalidRect;
 }
-- (void)endStroke
+- (NSRect)endStroke
 {
 	DripEventStrokeBegin *newEvent = [[DripEventStrokeEnd alloc] init];
 	[_strokeEvents addObject:newEvent];
 	[newEvent release];
 	
 	[_paintingLayer commitLayer:_workLayer rect:NSIntegralRect(_strokeRect)];
+	return _strokeRect;
 }
 
 - (NSArray*)popStrokeEvents
@@ -679,28 +691,13 @@ void sampleBitmap(unsigned char *bitmap, unsigned int pitch, unsigned int width,
 }
 
 #pragma mark Settings
-/*
-- (void)changeSettings:(DripEventBrushSettings *)theSettings
+- (BOOL)didSettingsChange
 {
-	if( [theSettings type] != kBrushTypePaint )
-		return;
-	
-	[self setSize:[theSettings size]];
-	[self setHardness:[theSettings hardness]];
-	[self setSpacing:[theSettings spacing]];
-	[self setResaturation:[theSettings resaturation]];
-	[self setStrokeOpacity:[theSettings strokeOpacity]];
-	[self setBlendMode:[theSettings blendMode]];
-	[self setPressureAffectsFlow:[theSettings pressureAffectsFlow]];
-	[self setPressureAffectsSize:[theSettings pressureAffectsSize]];
-	[self setPressureAffectsResaturation:[theSettings pressureAffectsResaturation]];
-	[self setColor:[theSettings color]];
+	BOOL settingsWereChanged = _settingsHaveChanged;
+	_settingsHaveChanged = NO;
+	return settingsWereChanged;
 }
-- (DripEventBrushSettings *)settings
-{
-	return [[[DripEventBrushSettings alloc] initWithType:kBrushTypePaint size:_brushSize hardness:_hardness spacing:_spacing resaturation:_resaturation strokeOpacity:_strokeOpacity blendMode:_blendMode pressureAffectsFlow:_pressureAffectsFlow pressureAffectsSize:_pressureAffectsSize pressureAffectsResaturation:_pressureAffectsResaturation color:[NSColor colorWithCalibratedRed:_RGBAColor[0] green:_RGBAColor[1] blue:_RGBAColor[2] alpha:_RGBAColor[3]]] autorelease];
-}
-*/
+
 - (void)saveSettings
 {
 	NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];

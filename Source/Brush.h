@@ -58,6 +58,8 @@ typedef struct PressurePoint {
 	
 	PaintLayer *_workLayer;
 	NSRect _strokeRect;
+	//
+	BOOL _settingsHaveChanged;
 }
 
 - (void)setCanvasSize:(NSSize)newCanvasSize;
@@ -94,13 +96,12 @@ typedef struct PressurePoint {
 
 - (BrushType)type;
 
-//- (void)createBezierCurveWithCrossover:(float)crossover;
 
 - (void)drawDabAtPoint:(NSPoint)aPoint;
 
 - (NSRect)beginStrokeAtPoint:(PressurePoint)aPoint onLayer:(Layer *)aLayer;
 - (NSRect)continueStrokeAtPoint:(PressurePoint)aPoint;
-- (void)endStroke;
+- (NSRect)endStroke;
 // returns an array of all stored stroke data and removes it from the internal store.
 // if you want to keep the data around you need to retain it.
 - (NSArray*)popStrokeEvents;
@@ -108,8 +109,11 @@ typedef struct PressurePoint {
 - (NSRect)renderPointAt:(PressurePoint)aPoint onLayer:(PaintLayer *)aLayer;
 - (NSRect)renderLineFromPoint:(PressurePoint)startPoint toPoint:(PressurePoint *)endPoint onLayer:(PaintLayer *)aLayer leftover:(float *)leftoverDistance;
 
-//- (void)changeSettings:(DripEventBrushSettings *)theSettings;
-//- (DripEventBrushSettings *)settings;
+// returns TRUE if the settings have changed since the last time this method was called
+// and FALSE otherwise.
+// returns TRUE the first time it's called.
+// TODO: how does undo affect this method's behavior?
+- (BOOL)didSettingsChange;
 - (void)saveSettings;
 - (void)loadSettings;
 @end

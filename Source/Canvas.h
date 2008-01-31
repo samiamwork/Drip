@@ -65,7 +65,7 @@
 
 - (NSRect)beginStrokeAtPoint:(PressurePoint)aPoint withArtist:(Artist *)anArtist;
 - (NSRect)continueStrokeAtPoint:(PressurePoint)aPoint withArtist:(Artist *)anArtist;
-- (void)endStrokeWithArtist:(Artist *)anArtist;
+- (NSRect)endStrokeWithArtist:(Artist *)anArtist;
 
 - (void)fillCurrentLayerWithColor:(NSColor *)aColor;
 - (CGRect)fillCurrentLayerWithImage:(NSData *)theImageData;

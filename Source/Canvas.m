@@ -22,6 +22,11 @@
 #import "DripEventStrokeContinue.h"
 #import "DripEventStrokeEnd.h"
 
+@interface Canvas (Private)
+- (void)addEvents:(NSArray *)theEvents;
+- (void)removeEventCount:(unsigned)eventCount;
+@end
+
 @implementation Canvas
 
 - (id)init
@@ -145,53 +150,7 @@
 	
 	DripEvent *theEvent = [_paintEvents objectAtIndex:_eventIndex];
 	_eventIndex++;
-	/*
-	if( [theEvent isKindOfClass:[DripEventStrokeBegin class]] ) {
-		DripEventStrokeBegin *brushDown = (DripEventStrokeBegin *)theEvent;
-		PressurePoint aPoint = (PressurePoint){[brushDown position].x, [brushDown position].y, [brushDown pressure]};
-		return [_playbackCanvas beginStrokeAtPoint:aPoint withBrush:[_playbackArtist currentBrush]];
-	} else if( [theEvent isKindOfClass:[DripEventStrokeContinue class]] ) {
-		DripEventStrokeContinue *brushDrag = (DripEventStrokeContinue *)theEvent;
-		PressurePoint dragPoint = (PressurePoint){[brushDrag position].x, [brushDrag position].y, [brushDrag pressure]};
-		return [_playbackCanvas continueStrokeAtPoint:dragPoint withBrush:[_playbackArtist currentBrush]];
-	} else if( [theEvent isKindOfClass:[DripEventStrokeEnd class]] ) {
-		[_playbackCanvas endStrokeWithBrush:[_playbackArtist currentBrush]];
-		return NSZeroRect;
-	} else if( [theEvent isKindOfClass:[DripEventBrushSettings class]] ) {
-		DripEventBrushSettings *brushSettings = (DripEventBrushSettings *)theEvent;
-		[_playbackArtist changeBrushSettings:brushSettings];
-	} else if( [theEvent isKindOfClass:[DripEventLayerAdd class]] ) {
-		[_playbackCanvas addLayer];
-		return NSMakeRect(0.0f,0.0f,_width,_height);
-	} else if( [theEvent isKindOfClass:[DripEventLayerDelete class]] ) {
-		[_playbackCanvas deleteLayer:[_playbackCanvas currentLayer]];
-		return NSMakeRect(0.0f,0.0f,_width,_height);
-	} else if( [theEvent isKindOfClass:[DripEventLayerCollapse class]] ) {
-		[_playbackCanvas collapseLayer:[_playbackCanvas currentLayer]];
-		return NSMakeRect(0.0f,0.0f,_width,_height);
-	} else if( [theEvent isKindOfClass:[DripEventLayerMove class]] ) {
-		DripEventLayerMove *layerMove = (DripEventLayerMove *)theEvent;
-		[_playbackCanvas moveLayerAtIndex:[layerMove fromIndex] toIndex:[layerMove toIndex]];
-		return NSMakeRect(0.0f,0.0f,_width,_height);
-	} else if( [theEvent isKindOfClass:[DripEventLayerSettings class]] ) {
-		DripEventLayerSettings *layerSettings = (DripEventLayerSettings *)theEvent;
-		Layer *aLayer = [[_playbackCanvas layers] objectAtIndex:[layerSettings layerIndex]];
-		[aLayer changeSettings:layerSettings];
-		// TODO: stop going behind the canvas's back to change layer settings.
-		[_playbackCanvas settingsChangedForLayer:aLayer];
-		
-		return NSMakeRect(0.0f,0.0f,_width,_height);
-	} else if( [theEvent isKindOfClass:[DripEventLayerChange class]] ) {
-		[_playbackCanvas setCurrentLayer:[[_playbackCanvas layers] objectAtIndex:[(DripEventLayerChange *)theEvent layerIndex]]];
-	} else if( [theEvent isKindOfClass:[DripEventLayerFill class]] ) {
-		[[_playbackCanvas currentLayer] fillLayerWithColor:[(DripEventLayerFill *)theEvent color]];
-		// TODO: can I get rid of the fudge factor?
-		return NSMakeRect(-1.0f,-1.0f,(float)_width,(float)_height);
-	}else {
-		printf("unknown event!\n");
-	}
-	 */
-	
+
 	return [theEvent runWithCanvas:_playbackCanvas artist:_playbackArtist];
 }
 
@@ -203,6 +162,20 @@
 		invalidCanvasRect = NSIntersectionRect( [self playNextEvent], canvasRect );
 	
 	return invalidCanvasRect;
+}
+
+- (void)addEvents:(NSArray *)theEvents
+{
+	[_paintEvents addObjectsFromArray:theEvents];
+	[[[_document undoManager] prepareWithInvocationTarget:self] removeEventCount:[theEvents count]];
+}
+- (void)removeEventCount:(unsigned)eventCount
+{
+	NSRange oldEventRange = NSMakeRange([_paintEvents count]-eventCount, eventCount);
+	NSArray *oldEvents = [_paintEvents objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:oldEventRange]];
+	[_paintEvents removeObjectsInRange:oldEventRange];
+	
+	[[[_document undoManager] prepareWithInvocationTarget:self] addEvents:oldEvents];
 }
 
 - (void)encodeWithCoder:(NSCoder *)encoder
@@ -411,7 +384,7 @@
 		layerNumber++;
 	[newLayer setName:[NSString stringWithFormat:@"Layer %d",layerNumber]];
 	
-	
+	[newLayer setUndoManager:[_document undoManager]];
 	[_layers insertObject:newLayer atIndex:currentIndex+1];
 	[newLayer release];
 	[self setCurrentLayer:newLayer];
@@ -560,10 +533,6 @@
 	// if we don't have a last brush setting for this artist or if the current setting
 	// is different than than the one we have on record then update it and add the event.
 	
-	DripEventBrushSettings *brushSettings = [anArtist getNewBrushSettings];
-	if( brushSettings )
-		[_paintEvents addObject:brushSettings];
-	[brushSettings release];
 	
 	//[_paintEvents addObject:[[[DripEventStrokeBegin alloc] initWithPosition:NSMakePoint(aPoint.x,aPoint.y) pressure:aPoint.pressure] autorelease]];
 	return [[anArtist currentBrush] beginStrokeAtPoint:aPoint onLayer:_currentLayer];
@@ -576,16 +545,21 @@
 	//[_paintEvents addObject:[[[DripEventStrokeContinue alloc] initWithPosition:NSMakePoint(aPoint.x,aPoint.y) pressure:aPoint.pressure] autorelease]];
 	return [[anArtist currentBrush] continueStrokeAtPoint:aPoint];
 }
-- (void)endStrokeWithArtist:(Artist *)anArtist;
+- (NSRect)endStrokeWithArtist:(Artist *)anArtist;
 {
 	// EVENT:
 	// End stroke
 	// TODO: the event needs to support a brush identifier
+	NSRect strokeRect = [[anArtist currentBrush] endStroke];
 	//if( ![self isPlayingBack] )
 	//	[_paintEvents addObject:[[[DripEventStrokeEnd alloc] init] autorelease]];
-	[_paintEvents addObjectsFromArray:[[anArtist currentBrush] popStrokeEvents]];
-	
-	[[anArtist currentBrush] endStroke];
+
+	DripEventBrushSettings *brushSettings = [anArtist getNewBrushSettings];
+	if( brushSettings )
+		[self addEvents:[NSArray arrayWithObject:brushSettings]];
+	[self addEvents:[[anArtist currentBrush] popStrokeEvents]];
+	//[_paintEvents addObjectsFromArray:[[anArtist currentBrush] popStrokeEvents]];
+	return strokeRect;
 }
 
 - (void)fillCurrentLayerWithColor:(NSColor *)aColor
@@ -651,6 +625,8 @@
 	
 	[_document release];
 	_document = [newDocument retain];
+	
+	[_layers makeObjectsPerformSelector:@selector(setUndoManager:) withObject:[_document undoManager]];
 }
 - (NSDocument *)document
 {

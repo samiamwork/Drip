@@ -37,6 +37,8 @@
 		CGContextSetInterpolationQuality( [_scratchMaskLayer cxt], kCGInterpolationNone );
 		_scratchPaintLayer = [[PaintLayer alloc] initWithWidth:[_mainPaintLayer width] height:[_mainPaintLayer height]];
 		CGContextSetInterpolationQuality( [_scratchPaintLayer cxt], kCGInterpolationNone );
+		
+		_undoManager = nil;
 	}
 	
 	return self;
@@ -54,6 +56,8 @@
 		
 		_brushPaintLayers = [[NSMutableArray alloc] init];
 		_brushMaskLayers = [[NSMutableArray alloc] init];
+		
+		_undoManager = nil;
 	}
 
 	return self;
@@ -73,9 +77,19 @@
 		
 		_brushMaskLayers = [[NSMutableArray alloc] init];
 		_brushPaintLayers = [[NSMutableArray alloc] init];
+		
+		_undoManager = nil;
 	}
 	
 	return self;
+}
+
+- (void)setUndoManager:(NSUndoManager *)newUndoManager
+{
+	if( _undoManager == newUndoManager )
+		return;
+	[_undoManager release];
+	_undoManager = [newUndoManager retain];
 }
 
 - (void)dealloc
@@ -87,6 +101,8 @@
 	[_brushPaintLayers release];
 	[_brushMaskLayers release];
 
+	[_undoManager release];
+	
 	[super dealloc];
 }
 
@@ -122,12 +138,34 @@
 		[_brushPaintLayers removeObject:aLayer];
 }
 
+- (void)drawImage:(CGImageWrapper *)imageWrapper inRect:(NSRect)theRect
+{
+	if( _undoManager ) {
+		CGImageRef oldImage = [_mainPaintLayer getImageForRect:theRect];
+		CGImageWrapper *newImageWrapper = [[CGImageWrapper alloc] initWithImage:oldImage];
+		[[_undoManager prepareWithInvocationTarget:self] drawImage:newImageWrapper inRect:theRect];
+		[newImageWrapper release];
+		CGImageRelease( oldImage );
+	}
+	CGContextClearRect( [_mainPaintLayer cxt],*(CGRect *)&theRect );
+	//printf("retain count %d\n", CFGetRetainCount(theImage));
+	CGContextDrawImage( [_mainPaintLayer cxt],*(CGRect *)&theRect, [imageWrapper image]);
+}
+
 - (void)commitLayer:(PaintLayer *)aLayer rect:(NSRect)aRect
 {
 	aRect = NSIntersectionRect(aRect,NSMakeRect(0.0f,0.0f,(float)[_mainPaintLayer width],(float)[_mainPaintLayer height]));
 
+	if( _undoManager ) {
+		CGImageRef oldImage = [_mainPaintLayer getImageForRect:aRect];
+		CGImageWrapper *newImageWrapper = [[CGImageWrapper alloc] initWithImage:oldImage];
+		[[_undoManager prepareWithInvocationTarget:self] drawImage:newImageWrapper inRect:aRect];
+		[newImageWrapper release];
+		CGImageRelease( oldImage );
+	}
+	
 	if( [aLayer isKindOfClass:[MaskLayer class]] ) {
-		
+				
 		[aLayer drawRect:aRect inContext:[_scratchMaskLayer cxt]];
 		CGImageRef cachedMask = [_scratchMaskLayer getImageForRect:aRect];
 		
@@ -156,7 +194,6 @@
 		CGContextClearRect([aLayer cxt],*(CGRect *)&aRect);
 	}
 	
-
 	[self detachLayer:aLayer];
 }
 

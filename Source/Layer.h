@@ -9,6 +9,7 @@
 #import <Cocoa/Cocoa.h>
 #import "PaintLayer.h"
 #import "MaskLayer.h"
+#import "CGImageWrapper.h"
 
 @interface Layer : NSObject {
 	PaintLayer *_scratchPaintLayer;
@@ -17,10 +18,14 @@
 	
 	NSMutableArray *_brushPaintLayers;
 	NSMutableArray *_brushMaskLayers;
+	
+	NSUndoManager *_undoManager;
 }
 
 - (id)initWithWidth:(unsigned int)width height:(unsigned int)height;
 - (id)initWithContentsOfLayers:(NSArray *)layers inRange:(NSRange)range;
+
+- (void)setUndoManager:(NSUndoManager *)newUndoManager;
 
 - (void)setMainPaintLayer:(PaintLayer *)newPaintLayer;
 - (PaintLayer *)mainPaintLayer;

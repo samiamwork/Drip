@@ -63,7 +63,7 @@
 	if( !_lastCheckedBrushSettings || ![_lastCheckedBrushSettings isEqual:brushSettings] ) {
 		[_lastCheckedBrushSettings release];
 		_lastCheckedBrushSettings = brushSettings;
-		return [brushSettings retain];
+		return [[brushSettings retain] autorelease];
 	}
 	
 	[brushSettings release];
