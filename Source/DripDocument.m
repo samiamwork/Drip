@@ -22,6 +22,7 @@
 		
 		_artist = [[Artist alloc] init];
 		[_artist loadSettings];
+		[_artist setUndoManager:[self undoManager]];
     }
     return self;
 }

@@ -26,6 +26,7 @@
 		_color = [[*_currentBrushPtr color] retain];
 		
 		_lastCheckedBrushSettings = nil;
+		_undoManager = nil;
 	}
 
 	return self;
@@ -61,13 +62,37 @@
 {
 	DripEventBrushSettings *brushSettings = [[DripEventBrushSettings alloc] initWithBrush:*_currentBrushPtr];
 	if( !_lastCheckedBrushSettings || ![_lastCheckedBrushSettings isEqual:brushSettings] ) {
-		[_lastCheckedBrushSettings release];
-		_lastCheckedBrushSettings = brushSettings;
-		return [[brushSettings retain] autorelease];
+		[self setLastBrushSettings:brushSettings];
+		[brushSettings release];
+
+		return brushSettings;
 	}
 	
 	[brushSettings release];
 	return  nil;
+}
+
+- (id)lastBrushSettings
+{
+	return _lastCheckedBrushSettings;
+}
+- (void)setLastBrushSettings:(id)brushSettings
+{
+	[[_undoManager prepareWithInvocationTarget:self] setLastBrushSettings:_lastCheckedBrushSettings];
+	if( brushSettings == _lastCheckedBrushSettings )
+		return;
+	
+	[_lastCheckedBrushSettings release];
+	_lastCheckedBrushSettings = [brushSettings retain];
+}
+
+- (void)setUndoManager:(NSUndoManager *)undoManager
+{
+	if( undoManager == _undoManager )
+		return;
+	
+	[_undoManager release];
+	_undoManager = [undoManager retain];
 }
 
 - (void)setCanvasSize:(NSSize)canvasSize

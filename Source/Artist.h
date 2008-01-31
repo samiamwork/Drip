@@ -25,6 +25,7 @@
 	id _lastCheckedBrushSettings;
 	// this artist's current color;
 	NSColor *_color;
+	NSUndoManager *_undoManager;
 }
 
 - (void)loadSettings;
@@ -38,6 +39,11 @@
 // - returns nil if there are no changes
 // - returns a DripEventBrushSettings object if things have changed.
 - (id)getNewBrushSettings;
+// only here for facilitating undo since we need to keep track of the old brush state
+// for playback.
+- (id)lastBrushSettings;
+- (void)setLastBrushSettings:(id)brushSettings;
+- (void)setUndoManager:(NSUndoManager *)undoManager;
 
 - (Brush *)paintBrush;
 - (BrushEraser *)eraserBrush;
