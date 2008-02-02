@@ -9,6 +9,7 @@
 #import "Canvas.h"
 #import "DripEvent.h"
 
+#import "DripInspectors.h"
 #import "DripEventBrushSettings.h"
 #import "DripEventLayerSettings.h"
 #import "DripEventLayerFill.h"
@@ -25,6 +26,8 @@
 @interface Canvas (Private)
 - (void)addEvents:(NSArray *)theEvents;
 - (void)removeEventCount:(unsigned)eventCount;
+- (void)setLayerSettings:(DripEventLayerSettings *)newSettings oldSettings:(DripEventLayerSettings *)oldSettings;
+- (void)recordLayerChanges;
 @end
 
 @implementation Canvas
@@ -37,6 +40,7 @@
 		
 		_layers = [[NSMutableArray alloc] init];
 		_paintEvents = [[NSMutableArray alloc] init];
+		_undoEvents = [[NSMutableArray alloc] init];
 		_layerSettings = nil;
 		
 		_width = 0;
@@ -58,9 +62,12 @@
 	[_compositeLayers release];
 	
 	[_paintEvents release];
+	[_undoEvents release];
 	[_document release];
 	[_playbackArtist release];
 	[_playbackCanvas release];
+	
+	//[_lastLayerSettings release];
 	
 	[super dealloc];
 }
@@ -110,7 +117,6 @@
 // (and restore it when we're done).
 - (void)beginPlayback
 {
-	
 	_playbackCanvas = [[Canvas alloc] initWithWidth:_width height:_height backgroundColor:nil imageData:nil];
 	[_playbackCanvas disableRecording];
 	_playbackArtist = [[Artist alloc] init];
@@ -167,7 +173,7 @@
 - (void)addEvents:(NSArray *)theEvents
 {
 	[_paintEvents addObjectsFromArray:theEvents];
-	[[[_document undoManager] prepareWithInvocationTarget:self] removeEventCount:[theEvents count]];
+	
 }
 - (void)removeEventCount:(unsigned)eventCount
 {
@@ -176,6 +182,16 @@
 	[_paintEvents removeObjectsInRange:oldEventRange];
 	
 	[[[_document undoManager] prepareWithInvocationTarget:self] addEvents:oldEvents];
+}
+
+- (void)addUndoEvents
+{
+	if( _layerSettings ) {
+		
+	}
+	
+	[[[_document undoManager] prepareWithInvocationTarget:self] removeEventCount:[_undoEvents count]];
+	[_paintEvents addObjectsFromArray:_undoEvents];
 }
 
 - (void)encodeWithCoder:(NSCoder *)encoder
@@ -189,7 +205,10 @@
 	[archiver encodeObject:_layers forKey:@"layers"];
 	
 	// archive events as data
-	[self compactEvents];
+	// when events are compacted, undo-integrity is lost.
+	// Undo relies on removing a certain number of events from the list and
+	// compacting disrupts that.
+	//[self compactEvents];
 	NSMutableData *eventData = [[NSMutableData alloc] init];
 	NSEnumerator *eventEnumerator = [_paintEvents objectEnumerator];
 	DripEvent *anEvent;
@@ -367,10 +386,14 @@
 		return;
 	}
 
+	//I don't really need to do this here... but I probably should.
+	[self recordLayerChanges];
+	
 	// EVENT:
 	// add new layer
-	if( ![self isPlayingBack] )
-		[_paintEvents addObject:[[[DripEventLayerAdd alloc] init] autorelease]];
+	DripEventLayerAdd *newEvent = [[DripEventLayerAdd alloc] init];
+	[self addEvents:[NSArray arrayWithObject:newEvent]];
+	[newEvent release];
 	Layer *newLayer = [[Layer alloc] initWithWidth:_width height:_height];
 	
 	//rename
@@ -386,8 +409,12 @@
 	
 	[newLayer setUndoManager:[_document undoManager]];
 	[_layers insertObject:newLayer atIndex:currentIndex+1];
+	
 	[newLayer release];
 	[self setCurrentLayer:newLayer];
+	
+	//UNDO
+	[[[_document undoManager] prepareWithInvocationTarget:self] deleteLayer:newLayer];
 	
 	[_document updateChangeCount:NSChangeDone];
 }
@@ -399,21 +426,22 @@
 		return;
 	
 	unsigned int deleteIndex = [_layers indexOfObject:layerToDelete];
+	
 	//assume that it exists
 	if( deleteIndex == NSNotFound ) {
 		printf("layerToDelete not found! Serious!\n");
 		return;
 	}
 	
-	if( _layerSettings != nil ) {
-		[_paintEvents addObject:_layerSettings];
-		[_layerSettings release];
-		_layerSettings = nil;
-	}
-	// EVENT:
-	// remove layer at "deleteIndex"
-	if( ![self isPlayingBack] )
-		[_paintEvents addObject:[[[DripEventLayerDelete alloc] init] autorelease]];
+	//I don't really need to do this here... but I probably should.
+	[self recordLayerChanges];
+	
+	// EVENT: remove layer at "deleteIndex"
+	DripEventLayerDelete *newEvent = [[DripEventLayerDelete alloc] init];
+	[self addEvents:[NSArray arrayWithObject:newEvent]];
+	[newEvent release];
+	
+	[[[_document undoManager] prepareWithInvocationTarget:self] insertLayer:layerToDelete AtIndex:deleteIndex];
 	[_layers removeObjectAtIndex:deleteIndex];
 	
 	if( deleteIndex != 0 )
@@ -429,27 +457,29 @@
 	unsigned int theLayerIndex = [_layers indexOfObject:theLayer];
 	if( theLayerIndex == NSNotFound ) {
 		[_layers insertObject:theLayer atIndex:theTargetIndex];
+		[[[_document undoManager] prepareWithInvocationTarget:self] deleteLayer:theLayer];
 		return;
 	}
 	// For event recording and playback purposes we're going to assume that we're always using this
 	// to rearrange layers, rather than to insert foreign layers.
+	// inserting foreign layers is for undo ops, so it doesn't have an event.
 	
 	if( theLayerIndex == theTargetIndex )
 		return;
 	
-	if( _layerSettings != nil ) {
-		[_paintEvents addObject:_layerSettings];
-		[_layerSettings release];
-		_layerSettings = nil;
-	}
-	// EVENT:
-	// move layer at index "theLayerIndex" to "theTargetIndex"
-	if( ![self isPlayingBack] )
-		[_paintEvents addObject:[[[DripEventLayerMove alloc] initWithFromIndex:theLayerIndex toIndex:theTargetIndex] autorelease]];
+	[self recordLayerChanges];
+	
+	// EVENT: move layer at index "theLayerIndex" to "theTargetIndex"
+	DripEventLayerMove *layerMoveEvent = [[DripEventLayerMove alloc] initWithFromIndex:theLayerIndex toIndex:theTargetIndex];
+	[self addEvents:[NSArray arrayWithObject:layerMoveEvent]];
+	[layerMoveEvent release];
+	
 	[_layers insertObject:theLayer atIndex:theTargetIndex];
 	if( theLayerIndex > theTargetIndex )
 		theLayerIndex++;
 	[_layers removeObjectAtIndex:theLayerIndex];
+	//UNDO: move it back
+	[[[_document undoManager] prepareWithInvocationTarget:self] insertLayer:theLayer AtIndex:theLayerIndex];
 	
 	[self rebuildTopAndBottom];
 }
@@ -464,19 +494,21 @@
 	unsigned int theLayerIndex = [_layers indexOfObject:layerToCollapse];
 	if( theLayerIndex == NSNotFound || theLayerIndex == 0 )
 		return;
+
+	[self recordLayerChanges];
 	
-	if( _layerSettings != nil ) {
-		[_paintEvents addObject:_layerSettings];
-		[_layerSettings release];
-		_layerSettings = nil;
-	}
-	// EVENT:
-	// merge layer at index "theLayerIndex" and the layer under it and insert in place of the two.
-	if( ![self isPlayingBack] )
-		[_paintEvents addObject:[[[DripEventLayerCollapse alloc] init] autorelease]];
+	// EVENT: merge layer at index "theLayerIndex" and the layer under it and insert in place of the two.
+	DripEventLayerCollapse *layerCollapseEvent = [[DripEventLayerCollapse alloc] init];
+	[self addEvents:[NSArray arrayWithObject:layerCollapseEvent]];
+	[layerCollapseEvent release];
 	
 	Layer *joinedLayers = [[Layer alloc] initWithContentsOfLayers:_layers inRange:NSMakeRange(theLayerIndex-1,2)];
 	[joinedLayers setName:[[_layers objectAtIndex:theLayerIndex-1] name]];
+	
+	[[[_document undoManager] prepareWithInvocationTarget:self] insertLayer:[_layers objectAtIndex:theLayerIndex] AtIndex:theLayerIndex-1];
+	[[[_document undoManager] prepareWithInvocationTarget:self] insertLayer:[_layers objectAtIndex:theLayerIndex-1] AtIndex:theLayerIndex-1];
+	[[[_document undoManager] prepareWithInvocationTarget:self] deleteLayer:joinedLayers];
+	
 	[_layers removeObjectAtIndex:theLayerIndex-1];
 	[_layers removeObjectAtIndex:theLayerIndex-1];
 	[_layers insertObject:joinedLayers atIndex:theLayerIndex-1];
@@ -497,17 +529,18 @@
 	if( aLayer == _currentLayer || layerIndex == NSNotFound )
 		return;
 	
-	if( _layerSettings != nil ) {
-		[_paintEvents addObject:_layerSettings];
-		[_layerSettings release];
-		_layerSettings = nil;
-	}
-
 	_currentLayer = aLayer;
-	// EVENT:
-	// set CurrentLayer to layer at index "layerIndex"
-	if( ![self isPlayingBack] )
-		[_paintEvents addObject:[[[DripEventLayerChange alloc] initWithLayerIndex:layerIndex] autorelease]];
+	
+	[self recordLayerChanges];
+	
+	// EVENT: set CurrentLayer to layer at index "layerIndex"
+	//if( ![self isPlayingBack] )
+	//	[_paintEvents addObject:[[[DripEventLayerChange alloc] initWithLayerIndex:layerIndex] autorelease]];
+	DripEventLayerChange *layerChangeEvent = [[DripEventLayerChange alloc] initWithLayerIndex:layerIndex];
+	[self addEvents:[NSArray arrayWithObject:layerChangeEvent]];
+	[layerChangeEvent release];
+	
+	[[[_document undoManager] prepareWithInvocationTarget:self] setCurrentLayer:[_layers objectAtIndex:layerIndex]];
 	
 	[self rebuildTopAndBottom];
 }
@@ -523,18 +556,9 @@
 {
 	if( [self isPlayingBack] )
 		return NSZeroRect;
+
+	[self recordLayerChanges];
 	
-	if( _layerSettings != nil ) {
-		[_paintEvents addObject:_layerSettings];
-		[_layerSettings release];
-		_layerSettings = nil;
-	}
-	
-	// if we don't have a last brush setting for this artist or if the current setting
-	// is different than than the one we have on record then update it and add the event.
-	
-	
-	//[_paintEvents addObject:[[[DripEventStrokeBegin alloc] initWithPosition:NSMakePoint(aPoint.x,aPoint.y) pressure:aPoint.pressure] autorelease]];
 	return [[anArtist currentBrush] beginStrokeAtPoint:aPoint onLayer:_currentLayer];
 }
 - (NSRect)continueStrokeAtPoint:(PressurePoint)aPoint withArtist:(Artist *)anArtist
@@ -542,23 +566,21 @@
 	if( [self isPlayingBack] )
 		return NSZeroRect;
 
-	//[_paintEvents addObject:[[[DripEventStrokeContinue alloc] initWithPosition:NSMakePoint(aPoint.x,aPoint.y) pressure:aPoint.pressure] autorelease]];
 	return [[anArtist currentBrush] continueStrokeAtPoint:aPoint];
 }
-- (NSRect)endStrokeWithArtist:(Artist *)anArtist;
+- (NSRect)endStrokeWithArtist:(Artist *)anArtist
 {
-	// EVENT:
-	// End stroke
+	// EVENT: End stroke
 	// TODO: the event needs to support a brush identifier
 	NSRect strokeRect = [[anArtist currentBrush] endStroke];
-	//if( ![self isPlayingBack] )
-	//	[_paintEvents addObject:[[[DripEventStrokeEnd alloc] init] autorelease]];
-
+	
+	// if we don't have a last brush setting for this artist or if the current setting
+	// is different than than the one we have on record then update it and add the event.
 	DripEventBrushSettings *brushSettings = [anArtist getNewBrushSettings];
 	if( brushSettings )
 		[self addEvents:[NSArray arrayWithObject:brushSettings]];
 	[self addEvents:[[anArtist currentBrush] popStrokeEvents]];
-	//[_paintEvents addObjectsFromArray:[[anArtist currentBrush] popStrokeEvents]];
+
 	return strokeRect;
 }
 
@@ -633,22 +655,68 @@
 	return _document;
 }
 
-- (void)settingsChangedForLayer:(Layer *)aLayer;
+// records any layer setting changes that haven't been recorded yet.
+- (void)recordLayerChanges
+{
+	if( !_layerSettings )
+		return;
+	
+	[self addEvents:[NSArray arrayWithObject:_layerSettings]];
+	[[[_document undoManager] prepareWithInvocationTarget:self] setLayerSettings:nil oldSettings:_layerSettings];
+	[_layerSettings release];
+	_layerSettings = nil;
+}
+
+- (void)setLayerSettings:(DripEventLayerSettings *)newSettings oldSettings:(DripEventLayerSettings *)oldSettings
+{
+	if( newSettings ) {
+		// the index of the layer should not have changed
+		Layer *theLayer = [_layers objectAtIndex:[newSettings layerIndex]];
+		DripEventLayerSettings *layerSettings = [[DripEventLayerSettings alloc] initWithLayerIndex:[newSettings layerIndex] opacity:[theLayer opacity] visible:[theLayer visible] blendMode:[theLayer blendMode]];
+		[newSettings runWithCanvas:self artist:nil];
+		// we ignore the lvalue because we only use this to save the new settings
+		[theLayer popOldSettings];
+
+		[[[_document undoManager] prepareWithInvocationTarget:self] setLayerSettings:layerSettings oldSettings:_layerSettings];
+		[oldSettings release];
+		[[DripInspectors sharedController] layersUpdated];
+	}
+
+	_layerSettings = [oldSettings retain];
+}
+
+- (void)settingsChangedForLayer:(Layer *)aLayer
 {
 	unsigned int layerIndex = [_layers indexOfObject:aLayer];
 	if( layerIndex == NSNotFound )
 		return;
 	
-	// if these settings are on a different layer than before then we should write the old ones
-	if( _layerSettings != nil && [_layerSettings layerIndex] != layerIndex )
-		[_paintEvents addObject:_layerSettings];
+	DripEventLayerSettings *newLayerSettings = [[DripEventLayerSettings alloc] initWithLayerIndex:layerIndex opacity:[aLayer opacity] visible:[aLayer visible] blendMode:[aLayer blendMode]];
+	
+	// Check to see if we have saved old settings
+	// if we don't have settings from before, all parties are properly aware of this
+	// layer's immediatly previous state, so in the event of undo we need to save
+	// the immediately previous state.
+	if( _layerSettings == nil ) {
+		DripEventLayerSettings *layerSettings = [aLayer popOldSettings];
+		[layerSettings setLayerIndex:layerIndex];
+		[[[_document undoManager] prepareWithInvocationTarget:self] setLayerSettings:layerSettings oldSettings:nil];
+	} else if( [_layerSettings layerIndex] != layerIndex ) {
+		// if these settings are on a different layer than before then we should record the old ones
+		[self addEvents:[NSArray arrayWithObjects:_layerSettings]];
+		
+		DripEventLayerSettings *layerSettings = [aLayer popOldSettings];
+		[layerSettings setLayerIndex:layerIndex];
+		[[[_document undoManager] prepareWithInvocationTarget:self] setLayerSettings:layerSettings oldSettings:_layerSettings];
+		//[_paintEvents addObject:_layerSettings];
+	}
 	
 	[_layerSettings release];
-	_layerSettings = [[DripEventLayerSettings alloc] initWithLayerIndex:layerIndex opacity:[aLayer opacity] visible:[aLayer visible] blendMode:[aLayer blendMode]];
+	_layerSettings = newLayerSettings;
 	
 	// if this layer is not the current layer then we need to rebuild our top and bottom (not likely but it's cheap to check
 	// and it is possible).
-	if( aLayer == _currentLayer )
+	if( aLayer != _currentLayer )
 		[self rebuildTopAndBottom];
 }
 

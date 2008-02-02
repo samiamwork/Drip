@@ -12,7 +12,8 @@
 #import "BrushEraser.h"
 #import "NSData+gzip.h"
 #import "Artist.h"
-//#import "DripEventLayerSettings.h"
+
+@class DripEventLayerSettings;
 
 @interface Canvas : NSObject <NSCoding> {
 	NSMutableArray *_compositeLayers;
@@ -24,9 +25,10 @@
 	Artist *_playbackArtist;
 	BOOL _displayPlaybackUpdates;
 	
+	NSMutableArray *_undoEvents;
 	NSMutableArray *_paintEvents;
 	unsigned int _eventIndex;
-	id _layerSettings;
+	DripEventLayerSettings* _layerSettings;
 	
 	unsigned int _width;
 	unsigned int _height;
@@ -35,12 +37,18 @@
 }
 
 - (id)initWithWidth:(unsigned int)width height:(unsigned int)height backgroundColor:(NSColor *)aColor imageData:(NSData *)theImageData;
+//UNDO
 - (void)addLayer;
+//UNDO
 - (void)deleteLayer:(Layer *)layerToDelete;
+//UNDO
 - (void)insertLayer:(Layer *)theLayer AtIndex:(unsigned int)theTargetIndex;
+//UNDO
 - (void)moveLayerAtIndex:(unsigned int)fromIndex toIndex:(unsigned int)toIndex;
+//UNDO
 - (void)collapseLayer:(Layer *)layerToCollapse;
 - (NSArray *)layers;
+//UNDO
 - (void)setCurrentLayer:(Layer *)aLayer;
 - (Layer *)currentLayer;
 - (NSSize)size;
@@ -65,11 +73,15 @@
 
 - (NSRect)beginStrokeAtPoint:(PressurePoint)aPoint withArtist:(Artist *)anArtist;
 - (NSRect)continueStrokeAtPoint:(PressurePoint)aPoint withArtist:(Artist *)anArtist;
+// UNDO: for begin through end
 - (NSRect)endStrokeWithArtist:(Artist *)anArtist;
 
+// UNDO
 - (void)fillCurrentLayerWithColor:(NSColor *)aColor;
+// UNDO
 - (CGRect)fillCurrentLayerWithImage:(NSData *)theImageData;
 
+// UNDO?
 - (void)drawRect:(NSRect)aRect inContext:(CGContextRef)context;
 - (void)drawRect:(NSRect)aRect;
 

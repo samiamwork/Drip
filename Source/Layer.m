@@ -7,7 +7,7 @@
 //
 
 #import "Layer.h"
-
+#import "DripEventLayerSettings.h"
 
 @implementation Layer
 
@@ -39,6 +39,11 @@
 		CGContextSetInterpolationQuality( [_scratchPaintLayer cxt], kCGInterpolationNone );
 		
 		_undoManager = nil;
+		_lastLayerSettings = [[DripEventLayerSettings alloc] initWithLayerIndex:0
+																		opacity:[_mainPaintLayer opacity]
+																		visible:[_mainPaintLayer visible]
+																	  blendMode:[_mainPaintLayer blendMode]];
+		
 	}
 	
 	return self;
@@ -58,6 +63,11 @@
 		_brushMaskLayers = [[NSMutableArray alloc] init];
 		
 		_undoManager = nil;
+		_lastLayerSettings = [[DripEventLayerSettings alloc] initWithLayerIndex:0
+																		opacity:[_mainPaintLayer opacity]
+																		visible:[_mainPaintLayer visible]
+																	  blendMode:[_mainPaintLayer blendMode]];
+		
 	}
 
 	return self;
@@ -79,17 +89,14 @@
 		_brushPaintLayers = [[NSMutableArray alloc] init];
 		
 		_undoManager = nil;
+		_lastLayerSettings = [[DripEventLayerSettings alloc] initWithLayerIndex:0
+																		opacity:[_mainPaintLayer opacity]
+																		visible:[_mainPaintLayer visible]
+																	  blendMode:[_mainPaintLayer blendMode]];
+		
 	}
 	
 	return self;
-}
-
-- (void)setUndoManager:(NSUndoManager *)newUndoManager
-{
-	if( _undoManager == newUndoManager )
-		return;
-	[_undoManager release];
-	_undoManager = [newUndoManager retain];
 }
 
 - (void)dealloc
@@ -104,6 +111,15 @@
 	[_undoManager release];
 	
 	[super dealloc];
+}
+
+- (void)setUndoManager:(NSUndoManager *)newUndoManager
+{
+	if( newUndoManager == _undoManager )
+		return;
+	
+	[_undoManager release];
+	_undoManager = [newUndoManager retain];
 }
 
 - (void)setMainPaintLayer:(PaintLayer *)newPaintLayer
@@ -148,7 +164,7 @@
 		CGImageRelease( oldImage );
 	}
 	CGContextClearRect( [_mainPaintLayer cxt],*(CGRect *)&theRect );
-	//printf("retain count %d\n", CFGetRetainCount(theImage));
+	
 	CGContextDrawImage( [_mainPaintLayer cxt],*(CGRect *)&theRect, [imageWrapper image]);
 }
 
@@ -240,6 +256,18 @@
 	
 	// clear scratch layer
 	CGContextClearRect( [_scratchPaintLayer cxt], *(CGRect *)&aRect );
+}
+
+#pragma mark Settings
+
+- (DripEventLayerSettings *)popOldSettings
+{
+	DripEventLayerSettings *old = _lastLayerSettings;
+	_lastLayerSettings = [[DripEventLayerSettings alloc] initWithLayerIndex:0
+																	opacity:[_mainPaintLayer opacity]
+																	visible:[_mainPaintLayer visible]
+																  blendMode:[_mainPaintLayer blendMode]];
+	return [old autorelease];
 }
 
 #pragma mark convenience methods

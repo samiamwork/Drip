@@ -129,6 +129,8 @@
 
 - (void)layersUpdated
 {
+	[_layerBlendModePopUpButton selectItemWithTag:[[_theCanvas currentLayer] blendMode]];
+	[_opacitySlider setFloatValue:[[_theCanvas currentLayer] opacity]];
 	[_layerTable reloadData];
 }
 
@@ -139,6 +141,7 @@
 	unsigned int indexToSelect = [theLayers indexOfObject:[_theCanvas currentLayer]];
 	[_layerTable selectRowIndexes:[NSIndexSet indexSetWithIndex:[theLayers count]-1-indexToSelect] byExtendingSelection:NO];
 	[_layerTable reloadData];
+	[[[[_theCanvas document] undoManager] prepareWithInvocationTarget:_layerTable] reloadData];
 	
 	[_layerTable fadeInRow:[theLayers count]-1-indexToSelect];
 	
@@ -162,6 +165,7 @@
 	unsigned int indexToSelect = [theLayers indexOfObject:[_theCanvas currentLayer]];
 	[_layerTable selectRowIndexes:[NSIndexSet indexSetWithIndex:[theLayers count]-1-indexToSelect] byExtendingSelection:NO];
 	[_layerTable reloadData];
+	[[[[_theCanvas document] undoManager] prepareWithInvocationTarget:_layerTable] reloadData];
 	
 	[_layerTable fadeOutRow:[theLayers count]-1-indexToSelect];
 	
@@ -182,6 +186,8 @@
 	
 	[_opacitySlider setFloatValue:[[_theCanvas currentLayer] opacity]];
 	[_layerTable reloadData];
+	[[[[_theCanvas document] undoManager] prepareWithInvocationTarget:_layerTable] reloadData];
+	
 	[_layerTable fadeOutRow:selectedRow];
 }
 
@@ -295,6 +301,7 @@
 	[_layerTable selectRow:[newLayers count]-[newLayers indexOfObject:[_theCanvas currentLayer]]-1 byExtendingSelection:NO];
 	
 	[aTableView reloadData];
+	[[[[_theCanvas document] undoManager] prepareWithInvocationTarget:_layerTable] reloadData];
 	
 	toTableRow = [newLayers count]-[newLayers indexOfObject:_draggingLayer]-1;
 	int fromTableRow = [layers count]-fromLayerRow-1;

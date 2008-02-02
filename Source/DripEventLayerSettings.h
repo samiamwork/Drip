@@ -18,6 +18,7 @@
 }
 
 - (id)initWithLayerIndex:(unsigned int)layerIndex opacity:(float)opacity visible:(BOOL)isVisible blendMode:(CGBlendMode)blendMode;
+- (void)setLayerIndex:(unsigned int)layerIndex;
 - (unsigned int)layerIndex;
 - (float)opacity;
 - (BOOL)visible;

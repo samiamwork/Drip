@@ -11,6 +11,8 @@
 #import "MaskLayer.h"
 #import "CGImageWrapper.h"
 
+@class DripEventLayerSettings;
+
 @interface Layer : NSObject {
 	PaintLayer *_scratchPaintLayer;
 	MaskLayer *_scratchMaskLayer;
@@ -19,6 +21,7 @@
 	NSMutableArray *_brushPaintLayers;
 	NSMutableArray *_brushMaskLayers;
 	
+	id _lastLayerSettings;
 	NSUndoManager *_undoManager;
 }
 
@@ -34,6 +37,8 @@
 - (void)detachLayer:(PaintLayer *)aLayer;
 - (void)commitLayer:(PaintLayer *)aLayer rect:(NSRect)aRect;
 - (void)drawRect:(NSRect)aRect inContext:(CGContextRef)aContext;
+
+- (DripEventLayerSettings *)popOldSettings;
 
 - (NSString *)name;
 - (void)setName:(NSString *)newName;

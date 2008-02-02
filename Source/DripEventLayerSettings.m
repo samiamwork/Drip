@@ -27,6 +27,10 @@
 {
 	return _layerIndex;
 }
+- (void)setLayerIndex:(unsigned int)layerIndex
+{
+	_layerIndex = layerIndex;
+}
 - (float)opacity
 {
 	return _opacity;
@@ -105,7 +109,7 @@
 	// TODO: stop going behind the canvas's back to change layer settings (relevant anymore?).
 	// generally when we're playing back we are not also recording so it does not matter
 	// that we go behind the canvas's back.
-	[theCanvas settingsChangedForLayer:aLayer];
+	//[theCanvas settingsChangedForLayer:aLayer];
 	
 	return NSMakeRect(0.0f,0.0f,[theCanvas size].width,[theCanvas size].height);
 }
