@@ -573,7 +573,6 @@
 	if( brushSettings )
 		[self addEvents:[NSArray arrayWithObject:brushSettings]];
 	NSArray *strokeEvents = [[anArtist currentBrush] popStrokeEvents];
-	//printf("stroke events: %d\n", [strokeEvents count]);
 	[self addEvents:strokeEvents];
 
 	return strokeRect;

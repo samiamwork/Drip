@@ -8,6 +8,7 @@
 
 #import "Layer.h"
 #import "DripEventLayerSettings.h"
+#import "DripInspectors.h"
 
 @implementation Layer
 
@@ -164,8 +165,10 @@
 		CGImageRelease( oldImage );
 	}
 	CGContextClearRect( [_mainPaintLayer cxt],*(CGRect *)&theRect );
-	
 	CGContextDrawImage( [_mainPaintLayer cxt],*(CGRect *)&theRect, [imageWrapper image]);
+	// This is only called from undo (for now?) so this is safe.
+	[self updateThumbnail];
+	[[DripInspectors sharedController] layersUpdated];
 }
 
 - (void)commitLayer:(PaintLayer *)aLayer rect:(NSRect)aRect
