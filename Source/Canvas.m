@@ -173,7 +173,7 @@
 - (void)addEvents:(NSArray *)theEvents
 {
 	[_paintEvents addObjectsFromArray:theEvents];
-	
+	[[[_document undoManager] prepareWithInvocationTarget:self] removeEventCount:[theEvents count]];
 }
 - (void)removeEventCount:(unsigned)eventCount
 {
@@ -182,16 +182,6 @@
 	[_paintEvents removeObjectsInRange:oldEventRange];
 	
 	[[[_document undoManager] prepareWithInvocationTarget:self] addEvents:oldEvents];
-}
-
-- (void)addUndoEvents
-{
-	if( _layerSettings ) {
-		
-	}
-	
-	[[[_document undoManager] prepareWithInvocationTarget:self] removeEventCount:[_undoEvents count]];
-	[_paintEvents addObjectsFromArray:_undoEvents];
 }
 
 - (void)encodeWithCoder:(NSCoder *)encoder
@@ -579,7 +569,9 @@
 	DripEventBrushSettings *brushSettings = [anArtist getNewBrushSettings];
 	if( brushSettings )
 		[self addEvents:[NSArray arrayWithObject:brushSettings]];
-	[self addEvents:[[anArtist currentBrush] popStrokeEvents]];
+	NSArray *strokeEvents = [[anArtist currentBrush] popStrokeEvents];
+	//printf("stroke events: %d\n", [strokeEvents count]);
+	[self addEvents:strokeEvents];
 
 	return strokeRect;
 }
