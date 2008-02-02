@@ -117,6 +117,9 @@
 // (and restore it when we're done).
 - (void)beginPlayback
 {
+	if( [_paintEvents count] == 0 )
+		return;
+	
 	_playbackCanvas = [[Canvas alloc] initWithWidth:_width height:_height backgroundColor:nil imageData:nil];
 	[_playbackCanvas disableRecording];
 	_playbackArtist = [[Artist alloc] init];
@@ -126,11 +129,11 @@
 	// peek at the first event and play it if it's a layer fill event
 	// we do this to eliminate flicker at the start of playback.
 	// layer fill is basically part of layer setup. Also includes imageFill
-	DripEvent *anEvent = [_paintEvents objectAtIndex:_eventIndex];
-	while( [anEvent isKindOfClass:[DripEventLayerFill class]] || [anEvent isKindOfClass:[DripEventLayerImageFill class]] ) {
+	NSEnumerator* eventEnumerator = [_paintEvents objectEnumerator];
+	DripEvent *anEvent;
+	while( (anEvent = [eventEnumerator nextObject]) && ([anEvent isKindOfClass:[DripEventLayerFill class]] || [anEvent isKindOfClass:[DripEventLayerImageFill class]]) ) {
 		[anEvent runWithCanvas:_playbackCanvas artist:nil];
 		_eventIndex++;
-		anEvent = [_paintEvents objectAtIndex:_eventIndex];
 	}
 }
 - (void)endPlayback
