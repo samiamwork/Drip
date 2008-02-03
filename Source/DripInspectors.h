@@ -7,7 +7,6 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "ScrollingSketchView.h"
 #import "Canvas.h"
 #import "BrushController.h"
 #import "LayerController.h"

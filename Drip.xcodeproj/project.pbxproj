@@ -66,7 +66,6 @@
 		3EE0888D0C62C60000CAE28C /* LayerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EE0888C0C62C60000CAE28C /* LayerController.m */; };
 		3EE088970C62C6A500CAE28C /* BrushView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EE088960C62C6A500CAE28C /* BrushView.m */; };
 		3EE088EE0C62F9C400CAE28C /* PaintLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EE088ED0C62F9C400CAE28C /* PaintLayer.m */; };
-		3EE089100C63044000CAE28C /* ScrollingSketchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EE0890F0C63044000CAE28C /* ScrollingSketchView.m */; };
 		3EE089170C6304FB00CAE28C /* Canvas.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EE089160C6304FB00CAE28C /* Canvas.m */; };
 		3EFC11D60CBE051D009F52D1 /* FramedImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EFC11D50CBE051D009F52D1 /* FramedImageCell.m */; };
 		8D15AC2C0486D014006FF6A4 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */; };
@@ -189,8 +188,6 @@
 		3EE088960C62C6A500CAE28C /* BrushView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BrushView.m; sourceTree = "<group>"; };
 		3EE088EC0C62F9C400CAE28C /* PaintLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaintLayer.h; sourceTree = "<group>"; };
 		3EE088ED0C62F9C400CAE28C /* PaintLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaintLayer.m; sourceTree = "<group>"; };
-		3EE0890E0C63044000CAE28C /* ScrollingSketchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScrollingSketchView.h; sourceTree = "<group>"; };
-		3EE0890F0C63044000CAE28C /* ScrollingSketchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScrollingSketchView.m; sourceTree = "<group>"; };
 		3EE089150C6304FB00CAE28C /* Canvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Canvas.h; sourceTree = "<group>"; };
 		3EE089160C6304FB00CAE28C /* Canvas.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Canvas.m; sourceTree = "<group>"; };
 		3EE9DFA60D00E2B3006CF151 /* DripEventProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DripEventProtocol.h; sourceTree = "<group>"; };
@@ -322,8 +319,6 @@
 				3E1D29BD0D07D35D00FB5F41 /* CenteredScrollView.m */,
 				3E1D29BF0D07D3BA00FB5F41 /* SketchView.h */,
 				3E1D29C00D07D3BA00FB5F41 /* SketchView.m */,
-				3EE0890E0C63044000CAE28C /* ScrollingSketchView.h */,
-				3EE0890F0C63044000CAE28C /* ScrollingSketchView.m */,
 			);
 			name = SketchView;
 			sourceTree = "<group>";
@@ -579,7 +574,6 @@
 				3EE0888D0C62C60000CAE28C /* LayerController.m in Sources */,
 				3EE088970C62C6A500CAE28C /* BrushView.m in Sources */,
 				3EE088EE0C62F9C400CAE28C /* PaintLayer.m in Sources */,
-				3EE089100C63044000CAE28C /* ScrollingSketchView.m in Sources */,
 				3EE089170C6304FB00CAE28C /* Canvas.m in Sources */,
 				3E39D9380C67B1A300F0D3FD /* Brush.m in Sources */,
 				3E39DA910C6822CA00F0D3FD /* BrushController.m in Sources */,
@@ -693,7 +687,7 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = s;
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				OTHER_LDFLAGS = "-lz";
@@ -708,15 +702,15 @@
 			buildSettings = {
 				APPLICATION_VERSION = 0.1;
 				ARCHS = (
-					ppc,
 					i386,
+					ppc,
 				);
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_OPTIMIZATION_LEVEL = s;
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				OTHER_LDFLAGS = "-lz";
@@ -728,6 +722,7 @@
 		C05733CC08A9546B00998B17 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_MODEL_TUNING = G4;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
@@ -738,6 +733,7 @@
 		C05733CD08A9546B00998B17 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_MODEL_TUNING = G4;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
