@@ -578,7 +578,6 @@ float interpolateBetween( float a, float b, float c )
 	
 	if( [_strokeEvents count] > 1 ) {
 		DripEventStrokeContinue *point0 = [_strokeEvents objectAtIndex:[_strokeEvents count]-2];
-		//DripEventStrokeContinue *point1 = [_strokeEvents objectAtIndex:[_strokeEvents count]-1];
 		
 		NSPoint vec2 = NSMakePoint(aPoint.x-_lastBrushPosition.x, aPoint.y-_lastBrushPosition.y);
 		float vec2Length = sqrtf(vec2.x*vec2.x + vec2.y*vec2.y);
@@ -594,10 +593,8 @@ float interpolateBetween( float a, float b, float c )
 			NSRect newRect = [self renderLineFromPoint:_lastBrushPosition toPoint:&aPoint onLayer:_workLayer leftover:&_leftoverDistance];
 			invalidRect = NSUnionRect( invalidRect, newRect );
 			
-			_lastBrushPosition = aPoint;			
 		} else {
 			invalidRect = [self renderLineFromPoint:_lastBrushPosition toPoint:&aPoint onLayer:_workLayer leftover:&_leftoverDistance];
-			_lastBrushPosition = aPoint;
 		}
 		
 		_vec1 = vec2;
@@ -608,10 +605,9 @@ float interpolateBetween( float a, float b, float c )
 		_vec1Length = sqrtf(_vec1.x*_vec1.x + _vec1.y*_vec1.y);
 		
 		invalidRect = [self renderLineFromPoint:_lastBrushPosition toPoint:&aPoint onLayer:_workLayer leftover:&_leftoverDistance];
-		_lastBrushPosition = aPoint;
-		
 	}
 	
+	_lastBrushPosition = aPoint;
 	DripEventStrokeContinue *newEvent = [[DripEventStrokeContinue alloc] initWithPosition:NSMakePoint(aPoint.x,aPoint.y) pressure:aPoint.pressure];
 	[_strokeEvents addObject:newEvent];
 	[newEvent release];
