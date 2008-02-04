@@ -552,6 +552,19 @@ void sampleBitmap(unsigned char *bitmap, unsigned int pitch, unsigned int width,
 	
 	return _strokeRect;
 }
+#define TVAL 0.75f
+float interpolateBetween( float a, float b, float c )
+{
+	float p0 = (TVAL-0.0f);
+	float p1 = (TVAL-0.5f);
+	float p2 = (TVAL-1.0f);
+	
+	float midpoint =	(p1*p2* a )/((0.0f-0.5f)*(0.0f-1.0f)) +
+						(p0*p2* b )/((0.5f-0.0f)*(0.5f-1.0f)) +
+						(p0*p1* c )/((1.0f-0.5f)*(1.0f-0.0f));
+	return midpoint;
+}
+
 - (NSRect)continueStrokeAtPoint:(PressurePoint)aPoint
 {
 	// we're currently rejecting equal points in the render line method
@@ -561,14 +574,49 @@ void sampleBitmap(unsigned char *bitmap, unsigned int pitch, unsigned int width,
 	//if( aPoint.x == _lastBrushPosition.x && aPoint.y == _lastBrushPosition.y )
 	//	return NSZeroRect;
 	
-	NSRect invalidRect = [self renderLineFromPoint:_lastBrushPosition toPoint:&aPoint onLayer:_workLayer leftover:&_leftoverDistance];
-	_lastBrushPosition = aPoint;
+	NSRect invalidRect;
 	
-	_strokeRect = NSUnionRect(_strokeRect,invalidRect);
+	if( [_strokeEvents count] > 1 ) {
+		DripEventStrokeContinue *point0 = [_strokeEvents objectAtIndex:[_strokeEvents count]-2];
+		//DripEventStrokeContinue *point1 = [_strokeEvents objectAtIndex:[_strokeEvents count]-1];
+		
+		NSPoint vec2 = NSMakePoint(aPoint.x-_lastBrushPosition.x, aPoint.y-_lastBrushPosition.y);
+		float vec2Length = sqrtf(vec2.x*vec2.x + vec2.y*vec2.y);
+		
+		if( vec2Length > 10.0f ) {
+			PressurePoint midpoint;
+			midpoint.x = interpolateBetween([point0 position].x, _lastBrushPosition.x, aPoint.x);
+			midpoint.y = interpolateBetween([point0 position].y, _lastBrushPosition.y, aPoint.y);
+			midpoint.pressure = interpolateBetween([point0 pressure], _lastBrushPosition.pressure, aPoint.pressure);
+			
+			invalidRect = [self renderLineFromPoint:_lastBrushPosition toPoint:&midpoint onLayer:_workLayer leftover:&_leftoverDistance];
+			_lastBrushPosition = midpoint;
+			NSRect newRect = [self renderLineFromPoint:_lastBrushPosition toPoint:&aPoint onLayer:_workLayer leftover:&_leftoverDistance];
+			invalidRect = NSUnionRect( invalidRect, newRect );
+			
+			_lastBrushPosition = aPoint;			
+		} else {
+			invalidRect = [self renderLineFromPoint:_lastBrushPosition toPoint:&aPoint onLayer:_workLayer leftover:&_leftoverDistance];
+			_lastBrushPosition = aPoint;
+		}
+		
+		_vec1 = vec2;
+		_vec1Length = vec2Length;
+	} else {
+		DripEventStrokeBegin *strokeBegin = [_strokeEvents objectAtIndex:0];
+		_vec1 = NSMakePoint( aPoint.x-[strokeBegin position].x, aPoint.y-[strokeBegin position].y);
+		_vec1Length = sqrtf(_vec1.x*_vec1.x + _vec1.y*_vec1.y);
+		
+		invalidRect = [self renderLineFromPoint:_lastBrushPosition toPoint:&aPoint onLayer:_workLayer leftover:&_leftoverDistance];
+		_lastBrushPosition = aPoint;
+		
+	}
 	
 	DripEventStrokeContinue *newEvent = [[DripEventStrokeContinue alloc] initWithPosition:NSMakePoint(aPoint.x,aPoint.y) pressure:aPoint.pressure];
 	[_strokeEvents addObject:newEvent];
 	[newEvent release];
+	
+	_strokeRect = NSUnionRect(_strokeRect,invalidRect);
 	
 	return invalidRect;
 }

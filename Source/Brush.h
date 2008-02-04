@@ -44,6 +44,8 @@ typedef struct PressurePoint {
 	Layer *_paintingLayer;
 	
 	NSMutableArray *_strokeEvents;
+	NSPoint _vec1;
+	float _vec1Length;
 	
 	float _brushSize;
 	float _intSize;
