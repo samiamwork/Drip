@@ -9,6 +9,9 @@
 #import "NSData+gzip.h"
 #include "zlib.h"
 
+// I believe I cribbed this from:
+// http://deusty.blogspot.com/2007/07/gzip-compressiondecompression.html
+
 @implementation NSData (gzip)
 - (NSData *)gzipDeflate
 {
