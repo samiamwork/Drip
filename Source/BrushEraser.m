@@ -7,6 +7,7 @@
 //
 
 #import "BrushEraser.h"
+#import "DripEventStrokeBegin.h"
 
 NSString *const kEraserBrushSizeKey = @"eraserBrushSize";
 NSString *const kEraserBrushHardnessKey = @"eraserBrushHardness";
@@ -266,6 +267,9 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	[_paintingLayer attachLayer:_workLayer];
 	
 	_strokeRect = [self renderPointAt:aPoint onLayer:_workLayer];
+	DripEventStrokeBegin *newEvent = [[DripEventStrokeBegin alloc] initWithPosition:NSMakePoint(aPoint.x,aPoint.y) pressure:aPoint.pressure];
+	[_strokeEvents addObject:newEvent];
+	[newEvent release];
 	return _strokeRect;
 }
 
