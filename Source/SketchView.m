@@ -43,7 +43,7 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 {
 	invalidCanvasRect = SCALE_RECT(invalidCanvasRect,_zoom);
 	invalidCanvasRect = NSIntegralRect(invalidCanvasRect);
-	// enlarge rect by one too compensate for any rounding error
+	// enlarge rect by one to compensate for any rounding error
 	invalidCanvasRect = NSInsetRect(invalidCanvasRect, -1.0f, -1.0f);
 	[self setNeedsDisplayInRect:invalidCanvasRect];
 }
@@ -71,9 +71,13 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 	[tempTransform scaleXBy:_zoom yBy:_zoom];
 	[tempTransform concat];
 	canvasDrawRect = NSIntegralRect(canvasDrawRect);
-	
+	// draw checkerboard and canvas
 	CGContextSetInterpolationQuality(cxt, kCGInterpolationNone );
-	drawCheckerPatternInContextWithPhase( cxt, CGSizeMake(0.0f,0.0f), *(CGRect *)&canvasDrawRect, 10.0f );
+	NSScrollView* scrollView = [self enclosingScrollView];
+	NSRect visibleRect = [scrollView documentVisibleRect];
+	// Adjust phase so pattern moves with canvas and not window.
+	CGSize phase = CGSizeMake(20-(int)visibleRect.origin.x%20,20-(int)visibleRect.origin.y%20);
+	drawCheckerPatternInContextWithPhase( cxt, phase, *(CGRect *)&canvasDrawRect, 10.0f );
 	[_canvas drawRect:canvasDrawRect];
 	CGContextRestoreGState(cxt);
 }
