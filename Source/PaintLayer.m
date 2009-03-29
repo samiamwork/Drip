@@ -79,7 +79,7 @@
 		NSData *newData = [[unarchiver decodeObjectForKey:@"data"] gzipInflate];
 		[newData getBytes:_data length:_width*(_height+1)*4];
 		
-		CGColorSpaceRef colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+		CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
 		_cxt = CGBitmapContextCreate(_data, _width, _height, 8, _pitch, colorSpace, kCGImageAlphaPremultipliedFirst);
 		if(!_cxt) {
 			[self release];
@@ -104,7 +104,7 @@
 	
 	_pitch = _width*4;
 	
-	CGColorSpaceRef colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
 	_cxt = CGBitmapContextCreate(_data, _width, _height, 8, _pitch, colorSpace, kCGImageAlphaPremultipliedFirst);
 	if(!_cxt) {
 		[self release];
@@ -147,23 +147,6 @@
 		_height = [sampleLayer height];
 		_opacity = 1.0f;
 		_visible = YES;
-		/*
-		_data = calloc(_width*(_height+1), 4);
-		if( _data == NULL ) {
-			[self release];
-			return nil;
-		}
-		
-		_pitch = _width*4;
-		
-		CGColorSpaceRef colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
-		_cxt = CGBitmapContextCreate(_data, _width, _height, 8, _pitch, colorSpace, kCGImageAlphaPremultipliedFirst);
-		if(!_cxt) {
-			[self release];
-			return nil;
-		}
-		CGColorSpaceRelease(colorSpace);
-		 */
 		if( ![self createBitmapContext] ) {
 			[self release];
 			return nil;
@@ -339,7 +322,7 @@
 	if( NSIsEmptyRect(aRect) )
 		return NULL;
 	
-	colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+	colorSpace = CGColorSpaceCreateDeviceRGB();
 	cachedCxt = CGBitmapContextCreate(_data + (_height-(int)aRect.origin.y-1)*_pitch + (int)aRect.origin.x*4 - ((int)aRect.size.height-1)*_pitch,
 									  //_height*_pitch - (((int)aRect.origin.y+(int)aRect.size.height)*_pitch + (_pitch - (int)aRect.origin.x*4)),
 									  (int)aRect.size.width,
