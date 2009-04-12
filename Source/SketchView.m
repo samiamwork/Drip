@@ -126,35 +126,65 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 	[self invalidateCanvasRect:drawnRect];
 }
 
-- (void)mouseDragged:(NSEvent *)theEvent
-{	
+- (NSRect)processSingleDrawDragEvent:(NSEvent*)theEvent
+{
 	NSPoint newPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 	PressurePoint newPressurePoint = (PressurePoint){ newPoint.x, newPoint.y, [theEvent pressure] };
 	newPressurePoint.x /= _zoom;
 	newPressurePoint.y /= _zoom;
-	
-	if( _panningMode ) {
-		
-		if( ![[self superview] isKindOfClass:[NSClipView class]] )
-			return;
-		
+	NSRect drawnRect = [_canvas continueStrokeAtPoint:newPressurePoint withArtist:_artist];
+	return drawnRect;
+}
+
+#define EVENT_PROCESSING_TIME 1.0/60.0
+
+- (void)processDragPanningEvents:(NSEvent*)theEvent
+{
+	if( ![[self superview] isKindOfClass:[NSClipView class]] )
+		return;
+	// Get the most recent drag event
+	NSEvent* newEvent;
+	NSPoint newPoint = [theEvent locationInWindow];
+	NSDate* endTime = [NSDate dateWithTimeIntervalSinceNow:EVENT_PROCESSING_TIME];
+	while((newEvent = [[self window] nextEventMatchingMask:NSLeftMouseDraggedMask untilDate:endTime inMode:NSEventTrackingRunLoopMode dequeue:YES]))
 		newPoint = [theEvent locationInWindow];
-		NSPoint scrollPoint = [self visibleRect].origin;
-		
-		scrollPoint.y -= newPoint.y - _lastDragPoint.y;
-		scrollPoint.x -= newPoint.x - _lastDragPoint.x;
-		[self scrollPoint:scrollPoint];
-		
-		_lastDragPoint = newPoint;
+	// Scroll the view
+	NSPoint scrollPoint = [self visibleRect].origin;		
+	scrollPoint.y -= newPoint.y - _lastDragPoint.y;
+	scrollPoint.x -= newPoint.x - _lastDragPoint.x;
+	[self scrollPoint:scrollPoint];
+	_lastDragPoint = newPoint;
+	return;	
+}
+
+#define MAX_DRAW_DRAG_EVENTS 10
+
+- (void)mouseDragged:(NSEvent *)theEvent
+{
+	if(_panningMode)
+	{
+		[self processDragPanningEvents:theEvent];
 		return;
 	}
-	
-	if( [_canvas isPlayingBack] )
+	else if( [_canvas isPlayingBack] )
 		return;
-	
-	NSRect drawnRect = [_canvas continueStrokeAtPoint:newPressurePoint withArtist:_artist];
-	
-	[self invalidateCanvasRect:drawnRect];
+	// we're drawing rather than panning
+	NSRect invalidRects[MAX_DRAW_DRAG_EVENTS];
+	unsigned eventsProcessed = 0;
+	invalidRects[eventsProcessed] = [self processSingleDrawDragEvent:theEvent];
+	eventsProcessed++;
+	NSEvent* newEvent;
+	NSDate* endTime = [NSDate dateWithTimeIntervalSinceNow:EVENT_PROCESSING_TIME];
+	while((newEvent = [[self window] nextEventMatchingMask:NSLeftMouseDraggedMask untilDate:endTime inMode:NSEventTrackingRunLoopMode dequeue:YES])
+	      && eventsProcessed < MAX_DRAW_DRAG_EVENTS)
+	{
+		invalidRects[eventsProcessed] = [self processSingleDrawDragEvent:newEvent];
+	}
+	// Invalidate the canvas outside of the event processing loop so that we only draw the view once
+	// instead of once for each event.
+	int i;
+	for(i = 0; i < eventsProcessed; i++)
+		[self invalidateCanvasRect:invalidRects[i]];
 }
 
 - (void)mouseUp:(NSEvent *)theEvent
