@@ -8,6 +8,7 @@
 
 #import "DripDelegate.h"
 #import "DripDocument.h"
+#import <Carbon/Carbon.h>
 
 @implementation DripDelegate
 
@@ -26,7 +27,6 @@
 
 - (void)awakeFromNib
 {
-	SetMouseCoalescingEnabled(false,NULL);
 	_inspectors = [DripInspectors sharedController];
 	[_inspectors loadWindow];
 	
@@ -97,6 +97,11 @@
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender
 {
 	return NO;
+}
+
+- (void)applicationDidFinishLaunching:(NSNotification *)theNotification
+{
+	SetMouseCoalescingEnabled(false, NULL);
 }
 
 #pragma mark NewFile window Delegate methods
