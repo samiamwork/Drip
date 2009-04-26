@@ -179,6 +179,7 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 	      && eventsProcessed < MAX_DRAW_DRAG_EVENTS)
 	{
 		invalidRects[eventsProcessed] = [self processSingleDrawDragEvent:newEvent];
+		eventsProcessed++;
 	}
 	// Invalidate the canvas outside of the event processing loop so that we only draw the view once
 	// instead of once for each event.
