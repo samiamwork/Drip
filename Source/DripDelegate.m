@@ -101,7 +101,6 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)theNotification
 {
-	SetMouseCoalescingEnabled(false, NULL);
 }
 
 #pragma mark NewFile window Delegate methods

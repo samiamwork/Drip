@@ -203,6 +203,16 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 	
 }
 
+- (void)mouseEntered:(NSEvent*) theEvent
+{
+	SetMouseCoalescingEnabled(false, NULL);
+}
+
+- (void)mouseExited:(NSEvent *)theEvent
+{
+	SetMouseCoalescingEnabled(true, NULL);
+}
+
 - (void)tabletProximity:(NSEvent *)theEvent
 {
 	if( [theEvent type] != NSTabletProximity )
@@ -275,6 +285,12 @@ NSString *const DripPenEnteredNotification = @"DripPenEnteredNotification";
 - (Canvas *)canvas
 {
 	return _canvas;
+}
+
+- (void)setFrameSize:(NSSize)newSize
+{
+	[super setFrameSize:newSize];
+	[self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
 }
 
 - (void)setZoom:(float)newZoom
