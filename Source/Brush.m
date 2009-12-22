@@ -357,13 +357,13 @@ float valueWithCosCurve(float t, float crossover)
 
 - (void)setColor:(NSColor*)aColor
 {
-	NSColor *rgb = [aColor colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+	NSColor *rgb = [aColor colorUsingColorSpaceName:NSDeviceRGBColorSpace];
 	[rgb getRed:&_RGBAColor[0] green:&_RGBAColor[1] blue:&_RGBAColor[2] alpha:&_RGBAColor[3]];
 	_settingsHaveChanged = YES;
 }
 - (NSColor*)color
 {
-	return [NSColor colorWithCalibratedRed:_RGBAColor[0] green:_RGBAColor[1] blue:_RGBAColor[2] alpha:_RGBAColor[3]];
+	return [NSColor colorWithDeviceRed:_RGBAColor[0] green:_RGBAColor[1] blue:_RGBAColor[2] alpha:_RGBAColor[3]];
 }
 - (BOOL)usesColor
 {
