@@ -12,4 +12,6 @@
 // I have no clue why, but if the size argument is in second argument
 // the pattern will not draw for paintLayer thumbnails. It works as
 // the last argument. Compiler bug?
-void drawCheckerPatternInContextWithPhase( CGContextRef cxt, CGSize phase, CGRect aRect, float size );
+void drawCheckerPatternInContextWithPhase( const CGContextRef cxt, const CGSize phase, const CGRect aRect, const float size );
+void drawStripePattern( void *info, CGContextRef cxt );
+void drawStripePatternInContextWithPhase( CGContextRef cxt, CGSize phase, CGRect aRect, float size );

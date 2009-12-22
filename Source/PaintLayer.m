@@ -8,6 +8,7 @@
 
 #import "PaintLayer.h"
 #import "NSData+gzip.h"
+#import "CheckerPattern.h"
 
 @implementation PaintLayer
 
@@ -270,8 +271,9 @@
 	[_thumbnail lockFocus];
 	
 	CGRect thumbRect;
-	thumbRect.size.width = [_thumbnail size].width;
-	thumbRect.size.height = [_thumbnail size].height;
+	NSSize thumbSize = [_thumbnail size];
+	thumbRect.size.width = thumbSize.width;
+	thumbRect.size.height = thumbSize.height;
 	thumbRect.origin.x = thumbRect.origin.y = 0.0f;
 	
 	CGContextRef thumbContext = [[NSGraphicsContext currentContext] graphicsPort];

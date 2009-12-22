@@ -9,7 +9,7 @@
 
 #include "CheckerPattern.h"
 
-void drawCheckerPattern( void *info, CGContextRef cxt )
+static void drawCheckerPattern( void *info, CGContextRef cxt )
 {
 	float size = *(float *)info;
 	
@@ -29,20 +29,20 @@ void drawCheckerPattern( void *info, CGContextRef cxt )
 	CGContextFillRect( cxt, checkerRect );
 }
 
-void checkerPatternInfoRelease( void *info )
+static void checkerPatternInfoRelease( void *info )
 {
 	free( info );
 }
 
 static const CGPatternCallbacks patternCallbacks = {0, &drawCheckerPattern, &checkerPatternInfoRelease };
 
-void drawCheckerPatternInContextWithPhase( CGContextRef cxt, CGSize phase, CGRect aRect, float size )
+void drawCheckerPatternInContextWithPhase( const CGContextRef cxt, const CGSize phase, const CGRect aRect, const float size )
 {
 	CGContextSaveGState( cxt ); {
 		float *sizePointer;
 		sizePointer = malloc( sizeof(float) );
 		*sizePointer = size;
-		CGPatternRef checkerPattern = CGPatternCreate(sizePointer, CGRectMake(0.0f,0.0f, *sizePointer*2.0f, *sizePointer*2.0f), CGAffineTransformMake(1,0,0, 1,0,0), *sizePointer*2.0f, *sizePointer*2.0f, kCGPatternTilingConstantSpacingMinimalDistortion, true, &patternCallbacks );
+		CGPatternRef checkerPattern = CGPatternCreate(sizePointer, CGRectMake(0.0f,0.0f, size*2.0f, size*2.0f), CGAffineTransformMake(1,0,0, 1,0,0), size*2.0f, size*2.0f, kCGPatternTilingConstantSpacingMinimalDistortion, true, &patternCallbacks );
 		CGColorSpaceRef checkerColorSpace = CGColorSpaceCreatePattern(NULL);
 		CGContextSetFillColorSpace( cxt, checkerColorSpace );
 		CGColorSpaceRelease( checkerColorSpace );
@@ -73,7 +73,7 @@ void drawStripePattern( void *info, CGContextRef cxt )
 	CGContextStrokePath( cxt );
 }
 
-void stripePatternInfoRelease( void *info )
+static void stripePatternInfoRelease( void *info )
 {
 	free( info );
 }
