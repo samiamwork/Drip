@@ -23,6 +23,48 @@ NSString *const kPaintBrushPressureAffectsFlowKey = @"paintBrushPressureAffectsF
 NSString *const kPaintBrushPressureAffectsResaturationKey = @"paintBrushPressureAffectsResaturation";
 NSString *const kPaintBrushColorKey = @"paintBrushColor";
 
+static float valueWithCosCurve(float t, float crossover)
+{
+	if( t <= crossover )
+		return 1.0f;
+	else if( t > 1.0f || t<0.0f )
+		return 0.0f;
+
+	float y = 0.5f*cosf(M_PI*(t-crossover)/(1.0f-crossover))+0.5f;
+	return y;
+}
+
+#define TVAL 0.75f
+static float interpolateBetween( float a, float b, float c )
+{
+	float p0 = (TVAL-0.0f);
+	float p1 = (TVAL-0.5f);
+	float p2 = (TVAL-1.0f);
+
+	float midpoint =	(p1*p2* a )/((0.0f-0.5f)*(0.0f-1.0f)) +
+	(p0*p2* b )/((0.5f-0.0f)*(0.5f-1.0f)) +
+	(p0*p1* c )/((1.0f-0.5f)*(1.0f-0.0f));
+	return midpoint;
+}
+
+static void sampleBitmap(unsigned char *bitmap, unsigned int pitch, unsigned int width, unsigned int height, unsigned int x, unsigned int y, float *red, float *green, float *blue)
+{
+	float alpha;
+	unsigned char *p = bitmap + (height-y-1)*pitch + x*4;
+	if( x < 0 || x >= width || y < 0 || y >= height )
+		alpha = 0.0f;
+	else
+		alpha = ((float)*p)/255.0f; p++;
+
+	if( alpha == 0.0f ) {
+		*red = *green = *blue = 0.0f;
+	} else {
+		*red = ((float)*p)/(255.0f*(alpha)); p++;
+		*green = ((float)*p)/(255.0f*(alpha)); p++;
+		*blue = ((float)*p)/(255.0f*(alpha));
+	}
+}
+
 @implementation Brush
 
 + (void)initialize
@@ -81,55 +123,6 @@ NSString *const kPaintBrushColorKey = @"paintBrushColor";
 	[_strokeEvents release];
 	
 	[super dealloc];
-}
-
-float valueAtCurve(float t, float crossover) {
-	float cx,bx,ax;
-	float cy,by,ay;
-	float x0,x1,x2,x3;
-	float y0,y1,y2,y3;
-	float xt,yt;
-	
-	x0 = 0.0f;
-	x1 = crossover;
-	x2 = crossover;
-	x3 = 1.0f;
-	
-	y0 = 1.0f;
-	y1 = 1.0f;
-	y2 = 0.0f;
-	//y2 = crossover;
-	y3 = 0.0f;
-	
-	cx = 3.0f*(x1 - x0);
-	bx = 3.0f*(x2 - x1) - cx;
-	ax = x3 - x0 - cx - bx;
-	
-	cy = 3*(y1 - y0);
-	by = 3*(y2 - y1) - cy;
-	ay = y3 - y0 - cy - by;
-	
-	xt = (ax*t*t*t) + (bx*t*t) + cx*t + x0;
-	yt = (ay*t*t*t) + (by*t*t) + cy*t + y0;
-		
-	xt = fabsf(xt);
-	if(yt > 1.0f)
-		yt = 1.0f;
-	else if(yt < 0.0f)
-		yt = 0.0f;
-	
-	return yt;
-}
-
-float valueWithCosCurve(float t, float crossover)
-{
-	if( t <= crossover )
-		return 1.0f;
-	else if( t > 1.0f || t<0.0f )
-		return 0.0f;
-	
-	float y = 0.5f*cosf(M_PI*(t-crossover)/(1.0f-crossover))+0.5f;
-	return y;
 }
 
 - (void)rebuildBrush
@@ -374,57 +367,7 @@ float valueWithCosCurve(float t, float crossover)
 {
 	return kBrushTypePaint;
 }
-/*
-- (void)createBezierCurveWithCrossover:(float)crossover
-{
-	int i;
-	int index;
-	float cx,bx,ax;
-	float cy,by,ay;
-	float x0,x1,x2,x3;
-	float y0,y1,y2,y3;
-	float xt,yt;
-	float t;
-	
-	x0 = 0.0f;
-	x1 = crossover;
-	x2 = crossover;
-	x3 = 1.0f;
-	
-	y0 = 1.0f;
-	y1 = 1.0f;
-	//y2 = 0.0f;
-	y2 = crossover;
-	y3 = 0.0f;
-	
-	cx = 3.0f*(x1 - x0);
-	bx = 3.0f*(x2 - x1) - cx;
-	ax = x3 - x0 - cx - bx;
-	
-	cy = 3*(y1 - y0);
-	by = 3*(y2 - y1) - cy;
-	ay = y3 - y0 - cy - by;
-	
-	for(i=0; i<10000; i++) {
-		t = ((float)i/10000.0f);
-		
-		xt = (ax*t*t*t) + (bx*t*t) + cx*t + x0;
-		yt = (ay*t*t*t) + (by*t*t) + cy*t + y0;
-		
-		xt = fabsf(xt);
-		if(yt > 1.0f)
-			yt = 1.0f;
-		else if(yt < 0.0f)
-			yt = 0.0f;
-		
-		index = (int)(xt*1000.0f);
-		if(index >= 1000)
-			index = 1000;
-		_brushLookup[index] = yt;
-	}
-	
-}
-*/
+
 static void render_dab(float x, float y, PaintLayer *theLayer, float size, float *dabLookup, unsigned char red, unsigned char green, unsigned char blue, float alpha)
 {
 	int row,col;
@@ -486,23 +429,6 @@ static void render_dab(float x, float y, PaintLayer *theLayer, float size, float
 	CGContextDrawImage([[NSGraphicsContext currentContext] graphicsPort],CGRectMake(aPoint.x-(_intSize-1)/2.0f,aPoint.y-(_intSize-1)/2.0f,_intSize,_intSize),_dab);
 }
 
-void sampleBitmap(unsigned char *bitmap, unsigned int pitch, unsigned int width, unsigned int height, unsigned int x, unsigned int y, float *red, float *green, float *blue)
-{
-	float alpha;
-	unsigned char *p = bitmap + (height-y-1)*pitch + x*4;
-	if( x < 0 || x >= width || y < 0 || y >= height )
-		alpha = 0.0f;
-	else
-		alpha = ((float)*p)/255.0f; p++;
-		
-	if( alpha == 0.0f ) {
-		*red = *green = *blue = 0.0f;
-	} else {
-		*red = ((float)*p)/(255.0f*(alpha)); p++;
-		*green = ((float)*p)/(255.0f*(alpha)); p++;
-		*blue = ((float)*p)/(255.0f*(alpha));
-	}
-}
 - (NSRect)beginStrokeAtPoint:(PressurePoint)aPoint onLayer:(Layer *)aLayer
 {
 	int x = (int)aPoint.x;
@@ -551,18 +477,6 @@ void sampleBitmap(unsigned char *bitmap, unsigned int pitch, unsigned int width,
 	[newEvent release];
 	
 	return _strokeRect;
-}
-#define TVAL 0.75f
-float interpolateBetween( float a, float b, float c )
-{
-	float p0 = (TVAL-0.0f);
-	float p1 = (TVAL-0.5f);
-	float p2 = (TVAL-1.0f);
-	
-	float midpoint =	(p1*p2* a )/((0.0f-0.5f)*(0.0f-1.0f)) +
-						(p0*p2* b )/((0.5f-0.0f)*(0.5f-1.0f)) +
-						(p0*p1* c )/((1.0f-0.5f)*(1.0f-0.0f));
-	return midpoint;
 }
 
 - (NSRect)continueStrokeAtPoint:(PressurePoint)aPoint

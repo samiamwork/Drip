@@ -42,75 +42,7 @@ static void SourceFrameTrackingCallback(void *sourceTrackingRefCon, ICMSourceTra
 	
 }
 
-@implementation MovieEncoder
-
-// we want users to set width and height
-- (id)init
-{
-	if( (self = [super init]) ) {
-		[self release];
-		return nil;
-		
-		_codecDescription = nil;
-		_sizeField = nil;
-		_sizeSlider = nil;
-		_scale = 1.0f;
-		
-		_bitmapContext = NULL;
-		_bitmapBytes = NULL;
-		
-		_delegate = nil;
-	}
-
-	return self;
-}
-
-- (id)initWithWidth:(unsigned int)width height:(unsigned int)height
-{
-	if( (self = [super initWithWindowNibName:@"MovieExport"]) ) {
-		if( width == 0 || height == 0 ) {
-			[self release];
-			return nil;
-		}
-		
-		_width = width;
-		_height = height;
-		_path = nil;
-		_compressionSession = NULL;
-		_movie = NULL;
-		_dataHandler = NULL;
-		
-		_codecDescription = nil;
-		_sizeField = nil;
-		_sizeSlider = nil;
-		_scale = 1.0f;
-		
-		_bitmapContext = NULL;
-		_bitmapBytes = NULL;
-		
-		_delegate = nil;
-		[self window];
-	}
-	
-	return self;
-}
-
-- (void)dealloc
-{
-	if( _pixelBufferPool )
-		CVPixelBufferPoolRelease( _pixelBufferPool );
-	if( _movie )
-		DisposeMovie( _movie );
-	if( _compressionSession )
-		ICMCompressionSessionRelease( _compressionSession );
-	if( _dataHandler )
-		CloseMovieStorage( _dataHandler );
-
-	[_path release];
-	[super dealloc];
-}
-
-void loadCompressionSettings( ComponentInstance component )
+static void loadCompressionSettings( ComponentInstance component )
 {
 	ComponentResult result;
 	
@@ -148,7 +80,7 @@ void loadCompressionSettings( ComponentInstance component )
 	}
 }
 
-void saveCompressionSettings( ComponentInstance component )
+static void saveCompressionSettings( ComponentInstance component )
 {
 	ComponentResult result;
 	
@@ -164,7 +96,7 @@ void saveCompressionSettings( ComponentInstance component )
 	}
 }
 
-NSString *currentCodecName( void )
+static NSString *currentCodecName( void )
 {
 	ComponentInstance component = OpenDefaultComponent(StandardCompressionType, StandardCompressionSubType);
 	if( component == NULL ) {
@@ -203,6 +135,61 @@ NSString *currentCodecName( void )
 	free(codecNameCString);
 	
 	return [NSString stringWithFormat:@"%@ (%@ Quality)",codecName,codecQuality];
+}
+
+@implementation MovieEncoder
+
+// we want users to set width and height
+- (id)init
+{
+	if( (self = [super init]) ) {
+		[self release];
+		return nil;
+	}
+
+	return self;
+}
+
+- (id)initWithWidth:(unsigned int)width height:(unsigned int)height
+{
+	if( (self = [super initWithWindowNibName:@"MovieExport"]) ) {
+		if( width == 0 || height == 0 ) {
+			[self release];
+			return nil;
+		}
+
+		_width = width;
+		_height = height;
+		_path = nil;
+		_compressionSession = NULL;
+		_movie = NULL;
+		_dataHandler = NULL;
+		_codecDescription = nil;
+		_sizeField = nil;
+		_sizeSlider = nil;
+		_scale = 1.0f;
+		_bitmapContext = NULL;
+		_bitmapBytes = NULL;
+		_delegate = nil;
+		[self window];
+	}
+
+	return self;
+}
+
+- (void)dealloc
+{
+	if( _pixelBufferPool )
+		CVPixelBufferPoolRelease( _pixelBufferPool );
+	if( _movie )
+		DisposeMovie( _movie );
+	if( _compressionSession )
+		ICMCompressionSessionRelease( _compressionSession );
+	if( _dataHandler )
+		CloseMovieStorage( _dataHandler );
+
+	[_path release];
+	[super dealloc];
 }
 
 - (BOOL)promptForPath

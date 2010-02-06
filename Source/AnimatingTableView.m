@@ -21,7 +21,7 @@ typedef struct {
 	RGBAColor colorTwo;
 } TwoColors;
 
-void linearColorBlend( void *info, const float *in, float *out )
+static void linearColorBlend( void *info, const float *in, float *out )
 {
 	TwoColors *twoColors = (TwoColors *)info;
 	
@@ -31,7 +31,7 @@ void linearColorBlend( void *info, const float *in, float *out )
 	out[3] = twoColors->colorOne.alpha*(1.0f - *in) + twoColors->colorTwo.alpha*(*in);
 }
 
-void linearColorBlendReleaseInfoFunction( void *info )
+static void linearColorBlendReleaseInfoFunction( void *info )
 {
 	free( info );
 }
