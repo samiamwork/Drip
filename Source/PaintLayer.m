@@ -88,7 +88,7 @@
 		}
 		CGColorSpaceRelease(colorSpace);
 		CGContextSetInterpolationQuality(_cxt,kCGInterpolationHigh);
-		
+
 	}
 	
 	return self;
@@ -314,41 +314,39 @@
 {
 	CGColorSpaceRef colorSpace;
 	CGImageRef cachedImage;
-	CGContextRef cachedCxt;
-	
+	CGDataProviderRef directDataProvider;
+
 	aRect.origin.x = (int)aRect.origin.x;
 	aRect.origin.y = (int)aRect.origin.y;
 	aRect.size.width = (int)aRect.size.width;
 	aRect.size.height = (int)aRect.size.height;
-	
 	if( NSIsEmptyRect(aRect) )
 		return NULL;
-	
+	// Create the image
 	colorSpace = CGColorSpaceCreateDeviceRGB();
-	cachedCxt = CGBitmapContextCreate(_data + (_height-(int)aRect.origin.y-1)*_pitch + (int)aRect.origin.x*4 - ((int)aRect.size.height-1)*_pitch,
-									  //_height*_pitch - (((int)aRect.origin.y+(int)aRect.size.height)*_pitch + (_pitch - (int)aRect.origin.x*4)),
-									  (int)aRect.size.width,
-									  (int)aRect.size.height,
-									  8,
-									  _pitch,
-									  colorSpace,
-									  kCGImageAlphaPremultipliedFirst);
+	int yStart = (_height-(int)aRect.origin.y-1) - ((int)aRect.size.height-1);
+	int xStart = (int)aRect.origin.x;
+	unsigned char* imageDataStart = _data + yStart*_pitch + xStart*4;
+	size_t imageDataSize = (size_t)(_height*_pitch) - (size_t)(imageDataStart - _data);
+	directDataProvider = CGDataProviderCreateWithData(NULL, imageDataStart, imageDataSize, NULL);
+	cachedImage = CGImageCreate((size_t)aRect.size.width,
+								(size_t)aRect.size.height,
+								8,
+								32,
+								_pitch,
+								colorSpace,
+								kCGImageAlphaPremultipliedFirst,
+								directDataProvider,
+								NULL,  // Decode array
+								false, // shouldInterpolate
+								kCGRenderingIntentDefault);
+	CGDataProviderRelease(directDataProvider);
 	CGColorSpaceRelease(colorSpace);
-	
-	if(!cachedCxt) {
-		printf("Could not create bitmap context!\n");
-		// PROBLEM!
-		return NULL;
-	}
-	
-	cachedImage = CGBitmapContextCreateImage(cachedCxt);
 	if(!cachedImage) {
 		printf("Could not create cached image!\n");
 		return NULL;
 	}
-	
-	CGContextRelease(cachedCxt);
-	
+
 	return cachedImage;
 }
 - (void)drawRect:(NSRect)aRect inContext:(CGContextRef)aContext

@@ -15,6 +15,7 @@
 {
 	CGColorSpaceRef colorSpace;
 	CGImageRef cachedImage;
+	CGDataProviderRef directDataProvider;
 	
 	aRect.origin.x = (int)aRect.origin.x;
 	aRect.origin.y = (int)aRect.origin.y;
@@ -28,7 +29,7 @@
 	int xStart = (int)aRect.origin.x;
 	unsigned char* imageDataStart = _data + yStart*_pitch + xStart;
 	size_t imageDataSize = (size_t)(_height*_pitch) - (size_t)(imageDataStart - _data);
-	CGDataProviderRef directDataProvider = CGDataProviderCreateWithData(NULL, imageDataStart, imageDataSize, NULL);
+	directDataProvider = CGDataProviderCreateWithData(NULL, imageDataStart, imageDataSize, NULL);
 	cachedImage = CGImageCreate((size_t)aRect.size.width,
 								(size_t)aRect.size.height,
 								8,
