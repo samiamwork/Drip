@@ -27,7 +27,8 @@
 - (void)addEvents:(NSArray *)theEvents;
 - (void)removeEventCount:(unsigned)eventCount;
 - (void)setLayerSettings:(DripEventLayerSettings *)newSettings oldSettings:(DripEventLayerSettings *)oldSettings;
-- (void)recordLayerChanges;
+- (BOOL)recordLayerSettingChange;
+- (void)recordLayerChange;
 @end
 
 @implementation Canvas
@@ -380,7 +381,7 @@
 	}
 
 	//I don't really need to do this here... but I probably should.
-	[self recordLayerChanges];
+	[self recordLayerSettingChange];
 	
 	// EVENT:
 	// add new layer
@@ -427,7 +428,7 @@
 	}
 	
 	//I don't really need to do this here... but I probably should.
-	[self recordLayerChanges];
+	[self recordLayerSettingChange];
 	
 	// EVENT: remove layer at "deleteIndex"
 	DripEventLayerDelete *newEvent = [[DripEventLayerDelete alloc] init];
@@ -459,8 +460,9 @@
 	
 	if( theLayerIndex == theTargetIndex )
 		return;
-	
-	[self recordLayerChanges];
+
+	// XXX: I'm not sure why we need this as this operation won't change the currently selected layer
+	[self recordLayerSettingChange];
 	
 	// EVENT: move layer at index "theLayerIndex" to "theTargetIndex"
 	DripEventLayerMove *layerMoveEvent = [[DripEventLayerMove alloc] initWithFromIndex:theLayerIndex toIndex:theTargetIndex];
@@ -488,7 +490,7 @@
 	if( theLayerIndex == NSNotFound || theLayerIndex == 0 )
 		return;
 
-	[self recordLayerChanges];
+	[self recordLayerSettingChange];
 	
 	// EVENT: merge layer at index "theLayerIndex" and the layer under it and insert in place of the two.
 	DripEventLayerCollapse *layerCollapseEvent = [[DripEventLayerCollapse alloc] init];
@@ -521,20 +523,18 @@
 	unsigned int layerIndex = [_layers indexOfObject:aLayer];
 	if( aLayer == _currentLayer || layerIndex == NSNotFound )
 		return;
-	
+
+	if(_previousLayer == nil)
+	{
+		_previousLayer = _currentLayer;
+	}
 	_currentLayer = aLayer;
-	
-	[self recordLayerChanges];
-	
+	if([self recordLayerSettingChange])
+	{
+		[self recordLayerChange];
+	}
+
 	// EVENT: set CurrentLayer to layer at index "layerIndex"
-	//if( ![self isPlayingBack] )
-	//	[_paintEvents addObject:[[[DripEventLayerChange alloc] initWithLayerIndex:layerIndex] autorelease]];
-	DripEventLayerChange *layerChangeEvent = [[DripEventLayerChange alloc] initWithLayerIndex:layerIndex];
-	[self addEvents:[NSArray arrayWithObject:layerChangeEvent]];
-	[layerChangeEvent release];
-	
-	[[[_document undoManager] prepareWithInvocationTarget:self] setCurrentLayer:[_layers objectAtIndex:layerIndex]];
-	
 	[self rebuildTopAndBottom];
 }
 
@@ -550,7 +550,8 @@
 	if( [self isPlayingBack] )
 		return NSZeroRect;
 
-	[self recordLayerChanges];
+	[self recordLayerSettingChange];
+	[self recordLayerChange];
 	
 	return [[anArtist currentBrush] beginStrokeAtPoint:aPoint onLayer:_currentLayer];
 }
@@ -649,16 +650,33 @@
 	return _document;
 }
 
+- (void)recordLayerChange
+{
+	if( !_previousLayer )
+	{
+		return;
+	}
+
+	DripEventLayerChange *layerChangeEvent = [[DripEventLayerChange alloc] initWithLayerIndex:[_layers indexOfObject:_currentLayer]];
+	[self addEvents:[NSArray arrayWithObject:layerChangeEvent]];
+	[layerChangeEvent release];
+
+	[[[_document undoManager] prepareWithInvocationTarget:self] setCurrentLayer:_previousLayer];
+	_previousLayer = nil;
+}
+
 // records any layer setting changes that haven't been recorded yet.
-- (void)recordLayerChanges
+- (BOOL)recordLayerSettingChange
 {
 	if( !_layerSettings )
-		return;
+		return NO;
 	
 	[self addEvents:[NSArray arrayWithObject:_layerSettings]];
 	[[[_document undoManager] prepareWithInvocationTarget:self] setLayerSettings:nil oldSettings:_layerSettings];
 	[_layerSettings release];
 	_layerSettings = nil;
+
+	return YES;
 }
 
 - (void)setLayerSettings:(DripEventLayerSettings *)newSettings oldSettings:(DripEventLayerSettings *)oldSettings

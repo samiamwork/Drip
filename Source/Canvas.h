@@ -18,6 +18,7 @@
 @interface Canvas : NSObject <NSCoding> {
 	NSMutableArray *_compositeLayers;
 	Layer *_currentLayer;
+	Layer *_previousLayer;
 	
 	NSMutableArray *_layers;
 	
