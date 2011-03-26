@@ -1,0 +1,13 @@
+Drip is a simple drawing/painting application for OS X. The focus is on
+drawing and as such, it makes a terrible image editor aside from simple
+things like drawing mustasches on people (think Painter and not Photoshop).
+
+At the moment it has support for layers, blend modes, recording/playback
+(including playing back your drawings into a video) and undo/redo. There
+is at the moment only one brush with a number of options and an eraser.
+
+I've written it with the intention of adding network collaboration but
+haven't written the code yet (check for Drop in the Mac App Store to see
+my proof-of-concept). It certainly would make things simpler if I could
+assume only one user.
+
