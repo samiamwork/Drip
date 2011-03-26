@@ -337,8 +337,14 @@
 	[_zoomText setStringValue:[NSString stringWithFormat:@"%.02f%%",[_sketchView zoom]*100.0f]];
 }
 
-- (BOOL)validateMenuItem:(id <NSMenuItem>)menuItem
+- (BOOL)validateUserInterfaceItem:(id < NSValidatedUserInterfaceItem >)anItem
 {
+	if( ![(NSObject*)anItem isKindOfClass:[NSMenuItem class]] )
+	{
+		return YES;
+	}
+
+	NSMenuItem* menuItem = (NSMenuItem*)anItem;
 	if( [[[menuItem menu] title] isEqualToString:@"Playback Speed"] ) {
 		switch( _playbackSpeed ) {
 			case 2:

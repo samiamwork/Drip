@@ -8,7 +8,7 @@
 
 #import "AnimatingTableView.h"
 
-@interface NSObject (Delegate)
+@protocol TableViewAnimationDelegate
 - (void)tableViewAnimationDone:(AnimatingTableView *)aTableView;
 @end
 
@@ -189,7 +189,7 @@ static const CGFunctionCallbacks linearFunctionCallbacks = {0, &linearColorBlend
 		_slidingAnimation = nil;
 		
 		if( [self delegate] && [[self delegate] respondsToSelector:@selector(tableViewAnimationDone:)] )
-			[[self delegate] tableViewAnimationDone:self];
+			[(id <TableViewAnimationDelegate>)[self delegate] tableViewAnimationDone:self];
 	}
 	
 	[self setNeedsDisplay:YES];

@@ -715,7 +715,7 @@
 		[[[_document undoManager] prepareWithInvocationTarget:self] setLayerSettings:layerSettings oldSettings:nil];
 	} else if( [_layerSettings layerIndex] != layerIndex ) {
 		// if these settings are on a different layer than before then we should record the old ones
-		[self addEvents:[NSArray arrayWithObjects:_layerSettings]];
+		[self addEvents:[NSArray arrayWithObjects:_layerSettings,nil]];
 		
 		DripEventLayerSettings *layerSettings = [aLayer popOldSettings];
 		[layerSettings setLayerIndex:layerIndex];

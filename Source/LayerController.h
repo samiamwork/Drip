@@ -11,7 +11,7 @@
 #import "SketchView.h"
 #import "AnimatingTableView.h"
 
-@interface LayerController : NSObject {
+@interface LayerController : NSObject <NSTableViewDelegate, NSTableViewDataSource> {
 	IBOutlet AnimatingTableView *_layerTable;
 	IBOutlet NSSlider *_opacitySlider;
 	IBOutlet NSButton *_plusButton;

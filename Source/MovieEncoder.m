@@ -54,7 +54,7 @@ static void loadCompressionSettings( ComponentInstance component )
 			[data getBytes:*container];
 			result = SCSetSettingsFromAtomContainer( component, container);
 			if( result )
-				printf("SCSetSettingsFromAtomContainer() failed with error %d\n", result);
+				printf("SCSetSettingsFromAtomContainer() failed with error %ld\n", result);
 			QTDisposeAtomContainer(container);
 		}
 	} else {
@@ -67,7 +67,7 @@ static void loadCompressionSettings( ComponentInstance component )
 		
 		result = SCSetInfo( component, scSpatialSettingsType, &ss );
 		if( result != noErr )
-			printf("error setting spatial settings (%d)\n", result);
+			printf("error setting spatial settings (%ld)\n", result);
 		
 		SCTemporalSettings ts;
 		ts.temporalQuality = 0;
@@ -76,7 +76,7 @@ static void loadCompressionSettings( ComponentInstance component )
 		
 		result = SCSetInfo( component, scTemporalSettingsType, &ts );
 		if( result != noErr )
-			printf("error setting temporal settings (%d)\n", result);
+			printf("error setting temporal settings (%ld)\n", result);
 	}
 }
 
@@ -88,7 +88,7 @@ static void saveCompressionSettings( ComponentInstance component )
 	QTAtomContainer newSettingsContainer;
 	result = SCGetSettingsAsAtomContainer( component , &newSettingsContainer );
 	if( result )
-		printf("SCGetSettingsAsAtomContainer() failed with %d\n", result);
+		printf("SCGetSettingsAsAtomContainer() failed with %ld\n", result);
 	else {
 		NSData *data = [NSData dataWithBytes:*newSettingsContainer length:GetHandleSize(newSettingsContainer)];
 		[[NSUserDefaults standardUserDefaults] setObject:data forKey:@"compressionSettings"];
@@ -131,7 +131,7 @@ static NSString *currentCodecName( void )
 		printf("error getting codec name! (%d)\n", result);
 	void *codecNameCString = calloc( *(unsigned char *)codecInfo.typeName + 1, 1 );
 	memcpy( codecNameCString, (unsigned char *)codecInfo.typeName + 1, *(unsigned char *)codecInfo.typeName);
-	NSString *codecName = [NSString stringWithCString:codecNameCString];
+	NSString *codecName = [NSString stringWithCString:codecNameCString encoding:NSUTF8StringEncoding];
 	free(codecNameCString);
 	
 	return [NSString stringWithFormat:@"%@ (%@ Quality)",codecName,codecQuality];
@@ -370,7 +370,7 @@ static NSString *currentCodecName( void )
 	result = SCRequestSequenceSettings( component );
 	if( result ) {
 		if( result != 1 )
-			printf("SCRequestSequenceSettings() failed with %d\n", result);
+			printf("SCRequestSequenceSettings() failed with %ld\n", result);
 		CloseComponent( component );
 		return;
 	}
@@ -440,7 +440,7 @@ static NSString *currentCodecName( void )
 	ICMCompressionSessionOptionsRef sessionOptions = NULL;
 	result = SCCopyCompressionSessionOptions( component, &sessionOptions );
 	if( result ) {
-		printf("SCCopyCompressionSessionOptions() failed with %d\n", result);
+		printf("SCCopyCompressionSessionOptions() failed with %ld\n", result);
 		return;
 	}
 	SCSpatialSettings spatialSettings;
@@ -453,7 +453,7 @@ static NSString *currentCodecName( void )
 	OSType dataRefType;
 	result = QTNewDataReferenceFromFullPathCFString((CFStringRef)_path, kQTNativeDefaultPathStyle, 0, &dataRef, &dataRefType);
 	if( result ) {
-		printf("QTNewDataReferenceFromFullCFPathString() failed with %d\n", result);
+		printf("QTNewDataReferenceFromFullCFPathString() failed with %ld\n", result);
 		return;
 	}
 	result = CreateMovieStorage( dataRef, dataRefType, 'TVOD', smCurrentScript, createMovieFileDeleteCurFile, &_dataHandler, &_movie);
@@ -464,25 +464,25 @@ static NSString *currentCodecName( void )
 		_bitmapBytes = NULL;
 		DisposeHandle(dataRef);
 		// TODO:checking for more meaningful errors
-		printf("CreateMovieStorage() failed with %d\n", result);
+		printf("CreateMovieStorage() failed with %ld\n", result);
 		return;
 	}
 	DisposeHandle(dataRef);
 	_track = NewMovieTrack( _movie, _width<<16, _height<<16, kNoVolume);
 	result = GetMoviesError();
 	if( result ) {
-		printf("NewMovieTrack() failed with %d\n", result);
+		printf("NewMovieTrack() failed with %ld\n", result);
 		return;
 	}
 	_media = NewTrackMedia( _track, VideoMediaType, 1000000, 0, 0);
 	result = GetMoviesError();
 	if( result ) {
-		printf("NewTrackMedia() failed with %d\n", result);
+		printf("NewTrackMedia() failed with %ld\n", result);
 		return;
 	}
 	result = BeginMediaEdits( _media );
 	if( result ) {
-		printf("BeginMediaEdits() failed with %d\n", result);
+		printf("BeginMediaEdits() failed with %ld\n", result);
 		return;
 	}
 	
@@ -500,7 +500,7 @@ static NSString *currentCodecName( void )
 	[bufferAttribs release];
 	if( result ) {
 		// TODO: more cleanup here
-		printf("CVPixelBufferPoolCreate() failed with %d\n", result );
+		printf("CVPixelBufferPoolCreate() failed with %ld\n", result );
 		return;
 	}
 	_currentFrame = 0;
@@ -516,29 +516,29 @@ static NSString *currentCodecName( void )
 	OSStatus result;
 	result = ICMCompressionSessionCompleteFrames( _compressionSession, true, 0, 0);
 	if( result ) {
-		printf("ICMCompressionSessionCompleteFrames() failed with %d\n", result);
+		printf("ICMCompressionSessionCompleteFrames() failed with %ld\n", result);
 		return;
 	}
 	
 	// finish up the movie
 	result = EndMediaEdits( _media );
 	if( result ) {
-		printf("EndMediaEdits() failed with %s\n", result );
+		printf("EndMediaEdits() failed with %ld\n", result );
 		return;
 	}
 	result = ExtendMediaDecodeDurationToDisplayEndTime( _media, NULL );
 	if( result )
-		printf("ExtendMediaDecodeSurationToDisplayEndTime() failed with %s\n", result);
+		printf("ExtendMediaDecodeSurationToDisplayEndTime() failed with %ld\n", result);
 	result = InsertMediaIntoTrack( _track, 0, 0, GetMediaDisplayDuration(_media), fixed1);
 	if( result )
-		printf("InsertMediaIntoTrack() failed with %d\n", result );
+		printf("InsertMediaIntoTrack() failed with %ld\n", result );
 	result = AddMovieToStorage( _movie, _dataHandler );
 	if( result )
-		printf("AddMovieToStorage() failed with %d\n", result );
+		printf("AddMovieToStorage() failed with %ld\n", result );
 	CloseMovieStorage( _dataHandler );
 	_dataHandler = NULL;
 	DisposeMovie( _movie );
-	_movie == NULL;
+	_movie = NULL;
 	// release track and media too
 	
 	ICMCompressionSessionRelease( _compressionSession );

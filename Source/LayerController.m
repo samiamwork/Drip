@@ -298,7 +298,8 @@
 	
 	//the layer order has changed so we need a new array
 	NSArray *newLayers = [_theCanvas layers];
-	[_layerTable selectRow:[newLayers count]-[newLayers indexOfObject:[_theCanvas currentLayer]]-1 byExtendingSelection:NO];
+	NSIndexSet* rowIndices = [NSIndexSet indexSetWithIndex:[newLayers count]-[newLayers indexOfObject:[_theCanvas currentLayer]]-1];
+	[_layerTable selectRowIndexes:rowIndices byExtendingSelection:NO];
 	
 	[aTableView reloadData];
 	[[[[_theCanvas document] undoManager] prepareWithInvocationTarget:_layerTable] reloadData];
