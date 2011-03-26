@@ -42,6 +42,7 @@
 - (CGBlendMode)blendMode;
 
 - (CGImageRef)getImageForRect:(NSRect)aRect;
+- (CGImageRef)getImageForRect:(NSRect)aRect withMask:(CGImageRef)theMask;
 - (void)drawRect:(NSRect)aRect inContext:(CGContextRef)aContext;
 
 //- (DripEventLayerSettings *)settings;

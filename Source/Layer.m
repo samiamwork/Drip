@@ -187,16 +187,17 @@
 				
 		[aLayer drawRect:aRect inContext:[_scratchMaskLayer cxt]];
 		CGImageRef cachedMask = [_scratchMaskLayer getImageForRect:aRect];
-		
-		CGImageRef cachedImage = [_mainPaintLayer getImageForRect:aRect];
-		CGImageRef maskedImage = CGImageCreateWithMask(cachedImage,cachedMask);
-		CGContextClearRect( [_mainPaintLayer cxt],*(CGRect *)&aRect );
-		CGContextDrawImage( [_mainPaintLayer cxt],*(CGRect *)&aRect, maskedImage);
-		
+		// Here we need to make an explicit copy of the masked image because the *image* portion of the
+		// masked image is actually the context we're going to be drawing into. When we do our clear rect
+		// we would be clearing the *image* portion of the masked image.
+		// TODO: Just mask the image manually and avoid the copy altogether.
+		CGImageRef maskedImage = [_mainPaintLayer getImageForRect:aRect withMask:cachedMask];
+		CGContextClearRect( [_mainPaintLayer cxt], CGRectMake(aRect.origin.x, aRect.origin.y, aRect.size.width, aRect.size.height) );		
+		CGContextDrawImage( [_mainPaintLayer cxt], CGRectMake(aRect.origin.x, aRect.origin.y, aRect.size.width, aRect.size.height), maskedImage);
+
 		CGImageRelease( cachedMask );
-		CGImageRelease( cachedImage );
 		CGImageRelease( maskedImage );
-		
+
 		// clear the work layers
 		CGContextSaveGState( [_scratchMaskLayer cxt] );
 		CGContextSetRGBFillColor( [_scratchMaskLayer cxt], 1.0f,1.0f,1.0f,1.0f);

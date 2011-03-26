@@ -349,6 +349,32 @@
 
 	return cachedImage;
 }
+
+- (CGImageRef)getImageForRect:(NSRect)aRect withMask:(CGImageRef)theMask
+{
+	CGImageRef      selfImage;
+	CGImageRef      maskedImage;
+	CGImageRef      maskedBitmap;
+	CGContextRef    bitmap;
+	CGColorSpaceRef colorSpace;
+
+	aRect = NSIntegralRect(aRect);
+
+	colorSpace  = CGColorSpaceCreateDeviceRGB();
+	selfImage   = [self getImageForRect:aRect];
+	maskedImage = CGImageCreateWithMask(selfImage, theMask);
+	bitmap      = CGBitmapContextCreate(NULL, aRect.size.width, aRect.size.height, 8, 4*aRect.size.width, colorSpace, kCGImageAlphaPremultipliedFirst);
+	CGContextDrawImage(bitmap, CGRectMake(0.0, 0.0, aRect.size.width, aRect.size.height), maskedImage);
+	maskedBitmap = CGBitmapContextCreateImage(bitmap);
+
+	CGContextRelease(bitmap);
+	CGImageRelease(selfImage);
+	CGImageRelease(maskedImage);
+	CGColorSpaceRelease(colorSpace);
+
+	return maskedBitmap;
+}
+
 - (void)drawRect:(NSRect)aRect inContext:(CGContextRef)aContext
 {
 	aRect = NSIntersectionRect(aRect,NSMakeRect(0.0f,0.0f,_width,_height));
