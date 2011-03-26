@@ -9,6 +9,17 @@
 
 #include "TIPCGUtils.h"
 
+// For debugging
+void TIPDumpCGImageToPNG(CGImageRef theImage, const char* path)
+{
+	CFURLRef url = CFURLCreateFromFileSystemRepresentation(NULL, (const UInt8*)path, strlen(path), false);
+	CGImageDestinationRef imageDest = CGImageDestinationCreateWithURL(url, kUTTypePNG, 1, NULL);
+	CGImageDestinationAddImage(imageDest, theImage, NULL);
+	CGImageDestinationFinalize(imageDest);
+	CFRelease(imageDest);
+	CFRelease(url);
+}
+
 CGMutablePathRef TIPCGUtilsRoundedBoxCreate( CGRect inRect, float margin, float radius, float lineWidth )
 {	
 	float halfLineWidth = lineWidth/2.0f;

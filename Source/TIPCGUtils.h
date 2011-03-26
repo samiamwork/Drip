@@ -10,6 +10,7 @@
 #include <Carbon/Carbon.h>
 #include <ApplicationServices/ApplicationServices.h>
 
+void             TIPDumpCGImageToPNG(CGImageRef theImage, const char* path);
 CGMutablePathRef TIPCGUtilsRoundedBoxCreate( CGRect inRect, float margin, float radius, float lineWidth );
 CGMutablePathRef TIPCGUtilsPartialRoundedBoxCreate( CGRect inRect, float radius, bool lowerRight, bool upperRight, bool upperLeft, bool lowerLeft );
 CGMutablePathRef TIPCGUtilsPill( CGRect inRect );
