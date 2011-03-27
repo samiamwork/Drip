@@ -461,7 +461,6 @@
 				8D15AC2B0486D014006FF6A4 /* Resources */,
 				8D15AC300486D014006FF6A4 /* Sources */,
 				8D15AC330486D014006FF6A4 /* Frameworks */,
-				3E903CF90BC58B55009B6F93 /* Strip Symbols */,
 				3EFF81F20B5586520049AD7D /* Remove Headers */,
 				3EFF821B0B558E330049AD7D /* Set SVN Revision number */,
 			);
@@ -525,20 +524,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		3E903CF90BC58B55009B6F93 /* Strip Symbols */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Strip Symbols";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = "/usr/bin/perl -w";
-			shellScript = "#\n# Last updated: 21MAR06, Andy O'Meara and Rob Barris\n#\n# This is an Xcode post-build phase script for devs who sleep better at night knowing\n#    that their deployment binaries are as stripped as possible.  This makes life more difficult\n#    for a hacker/cracker to locate sensitive code to trace, study, and/or extract.\n#\n# This script will execute only if the Xcode \"Deployment Postprocessing\" setting\n#    is set (aka DEPLOYMENT_POSTPROCESSING).\n#\n# The downside to shipping a stripped binary is that your user's crash reports\n#    will be useless unless you have a link map to convert code offsets (from a stack trace)\n#    into proc names.  To address this, this script moves your pre-stripped executable\n#    to the build dir, appending \"_full\" to the filename, allowing you to retain it for\n#    the day you need it in order to decipher a stack trace.  You do this by using 'atos'\n#    with the original generated binary (type 'man atos' for info).\n#\n# Recommended Xcode build settings:\n#    Dead Code Stripping                  YES\n#    Only Link In Essential Symbols       NO\n#    Deployment Postprocessing            YES (this activates this script)\n#    Strip Linked Product                 NO\n#    Use Separate Strip                   NO\n#    Strip Style                          All Symbols\n#    Strip Debug Symbols During Copy      NO\n#    Preserve Private External Symbols    NO\n#    Separate PCH Symbols                 YES\n#    Symbols Hidden By Default            YES (Critical!)\n#    Inline Functions Hidden              YES\n#\n# Note that if you're building a dynamic library, you'll need to explicitly\n#    declare any symbols that you want to be exported.  See the following:\n#    file:///Developer/ADC%20Reference%20Library/documentation/DeveloperTools/Conceptual/CppRuntimeEnv/Articles/SymbolVisibility.html\n#\n\nuse strict;\n\ndie \"$0: Must be run from Xcode\" unless $ENV{\"BUILT_PRODUCTS_DIR\"};\n\n# This script is activated via an Xcode env flag.\nif ( $ENV{DEPLOYMENT_POSTPROCESSING} ne \"YES\" ) {\n   exit 0;\n}\n\nprint \"\\n\\n==================== Commencing external stripping phase...\\n\";\n        \nmy $BINARY       = \"$ENV{BUILT_PRODUCTS_DIR}/$ENV{WRAPPER_NAME}/Contents/MacOS/$ENV{EXECUTABLE_NAME}\";\nmy $BINARY_FULL  = \"$ENV{BUILT_PRODUCTS_DIR}/$ENV{EXECUTABLE_NAME}_full\";\nmy $BINARY_i386  = \"${BINARY}_i386\";\nmy $BINARY_ppc   = \"${BINARY}_ppc\";\n\nmy $aa = `lipo -info \"$BINARY\"`;\n$aa =~ s/Architectures in the fat file: $BINARY are: //g;\nmy @arches = split(' ',$aa);\n$, = \":\";\n#print @arches;\n\n# Extract each arch into a \"thin\" binary for stripping\nforeach $a (@arches)\n{\n\t`lipo \"$BINARY\" -thin $a -output \"${BINARY}_$a\"`;\n}\n\n# Retain the orignal binary for QA and use with the util 'atos'\n`mv -f \"$BINARY\" \"$BINARY_FULL\"`;\n\n# Perform desired stripping on each thin binary.  \nforeach $a (@arches)\n{\n\t`strip -S -x -o \"${BINARY}_${a}_tmp\"  -r \"${BINARY}_$a\"`;\n}\n\n# We're now done with the original thin binaries, so chuck them.\nforeach $a (@arches)\n{\n\t`rm -f \"${BINARY}_$a\"`;\n}\n\n# Make the new universal binary from our stripped thin pieces.\nmy $lipoopts = \"\";\nforeach $a (@arches)\n{\n\t$lipoopts .= \"-arch $a \\\"${BINARY}_${a}_tmp\\\" \";\n}\n`lipo $lipoopts -create -output \"$BINARY\"`;\n\n# We're now done with the temp thin binaries, so chuck them.\nforeach $a (@arches)\n{\n\t`rm -f \"${BINARY}_${a}_tmp\"`;\n}\n\nprint \"\\n==================== External strip phase complete\\n\";\n\n#EOF";
-		};
 		3EFF81F20B5586520049AD7D /* Remove Headers */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
