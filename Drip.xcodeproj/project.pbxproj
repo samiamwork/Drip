@@ -462,7 +462,7 @@
 				8D15AC300486D014006FF6A4 /* Sources */,
 				8D15AC330486D014006FF6A4 /* Frameworks */,
 				3EFF81F20B5586520049AD7D /* Remove Headers */,
-				3EFF821B0B558E330049AD7D /* Set SVN Revision number */,
+				3EFF821B0B558E330049AD7D /* Set Revision number */,
 			);
 			buildRules = (
 			);
@@ -538,19 +538,19 @@
 			shellPath = /bin/sh;
 			shellScript = "### We only run on \"Release\" builds...\nif [[ $BUILD_STYLE != 'Release' ]] ; then\n\texit 0\nfi\n\nfind \"$TARGET_BUILD_DIR/$FULL_PRODUCT_NAME\" -path '*/Headers/*' -delete\n\nfind \"$TARGET_BUILD_DIR/$FULL_PRODUCT_NAME\" -name 'Headers' -type d -delete\n\nfind \"$TARGET_BUILD_DIR/$FULL_PRODUCT_NAME\" -name 'Headers' -type l -delete";
 		};
-		3EFF821B0B558E330049AD7D /* Set SVN Revision number */ = {
+		3EFF821B0B558E330049AD7D /* Set Revision number */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Set SVN Revision number";
+			name = "Set Revision number";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "/usr/bin/perl -w";
-			shellScript = "# Xcode auto-versioning script for Subversion\n# by Axel Andersson, modified by Daniel Jalkut to add\n# \"--revision HEAD\" to the svn info line, which allows\n# the latest revision to always be used.\n\nuse strict;\n\ndie \"$0: Must be run from Xcode\" unless $ENV{\"BUILT_PRODUCTS_DIR\"};\n\n# Get the current subversion revision number and use it to set the CFBundleVersion value\nmy $REV;\nif(-e \"/usr/local/bin/svnversion\")\n{\n\t$REV = `/usr/local/bin/svnversion -n ./`;\n}\nelse\n{\n\t$REV = `/usr/bin/svnversion -n ./`;\n}\nmy $INFO = \"$ENV{BUILT_PRODUCTS_DIR}/$ENV{WRAPPER_NAME}/Contents/Info.plist\";\n\nmy $version = $REV;\n\n# (Match the last group of digits and optional letter M/S):\n\n# ugly yet functional (barely) regex by Daniel Jalkut:\n#$version =~ s/([\\d]*:)(\\d+[M|S]*).*/$2/;\n\n# better yet still functional regex via Kevin \"Regex Nerd\" Ballard\n($version =~ m/\\d+[MS]*$/) && ($version = $&);\n\nif( -X '/usr/local/bin/git' )\n{\n\tmy $gitlog = `/usr/local/bin/git log --pretty=format:%h`;\n\tif( $gitlog !~ /^fatal: Not a git repository/ ) {\n\t\t$version = `echo \\\"$gitlog\\\" | wc -l`;\n\t\tchomp $version;\n\t\t$version =~ s/^\\s+//;\n\t\t$version .= 'M' unless(`/usr/local/bin/git status | tail -n 1` =~ /^nothing to commit/);\n\t}\n}\n\n#die \"$0: No Subversion revision found\" unless $version;\n$version = 'exported' unless $version;\n\nopen(FH, \"$INFO\") or die \"$0: $INFO: $!\";\nmy $info = join(\"\", <FH>);\nclose(FH);\n\n$info =~ s/([\\t ]+<key>CFBundleVersion<\\/key>\\n[\\t ]+<string>).*?(<\\/string>)/$1$version$2/;\n\nopen(FH, \">$INFO\") or die \"$0: $INFO: $!\";\nprint FH $info;\nclose(FH);\n\nprint $version;";
+			shellScript = "# Xcode auto-versioning script for Subversion\n# by Axel Andersson, modified by Daniel Jalkut to add\n# \"--revision HEAD\" to the svn info line, which allows\n# the latest revision to always be used.\n\nuse strict;\n\ndie \"$0: Must be run from Xcode\" unless $ENV{\"BUILT_PRODUCTS_DIR\"};\n\n# Get the current subversion revision number and use it to set the CFBundleVersion value\nmy $REV;\nif(-e \"/usr/local/bin/svnversion\")\n{\n\t$REV = `/usr/local/bin/svnversion -n ./`;\n}\nelse\n{\n\t$REV = `/usr/bin/svnversion -n ./`;\n}\nmy $INFO = \"$ENV{BUILT_PRODUCTS_DIR}/$ENV{WRAPPER_NAME}/Contents/Info.plist\";\n\nmy $version = $REV;\n\n# (Match the last group of digits and optional letter M/S):\n\n# ugly yet functional (barely) regex by Daniel Jalkut:\n#$version =~ s/([\\d]*:)(\\d+[M|S]*).*/$2/;\n\n# better yet still functional regex via Kevin \"Regex Nerd\" Ballard\n($version =~ m/\\d+[MS]*$/) && ($version = $&);\n\nif( -X '/usr/local/bin/git' )\n{\n\tmy $gitlog = `/usr/local/bin/git log --pretty=format:%h`;\n    my $gitrev = `/usr/local/bin/git rev-parse --short=8 HEAD`;\n\tif( $gitlog !~ /^fatal: Not a git repository/ ) {\n\t\t$version = `echo \\\"$gitlog\\\" | wc -l`;\n\t\tchomp $version;\n        chomp $gitrev;\n\t\t$version =~ s/^\\s+//;\n\t\t$version .= 'M' unless(`/usr/local/bin/git status | tail -n 1` =~ /^nothing to commit/);\n        $version .= ' ' . $gitrev;\n\t}\n}\n\n#die \"$0: No Subversion revision found\" unless $version;\n$version = 'exported' unless $version;\n\nopen(FH, \"$INFO\") or die \"$0: $INFO: $!\";\nmy $info = join(\"\", <FH>);\nclose(FH);\n\n$info =~ s/([\\t ]+<key>CFBundleVersion<\\/key>\\n[\\t ]+<string>).*?(<\\/string>)/$1$version$2/;\n\nopen(FH, \">$INFO\") or die \"$0: $INFO: $!\";\nprint FH $info;\nclose(FH);\n\nprint $version;";
 		};
 /* End PBXShellScriptBuildPhase section */
 
